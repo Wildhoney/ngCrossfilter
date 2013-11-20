@@ -1,0 +1,20 @@
+{
+  "name": "ngCrossfilter",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Wildhoney/ngCrossfilter",
+  "authors": [
+    "Adam Timberlake <adam.timberlake@gmail.com>"
+  ],
+  "description": "Usual Angular.js style filtering and sorting with a twist of Crossfilter for improved performance.",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.1"
+  }
+}
