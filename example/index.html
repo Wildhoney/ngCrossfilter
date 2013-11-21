@@ -3,10 +3,18 @@
 <head>
     <title>ngCrossfilter</title>
     <script type="text/javascript" src="../bower_components/angular/angular.js"></script>
+    <script type="text/javascript" src="../bower_components/crossfilter/crossfilter.js"></script>
+    <script type="text/javascript" src="../module/ngCrossfilter.js"></script>
+    <script type="text/javascript" src="js/app.js"></script>
 </head>
-<body ng-app>
+<body ng-app="myApp" ng-controller="BooksController">
 
+    <button ng-click="direction = 'asc'">Ascending</button>
+    <button ng-click="direction = 'desc'">Descending</button>
 
+    <ul class="books" ng-repeat="book in books | crossfilter: { filter: 'id', value: [1,6], sort: 'id', direction: direction }">
+        <li>{{book.id}} &ndash; {{book.name}}</li>
+    </ul>
 
 </body>
 </html>
