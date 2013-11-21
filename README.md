@@ -1,6 +1,10 @@
 ngCrossfilter
 =============
 
+<img src="https://api.travis-ci.org/Wildhoney/ngCrossfilter.png" />
+&nbsp;
+<img src="https://badge.fury.io/js/ng-crossfilter.png" />
+
 Introduction
 -------------
 
@@ -11,12 +15,12 @@ Getting Started
 
 Filtering for `ngCrossfilter` is performed in your HTML template as you do with other Angular filters.
 
-<h5>Properties</h5>
-
 ```html
 <li ng-repeat="book in books |
-               crossfilter: { filter: 'name', value: '1984', sort: 'id', direction: 'asc' }">
+crossfilter: { filter: 'name', value: '1984', sort: 'id', direction: 'asc' }">
 ```
+
+<h5>Properties</h5>
 
 <table>
     <tr>

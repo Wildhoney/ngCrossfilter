@@ -21,5 +21,16 @@
     "grunt-contrib-uglify": "~0.2.7",
     "grunt-mocha": "~0.4.1",
     "grunt-contrib-jshint": "~0.7.2"
-  }
+  },
+  "directories": {
+    "example": "example",
+    "test": "tests"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "crossfilter",
+    "angular",
+    "filtering",
+    "sorting"
+  ]
 }
