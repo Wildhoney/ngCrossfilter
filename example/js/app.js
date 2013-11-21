@@ -19,7 +19,7 @@
          * @type {Array}
          */
         $scope.books = [
-            { id: 1, name: '1984' },
+            { id: 1, name: 'Nineteen Eighty-Four' },
             { id: 2, name: 'Brave New World' },
             { id: 3, name: 'Nausea' },
             { id: 4, name: 'Les Miserables' },
@@ -28,7 +28,7 @@
             { id: 7, name: 'The Little Prince' },
             { id: 8, name: 'The Doors of Perception' },
             { id: 9, name: 'Alice in Wonderland' }
-        ]
+        ];
 
     }]);
 

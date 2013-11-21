@@ -11,9 +11,13 @@
 
     <button ng-click="direction = 'asc'">Ascending</button>
     <button ng-click="direction = 'desc'">Descending</button>
+    <button ng-click="value = '?Of'">Containing "Of"</button>
+    <button ng-click="value = '~/M/i'">Containing "M"</button>
+    <button ng-click="value = 'Nineteen Eighty-Four'">Nineteen Eighty-Four</button>
+    <button ng-click="value = false">Clear All</button>
 
     <ul class="books">
-        <li ng-repeat="book in books | crossfilter: { filter: 'id', value: [1,6], sort: 'id', direction: direction }">
+        <li ng-repeat="book in books | crossfilter: { filter: 'name', value: value, sort: 'id', direction: direction }">
             {{book.id}} &ndash; {{book.name}}
         </li>
     </ul>

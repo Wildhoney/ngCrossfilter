@@ -11,7 +11,7 @@
     /**
      * @service crossfilterFilter
      */
-    ngCrossfilter.service('crossfilterFilter', function() {
+    ngCrossfilter.service('crossfilterFilter', function($rootScope) {
 
         /**
          * @property _crossfilter
@@ -97,12 +97,26 @@
                 return;
             }
 
-            switch (value.charAt(0)) {
+            switch (String(value).charAt(0)) {
                 // Otherwise we have a string and we need to know which function to apply.
                 case ('?')  : _filterFuzzy(dimension, strip(value)); break;
                 case ('~')  : _filterRegExp(dimension, strip(value)); break;
-                default     : dimension.filterExact(value); break;
+                default     : _filterExact(dimension, value); break;
             }
+
+        };
+
+        /**
+         * Responsible for clearing all of the dimensions.
+         * @method _clearDimensions
+         * @return {void}
+         * @private
+         */
+        var _clearDimensions = function _clearDimensions() {
+
+            $angular.forEach(_dimensions, function(dimension) {
+                dimension.filterAll();
+            });
 
         };
 
@@ -112,7 +126,23 @@
          * @param value {String}
          * @private
          */
-        var _filterFuzzy =  function(dimension, value) {
+        var _filterFuzzy = function(dimension, value) {
+
+            var regExp = new RegExp(value, 'i');
+
+            dimension.filterFunction(function(d) {
+                return String(d).match(regExp);
+            });
+
+        };
+
+        /**
+         * @method _filterExact
+         * @param dimension {Object}
+         * @param value {String}
+         * @private
+         */
+        var _filterExact = function(dimension, value) {
 
             var regExp = new RegExp(value, 'i');
 
@@ -128,7 +158,7 @@
          * @param value {String}
          * @private
          */
-        var _filterRegExp =  function(dimension, value) {
+        var _filterRegExp = function(dimension, value) {
 
             // Find the flags for the regular expression.
             var flags   = value.match(/\/([a-z])*$/)[1];
@@ -153,16 +183,22 @@
          */
         return function ngCrossfilter(collection, options) {
 
+            var coll = $angular.copy(collection);
+
+            if (options.value === false) {
+                _clearDimensions();
+            }
+
             if (!('groupAll' in _crossfilter && 'dimension' in _crossfilter)) {
                 // Setup the Crossfilter if we haven't already.
-                _setupCrossfilter(collection);
+                _setupCrossfilter(coll);
             }
 
             if (options.filter && options.value) {
                 _applyFilter(options.filter, options.value);
             }
 
-            var dimension   = _dimensions[options.sort],
+            var dimension   = _dimensions[options.sort || 'id'],
                 direction   = ((options.direction || 'asc') === 'asc') ? 'bottom' : 'top';
 
             return dimension[direction](Infinity);
