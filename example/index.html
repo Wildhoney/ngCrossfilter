@@ -12,8 +12,10 @@
     <button ng-click="direction = 'asc'">Ascending</button>
     <button ng-click="direction = 'desc'">Descending</button>
 
-    <ul class="books" ng-repeat="book in books | crossfilter: { filter: 'id', value: [1,6], sort: 'id', direction: direction }">
-        <li>{{book.id}} &ndash; {{book.name}}</li>
+    <ul class="books">
+        <li ng-repeat="book in books | crossfilter: { filter: 'id', value: [1,6], sort: 'id', direction: direction }">
+            {{book.id}} &ndash; {{book.name}}
+        </li>
     </ul>
 
 </body>

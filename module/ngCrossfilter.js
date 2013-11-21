@@ -16,7 +16,7 @@
          * @type {Object}
          * @private
          */
-        var _crossfilter = null;
+        var _crossfilter = {};
 
         /**
          * @property _dimensions
@@ -27,7 +27,8 @@
 
         /**
          * @method _setupCrossfilter
-         * @param collection
+         * @param collection {Array}
+         * @return {void}
          * @private
          */
         var _setupCrossfilter = function _setupCrossfilter(collection) {
@@ -56,7 +57,7 @@
 
             var properties = [];
 
-            for (property in model) {
+            for (var property in model) {
 
                 if (model.hasOwnProperty(property)) {
                     properties.push(property);
@@ -143,12 +144,14 @@
         };
 
         /**
+         * @method ngCrossfilter
          * @params collection {Array}
          * @params options {Object}
+         * @return {Array}
          */
         return function ngCrossfilter(collection, options) {
 
-            if (!_crossfilter) {
+            if (!('groupAll' in _crossfilter && 'dimension' in _crossfilter)) {
                 // Setup the Crossfilter if we haven't already.
                 _setupCrossfilter(collection);
             }
