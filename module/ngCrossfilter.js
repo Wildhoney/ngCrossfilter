@@ -1,5 +1,7 @@
 (function($angular, $crossfilter) {
 
+    "use strict";
+
     /**
      * @module ngCrossfilter
      * @author Adam Timberlake
