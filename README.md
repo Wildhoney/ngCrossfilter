@@ -54,6 +54,8 @@ Since Crossfilter allows you to filter data in different ways, `ngCrossfilter` i
 
 Mostly the filtering strategy is based on the leading character of the filter string.
 
+All filters can be cleared by passing `false` to the `value` property.
+
 <h4>Exact Match</h4>
 
 ```html
