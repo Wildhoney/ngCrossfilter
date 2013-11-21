@@ -17,7 +17,7 @@ Filtering for `ngCrossfilter` is performed in your HTML template as you do with 
 
 ```html
 <li ng-repeat="book in books |
-crossfilter: { filter: 'name', value: '1984', sort: 'id', direction: 'asc' }">
+    crossfilter: { filter: 'name', value: '1984', sort: 'id', direction: 'asc' }">
 ```
 
 <h5>Properties</h5>
@@ -81,7 +81,12 @@ Property `name` on the collection has to match regular expression.
 <h4>Range Match</h4>
 
 ```html
-<li ng-repeat="book in books | crossfilter: { filter: 'id', value: [1, 6] }">
+<li ng-repeat="book in books | crossfilter: { filter: 'id', value: [1,6] }">
 ```
 
 Property `id` on the collection has to be between `1` and `6`.
+
+Contributions
+-------------
+
+As with all of my projects, you're more than welcome to contribute. Please include a unit test for your additions, and if the Travis build passes then it will be merged into master.
