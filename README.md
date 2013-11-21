@@ -11,8 +11,11 @@ Getting Started
 
 Filtering for `ngCrossfilter` is performed in your HTML template as you do with other Angular filters.
 
+<h5>Properties</h5>
+
 ```html
-<li ng-repeat="book in books | crossfilter: { filter: 'name', value: '1984', sort: 'id', direction: 'asc' }">
+<li ng-repeat="book in books |
+               crossfilter: { filter: 'name', value: '1984', sort: 'id', direction: 'asc' }">
 ```
 
 <table>
@@ -26,7 +29,7 @@ Filtering for `ngCrossfilter` is performed in your HTML template as you do with 
     </tr>
     <tr>
         <td><code>value</code></td>
-        <td>Value to use for the filter &ndash; see <a href="#microsyntax">microsyntax</a>.</td>
+        <td>Value to use for the filter &ndash; see <a href="#filtering-microsyntax">microsyntax</a>.</td>
     </tr>
     <tr>
         <td><code>sort</code></td>
@@ -50,10 +53,10 @@ Mostly the filtering strategy is based on the leading character of the filter st
 <h4>Exact Match</h4>
 
 ```html
-<li ng-repeat="book in books | crossfilter: { filter: 'name', value: 'Brave New World' }">
+<li ng-repeat="book in books | crossfilter: { filter: 'name', value: '1984' }">
 ```
 
-Property `name` on the collection has to be exactly **Brave New World**.
+Property `name` on the collection has to be exactly **1984**.
 
 <h4>Fuzzy Match</h4>
 
@@ -70,6 +73,8 @@ Property `name` on the collection has to contain **Brave New World**.
 ```
 
 Property `name` on the collection has to match regular expression.
+
+<h4>Range Match</h4>
 
 ```html
 <li ng-repeat="book in books | crossfilter: { filter: 'id', value: [1, 6] }">
