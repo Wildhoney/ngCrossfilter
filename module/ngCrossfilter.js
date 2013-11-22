@@ -11,7 +11,7 @@
     /**
      * @service crossfilterFilter
      */
-    ngCrossfilter.service('crossfilterFilter', function($rootScope) {
+    ngCrossfilter.service('crossfilterFilter', function() {
 
         /**
          * @property _crossfilter
