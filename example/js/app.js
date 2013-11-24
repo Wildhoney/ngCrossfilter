@@ -8,11 +8,25 @@
     app.controller('BooksController', ['$scope', function($scope) {
 
         /**
-         * @property direction
-         * @type {String}
-         * @default 'asc'
+         * @property options
+         * @type {Object}
          */
-        $scope.direction = 'asc';
+        $scope.options = {
+
+            filter: {
+                property:   'name',
+                value:      null
+            },
+
+            sort: {
+                property:   'id',
+                value:      'asc'
+            },
+
+            // Could be "afresh" or "reduce".
+            strategy: 'afresh'
+
+        };
 
         /**
          * @property books

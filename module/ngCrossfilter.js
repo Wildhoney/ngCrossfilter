@@ -28,6 +28,20 @@
         var _dimensions = {};
 
         /**
+         * @property _previousProperty
+         * @type {String}
+         * @private
+         */
+        var _previousProperty = '';
+
+        /**
+         * @property _defaultStrategy
+         * @type {String}
+         * @private
+         */
+        var _defaultStrategy = 'afresh';
+
+        /**
          * @method _setupCrossfilter
          * @param collection {Array}
          * @return {void}
@@ -75,12 +89,21 @@
          * @method _applyFilter
          * @param property {String}
          * @param value {String}
+         * @param strategy {String}
          * @return {void}
          * @private
          */
-        var _applyFilter = function _applyFilter(property, value) {
+        var _applyFilter = function _applyFilter(property, value, strategy) {
 
-            var dimension = _dimensions[property];
+            if (strategy === 'afresh' && _previousProperty) {
+
+                // Reset the previous filter if we're using the "afresh" strategy.
+                _dimensions[_previousProperty].filterAll();
+
+            }
+
+            _previousProperty   = property;
+            var dimension       = _dimensions[property];
 
             /**
              * @method strip
@@ -185,7 +208,7 @@
 
             var coll = $angular.copy(collection);
 
-            if (options.value === false) {
+            if (options.filter.value === false) {
                 _clearDimensions();
             }
 
@@ -194,12 +217,13 @@
                 _setupCrossfilter(coll);
             }
 
-            if (options.filter && options.value) {
-                _applyFilter(options.filter, options.value);
+            if (options.filter && options.filter.value) {
+                var strategy = options.strategy || _defaultStrategy;
+                _applyFilter(options.filter.property, options.filter.value, strategy);
             }
 
-            var dimension   = _dimensions[options.sort || 'id'],
-                direction   = ((options.direction || 'asc') === 'asc') ? 'bottom' : 'top';
+            var dimension   = _dimensions[options.sort.property || 'id'],
+                direction   = ((options.sort.value || 'asc') === 'asc') ? 'bottom' : 'top';
 
             return dimension[direction](Infinity);
 

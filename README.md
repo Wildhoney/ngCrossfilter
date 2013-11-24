@@ -13,12 +13,32 @@ Angular uses native JavaScript methods for sorting, whereas `ngCrossfilter` uses
 Getting Started
 -------------
 
-Filtering for `ngCrossfilter` is performed in your HTML template as you do with other Angular filters.
+Filtering for `ngCrossfilter` is performed in your HTML template as you do with other Angular filters. As the filtering options for Crossfilter are somewhat more verbose than the standard Angular filtering, we recommend that you reference an `options` variable in your controller, and handle the options within there as opposed to within your template.
+
+For example the following HTML:
 
 ```html
-<li ng-repeat="book in books |
-    crossfilter: { filter: 'name', value: '1984', sort: 'id', direction: 'asc' }">
+<li ng-repeat="book in books | crossfilter: options">
 ```
+
+Would take its `options` value from the controller:
+
+```javascript
+$scope.options = {
+
+    filter: {
+        property:   'name',
+        value:      null
+    },
+
+    sort: {
+        property:   'id',
+        value:      'asc'
+    }
+
+};
+```
+
 
 <h5>Properties</h5>
 
@@ -56,37 +76,20 @@ Mostly the filtering strategy is based on the leading character of the filter st
 
 All filters can be cleared by passing `false` to the `value` property.
 
-<h4>Exact Match</h4>
+ * **Exact Match**: Don't prepend the value with anything;
+ * **Fuzzy Match**: Prepend the value with `?`;
+ * **Expression Match**: Prepend the value with `~`;
+ * **Range Match**: Set the value to an array range (`[1,5]`);
 
-```html
-<li ng-repeat="book in books | crossfilter: { filter: 'name', value: '1984' }">
-```
+Strategies
+-------------
 
-Property `name` on the collection has to be exactly **1984**.
+The strategies in `ngCrossfilter` have the same name and behaviour as those in <a href="https://github.com/Wildhoney/Snapshot.js" target="_blank">Snapshot.js</a>.
 
-<h4>Fuzzy Match</h4>
+ * `afresh`: Each filter resets the previous filtered collection;
+ * `reduce`: Each filter filters down on the current filtered collection;
 
-```html
-<li ng-repeat="book in books | crossfilter: { filter: 'name', value: '~Brave' }">
-```
-
-Property `name` on the collection has to contain **Brave New World**.
-
-<h4>Expression Match</h4>
-
-```html
-<li ng-repeat="book in books | crossfilter: { filter: 'name', value: '~/World/i' }">
-```
-
-Property `name` on the collection has to match regular expression.
-
-<h4>Range Match</h4>
-
-```html
-<li ng-repeat="book in books | crossfilter: { filter: 'id', value: [1,6] }">
-```
-
-Property `id` on the collection has to be between `1` and `6`.
+If you'd like to change the strategy from the default &ndash; `afresh`, then simply modify the `strategy` property to `reduce` &ndash; <a href="https://github.com/Wildhoney/ngCrossfilter/blob/master/example/js/app.js">see example</a>.
 
 Contributions
 -------------
