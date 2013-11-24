@@ -77,7 +77,9 @@ Mostly the filtering strategy is based on the leading character of the filter st
 All filters can be cleared by passing `false` to the `value` property.
 
  * **Exact Match**: Don't prepend the value with anything;
+ * **Negative Exact Match**: Prepend the value with `!`;
  * **Fuzzy Match**: Prepend the value with `?`;
+ * **Negative Fuzzy Match**: Prepend the value with `^`;
  * **Expression Match**: Prepend the value with `~`;
  * **Range Match**: Set the value to an array range (`[1,5]`);
 

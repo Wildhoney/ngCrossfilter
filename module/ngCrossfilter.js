@@ -122,7 +122,9 @@
 
             switch (String(value).charAt(0)) {
                 // Otherwise we have a string and we need to know which function to apply.
+                case ('!')  : _filterNegativeExact(dimension, strip(value)); break;
                 case ('?')  : _filterFuzzy(dimension, strip(value)); break;
+                case ('^')  : _filterNegativeFuzzy(dimension, strip(value)); break;
                 case ('~')  : _filterRegExp(dimension, strip(value)); break;
                 default     : _filterExact(dimension, value); break;
             }
@@ -160,6 +162,22 @@
         };
 
         /**
+         * @method _filterNegativeFuzzy
+         * @param dimension {Object}
+         * @param value {String}
+         * @private
+         */
+        var _filterNegativeFuzzy = function(dimension, value) {
+
+            var regExp = new RegExp(value, 'i');
+
+            dimension.filterFunction(function(d) {
+                return !String(d).match(regExp);
+            });
+
+        };
+
+        /**
          * @method _filterExact
          * @param dimension {Object}
          * @param value {String}
@@ -171,6 +189,22 @@
 
             dimension.filterFunction(function(d) {
                 return d.match(regExp);
+            });
+
+        };
+
+        /**
+         * @method _filterNegativeExact
+         * @param dimension {Object}
+         * @param value {String}
+         * @private
+         */
+        var _filterNegativeExact = function(dimension, value) {
+
+            var regExp = new RegExp(value, 'i');
+
+            dimension.filterFunction(function(d) {
+                return !d.match(regExp);
             });
 
         };
