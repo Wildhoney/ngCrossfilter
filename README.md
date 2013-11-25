@@ -48,19 +48,19 @@ $scope.options = {
         <th>Behaviour</th>
     </tr>
     <tr>
-        <td><code>filter</code></td>
+        <td><code>filter.property</code></td>
         <td>Property to apply the filter to.</td>
     </tr>
     <tr>
-        <td><code>value</code></td>
+        <td><code>filter.value</code></td>
         <td>Value to use for the filter &ndash; see <a href="#filtering-microsyntax">microsyntax</a>.</td>
     </tr>
     <tr>
-        <td><code>sort</code></td>
+        <td><code>sort.property</code></td>
         <td>Property to use for the sorting.</td>
     </tr>
     <tr>
-        <td><code>direction</code></td>
+        <td><code>sort.value</code></td>
         <td>Direction of the sorting - <code>asc</code>/<code>desc</code></td>
     </tr>
 </table>
