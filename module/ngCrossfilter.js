@@ -235,29 +235,31 @@
         /**
          * @method ngCrossfilter
          * @params collection {Array}
-         * @params options {Object}
+         * @params filterProperty {String}
+         * @params filterValue {String|Boolean}
+         * @params filterProperty {String}
+         * @params filterValue {String|Boolean|Array}
+         * @params strategy {String}
          * @return {Array}
          */
-        return function ngCrossfilter(collection, options) {
+        return function ngCrossfilter(collection, filterProperty, filterValue, sortProperty, sortValue, strategy) {
 
-            var coll = $angular.copy(collection);
-
-            if (options.filter.value === false) {
+            if (filterValue === false) {
                 _clearDimensions();
             }
 
             if (!('groupAll' in _crossfilter && 'dimension' in _crossfilter)) {
                 // Setup the Crossfilter if we haven't already.
-                _setupCrossfilter(coll);
+                _setupCrossfilter(collection);
             }
 
-            if (options.filter && options.filter.value) {
-                var strategy = options.strategy || _defaultStrategy;
-                _applyFilter(options.filter.property, options.filter.value, strategy);
+            if (filterValue) {
+                strategy = strategy || _defaultStrategy;
+                _applyFilter(filterProperty, filterValue, strategy);
             }
 
-            var dimension   = _dimensions[options.sort.property || 'id'],
-                direction   = ((options.sort.value || 'asc') === 'asc') ? 'bottom' : 'top';
+            var dimension   = _dimensions[sortProperty || 'id'],
+                direction   = ((sortValue || 'asc') === 'asc') ? 'bottom' : 'top';
 
             return dimension[direction](Infinity);
 

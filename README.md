@@ -13,57 +13,15 @@ Angular uses native JavaScript methods for sorting, whereas `ngCrossfilter` uses
 Getting Started
 -------------
 
-Filtering for `ngCrossfilter` is performed in your HTML template as you do with other Angular filters. As the filtering options for Crossfilter are somewhat more verbose than the standard Angular filtering, we recommend that you reference an `options` variable in your controller, and handle the options within there as opposed to within your template.
+Filtering for `ngCrossfilter` is performed in your HTML template as you do with other Angular filters.
 
-For example the following HTML:
+In the following HTML, the first item in the object is for the filtering, whereas the second item is for the sorting. This is **always** the case in `ngCrossfilter` &ndash; the `strategy` would appear at the end of the object as a simple string &ndash; **reduce** or **afresh**.
 
 ```html
-<li ng-repeat="book in books | crossfilter: options">
+<li ng-repeat="book in books | crossfilter: 'name': value : 'id': 'asc'">
 ```
 
-Would take its `options` value from the controller:
-
-```javascript
-$scope.options = {
-
-    filter: {
-        property:   'name',
-        value:      null
-    },
-
-    sort: {
-        property:   'id',
-        value:      'asc'
-    }
-
-};
-```
-
-
-<h5>Properties</h5>
-
-<table>
-    <tr>
-        <th>Property</th>
-        <th>Behaviour</th>
-    </tr>
-    <tr>
-        <td><code>filter.property</code></td>
-        <td>Property to apply the filter to.</td>
-    </tr>
-    <tr>
-        <td><code>filter.value</code></td>
-        <td>Value to use for the filter &ndash; see <a href="#filtering-microsyntax">microsyntax</a>.</td>
-    </tr>
-    <tr>
-        <td><code>sort.property</code></td>
-        <td>Property to use for the sorting.</td>
-    </tr>
-    <tr>
-        <td><code>sort.value</code></td>
-        <td>Direction of the sorting - <code>asc</code>/<code>desc</code></td>
-    </tr>
-</table>
+From the above you can see that we're using the `name` property to filter on with its corresponding `value`, and for the sorting we're using the `id property with the **asc** value.
 
 As is typical with Angular, if you update any of the properties then the filtering and sorting will automatically change. Each property should ideally be set with a variable as opposed to an explicit string.
 

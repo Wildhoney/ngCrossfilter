@@ -9,15 +9,15 @@
 </head>
 <body ng-app="myApp" ng-controller="BooksController">
 
-    <button ng-click="options.sort.value = 'asc'">Ascending</button>
-    <button ng-click="options.sort.value = 'desc'">Descending</button>
-    <button ng-click="options.filter.value = '?Of'">Containing "Of"</button>
-    <button ng-click="options.filter.value = '~/M/i'">Containing "M"</button>
-    <button ng-click="options.filter.value = 'Nineteen Eighty-Four'">Nineteen Eighty-Four</button>
-    <button ng-click="options.filter.value = false">Clear All</button>
+    <button ng-click="direction = 'asc'">Ascending</button>
+    <button ng-click="direction = 'desc'">Descending</button>
+    <button ng-click="value = '?Of'">Containing "Of"</button>
+    <button ng-click="value = '~/M/i'">Containing "M"</button>
+    <button ng-click="value = 'Nineteen Eighty-Four'">Nineteen Eighty-Four</button>
+    <button ng-click="value = false">Clear All</button>
 
     <ul class="books">
-        <li ng-repeat="book in books | crossfilter: options">
+        <li ng-repeat="book in books | crossfilter: 'name': value : 'id': direction : 'reduce'">
             {{book.id}} &ndash; {{book.name}}
         </li>
     </ul>
