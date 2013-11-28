@@ -28,6 +28,13 @@
         var _dimensions = {};
 
         /**
+         * @property _primaryKey
+         * @type {String}
+         * @private
+         */
+        var _primaryKey = null;
+
+        /**
          * @property _previousProperty
          * @type {String}
          * @private
@@ -40,6 +47,13 @@
          * @private
          */
         var _defaultStrategy = 'afresh';
+
+        /**
+         * @property _addedModels
+         * @type {Array}
+         * @private
+         */
+        var _addedModels = [];
 
         /**
          * @method _setupCrossfilter
@@ -55,11 +69,53 @@
             // Iterate over each property to create its related dimension.
             $angular.forEach(properties, function(property) {
 
+                if (!_primaryKey) {
+                    _primaryKey = property;
+                }
+
                 _dimensions[property] = _crossfilter.dimension(function(model) {
                     return model[property];
                 });
 
             });
+
+            // Iterate over each model to store its primary key.
+            $angular.forEach(collection, function(model) {
+                _addedModels.push(model[_primaryKey]);
+            });
+
+        };
+
+        /**
+         * @method _updateCrossfilter
+         * @param collection {Array}
+         * @return {Number} Number of newly added models.
+         * @private
+         */
+        var _updateCrossfilter = function _updateCrossfilter(collection) {
+
+            var models = [];
+
+            // Iterate over each model to determine which ones need to be added.
+            $angular.forEach(collection, function(model) {
+
+                if (_addedModels.indexOf(model[_primaryKey]) !== -1) {
+                    // We've already added this model to the crossfilter!
+                    return;
+                }
+
+                // Otherwise we need to add this model to the crossfilter...
+                models.push(model);
+
+                // Let everybody know we've added this primary key!
+                _addedModels.push(model[_primaryKey]);
+                
+            });
+
+            // Add all of the required models in one shift swoop!
+            _crossfilter.add(models);
+
+            return models.length;
 
         };
 
@@ -252,9 +308,14 @@
                 _clearDimensions();
             }
 
-            if (!('groupAll' in _crossfilter && 'dimension' in _crossfilter)) {
+            if (_addedModels.length === 0) {
                 // Setup the Crossfilter if we haven't already.
                 _setupCrossfilter(collection);
+            }
+
+            if (_addedModels.length !== collection.length) {
+                // If the numbers differ then we need to update our Crossfilter.
+                _updateCrossfilter(collection);
             }
 
             if (filterValue) {

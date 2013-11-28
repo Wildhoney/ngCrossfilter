@@ -16,6 +16,8 @@
     <button ng-click="value = 'Nineteen Eighty-Four'">Nineteen Eighty-Four</button>
     <button ng-click="value = false">Clear All</button>
 
+    <button ng-click="addBook('Where the Wild Things Are')">Add another book!</button>
+
     <ul class="books">
         <li ng-repeat="book in books | crossfilter: 'name': value : 'id': direction : 'reduce'">
             {{book.id}} &ndash; {{book.name}}

@@ -29,6 +29,15 @@
         };
 
         /**
+         * @method addBook
+         * @param name {String}
+         * @return {void}
+         */
+        $scope.addBook = function addBook(name) {
+            $scope.books.push({ id: 10, name: name });
+        };
+
+        /**
          * @property books
          * @type {Array}
          */
