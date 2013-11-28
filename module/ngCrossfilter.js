@@ -244,6 +244,10 @@
          */
         return function ngCrossfilter(collection, filterProperty, filterValue, sortProperty, sortValue, strategy) {
 
+            if (!collection.length) {
+                return collection;
+            }
+
             if (filterValue === false) {
                 _clearDimensions();
             }
