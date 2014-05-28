@@ -2,20 +2,28 @@
 <html>
 <head>
     <title>ngCrossfilter</title>
+
+    <!-- Dependencies! -->
     <script type="text/javascript" src="js/vendor/angular/angular.js"></script>
     <script type="text/javascript" src="js/vendor/crossfilter/crossfilter.js"></script>
     <script type="text/javascript" src="js/vendor/ng-crossfilter/ng-crossfilter.js"></script>
+
+    <!-- Application! -->
     <script type="text/javascript" src="js/Default.js"></script>
+    <script type="text/javascript" src="js/controllers/WordsController.js"></script>
+
 </head>
 <body ng-app="myApp" ng-controller="WordsController">
 
     <input type="text" ng-model="word" />
-    <button ng-click="words.filterExactBy('word', word)">Filter</button>
+    <button ng-click="words.filterBy('word', word)">Filter</button>
 
     <ul class="words">
-        <li ng-repeat="model in words | crossfilter: words">
-            {{model.word}}
+
+        <li ng-repeat="model in words | crossfilter">
+            {{model.id}} &mdash; {{model.word}}
         </li>
+
     </ul>
 
 </body>

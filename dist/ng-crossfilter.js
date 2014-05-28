@@ -41,6 +41,8 @@
 
         return function ngCrossfilterFilter(crossfilter) {
 
+            console.log('Here');
+
             if (typeof crossfilter._collection === 'undefined') {
 
                 // If we're not dealing with a Crossfilter, then we'll
@@ -84,16 +86,10 @@
         Service.prototype = {
 
             /**
-             * @constant STRATEGY_PERSISTENT
-             * @type {string}
+             * @constant STRATEGIES
+             * @type {Object}
              */
-            STRATEGY_PERSISTENT: 'persistent',
-
-            /**
-             * @constant STRATEGY_TRANSIENT
-             * @type {string}
-             */
-            STRATEGY_TRANSIENT: 'transient',
+            STRATEGIES: { keep: 'persistent', clear: 'transient' },
 
             /**
              * @property collection
@@ -163,14 +159,12 @@
                 }
 
                 // Assume a default strategy if one hasn't been defined.
-                strategy = strategy || this.STRATEGY_PERSISTENT;
+                strategy = strategy || this.STRATEGIES.keep;
 
-                if ([this.STRATEGY_PERSISTENT, this.STRATEGY_TRANSIENT].indexOf(strategy) === -1) {
+                if ([this.STRATEGIES.keep, this.STRATEGIES.clear].indexOf(strategy) === -1) {
 
                     // Determine if the strategy has been defined as either persistent or transient.
-                    _throwException("Strategy must be either '" +
-                        this.STRATEGY_PERSISTENT + "' or '" +
-                        this.STRATEGY_TRANSIENT + "'");
+                    _throwException("Strategy must be either '" + this.STRATEGIES.keep + "' or '" + this.STRATEGIES.clear + "'");
 
                 }
 
@@ -210,7 +204,7 @@
 
                 }
 
-                if (this._lastFilter && this._strategy === this.STRATEGY_TRANSIENT) {
+                if (this._lastFilter && this._strategy === this.STRATEGIES.clear) {
 
                     // Clear the previous filter if we're using the transient strategy.
                     this.unfilterBy(this._lastFilter);
@@ -227,7 +221,6 @@
                     return;
 
                 }
-
 
                 // Let's filter by the desired filter!
                 this._dimensions[property].filter(value);
