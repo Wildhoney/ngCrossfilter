@@ -178,6 +178,12 @@
             unfilterBy: function unfilterBy(property) {},
 
             /**
+             * @method unfilterAll
+             * @return {void}
+             */
+            unfilterAll: function unfilterAll() {},
+
+            /**
              * @method sortBy
              * @param property {String}
              * @param direction {String}
