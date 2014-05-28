@@ -1,0 +1,100 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Tahoma, Helvetica, sans-serif;
+}
+
+section.sidebar {
+    position: fixed;
+    background-color: rgba(0, 0, 0, .1);
+    width: 20%;
+    height: 100%;
+}
+
+section.sidebar input.search {
+    width: 100%;
+    height: 40px;
+    outline: none;
+    padding: 0 12px;
+    font-size: 12px;
+    border: 0;
+}
+
+section.sidebar div.btn-group {
+    right: 10px;
+    top: 9px;
+    position: absolute;
+}
+
+section.sidebar ul {
+    clear: both;
+    width: 100%;
+    overflow: hidden;
+}
+
+section.sidebar ul li {
+    padding: 0 12px;
+    height: 32px;
+    font-size: 11px;
+    line-height: 32px;
+}
+
+section.sidebar ul li:nth-of-type(2) {
+    padding-top: 5px;
+}
+
+section.sidebar ul li.word-count {
+    background-color: rgba(0, 0, 0, .25);
+    color: white;
+}
+
+section.words {
+    margin-left: 20%;
+    width: 80%;
+}
+
+section.words table {
+    width: 100%;
+}
+
+section.words table tr th {
+    background-color: lightslategrey;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 12px;
+    font-weight: normal;
+    color: white;
+    cursor: pointer;
+}
+
+section.words table tr td {
+    height: 32px;
+    line-height: 32px;
+    font-size: 12px;
+    padding: 0 12px;
+}
+
+section.words table tr:nth-of-type(odd) td {
+    background-color: rgba(0, 0, 0, .05);
+}
+
+section.words table tr td a {
+    cursor: pointer;
+}
+
+section.words table tr td:first-of-type {
+    width: 120px;
+}
+
+section.words table tr td:nth-of-type(2) {
+    width: 250px;
+}
+
+section.words table tr td.etc {
+    background-color: rgba(0, 0, 0, .025);
+    font-weight: bold;
+    padding-left: 25px;
+    height: 80px;
+    line-height: 80px;
+}

@@ -1,12 +1,17 @@
 <!DOCTYPE>
 <html>
 <head>
+
     <title>ngCrossfilter</title>
 
     <!-- Dependencies! -->
     <script type="text/javascript" src="js/vendor/angular/angular.js"></script>
     <script type="text/javascript" src="js/vendor/crossfilter/crossfilter.js"></script>
     <script type="text/javascript" src="js/vendor/ng-crossfilter/ng-crossfilter.js"></script>
+
+    <!-- Styles! -->
+    <link rel="stylesheet" type="text/css" href="css/default.css" />
+    <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap/dist/css/bootstrap.css" />
 
     <!-- Application! -->
     <script type="text/javascript" src="js/Default.js"></script>
@@ -15,23 +20,76 @@
 </head>
 <body ng-app="myApp" ng-controller="WordsController">
 
-    <input type="text" ng-model="word" />
-    <button ng-click="words.filterBy('word', word, fuzzyFilter)">Filter</button>
-    <button ng-click="words.unfilterBy('word')">Unfilter</button>
+    <!--<button ng-click="words.sortBy('word')">Sort by Word</button>-->
+    <!--<button ng-click="words.unsortBy('word')">Unsort</button>-->
 
-    <button ng-click="words.sortBy('word')">Sort by Word</button>
-    <button ng-click="words.unsortBy('word')">Unsort</button>
+    <section class="sidebar">
 
-    <ul class="words">
+        <input type="text" ng-model="word" class="search" placeholder="Filter by word..." />
 
-        <li><strong>First Word: {{ words.first().word }}</strong></li>
-        <li><strong>Last Word: {{ words.last().word }}</strong></li>
+        <div class="btn-group">
+            <button type="button" class="btn btn-xs btn-default"
+                    ng-click="words.filterBy('word', word, fuzzyFilter)">
+                Filter
+            </button>
+            <button type="button" class="btn btn-xs btn-default"
+                    ng-click="words.unfilterBy('word', word)">
+                Clear
+            </button>
+        </div>
 
-        <li ng-repeat="model in words | crossfilter | limitTo: 100">
-            {{model.id}} &mdash; {{model.word}}
-        </li>
+        <ul>
+            <li class="word-count">
+                Displaying {{words.getCount() | number: 0}}
+                <ng-pluralize count="words.getCount()" when="{'1': 'word.', 'other': 'words.'}"></ng-pluralize>
+            </li>
+            <li>First Word: {{words.getFirst().word}}</li>
+            <li>Last Word: {{words.getLast().word}}</li>
+        </ul>
 
-    </ul>
+    </section>
+
+    <section class="words">
+
+        <table>
+            <tr>
+                <th ng-click="words.sortBy('id')">ID</th>
+                <th ng-click="words.sortBy('word')">Word</th>
+                <th>
+                    <span class="glyphicon glyphicon-filter"></span>
+                </th>
+            </tr>
+            <tr ng-repeat="model in words | crossfilter | limitTo: 100">
+                <td>{{model.id}}</td>
+                <td>{{model.word}}</td>
+                <td>
+                    <button class="btn btn-xs btn-default" ng-click="words.filterBy('word', model.word)">
+                        Filter by word
+                    </button>
+                </td>
+            </tr>
+            <tr>
+                <td class="etc" colspan="3">Et cetera&hellip;</td>
+            </tr>
+        </table>
+
+    </section>
+
+    <!--<h1>-->
+
+
+    <!--</h1>-->
+
+    <!--<ul class="words">-->
+
+        <!--<li><strong>First Word: {{words.getFirst().word}}</strong></li>-->
+        <!--<li><strong>Last Word: {{words.getLast().word}}</strong></li>-->
+        <!--<li>&mdash;</li>-->
+
+
+        <!--<li>Etc...</li>-->
+
+    <!--</ul>-->
 
 </body>
 </html>
