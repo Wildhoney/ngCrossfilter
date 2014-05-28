@@ -21,7 +21,7 @@ Firstly you need to initialise Crossfilter with your collection of items.
 $scope.words = new Crossfilter(response.data, 'id', 'persistent');
 ```
 
-`ngCrossfilter`'s constructor accepts three parameters &ndash; the last two being optional. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; whereas the third parameter allows you to change the filtering strategy &ndash; either `persistent` or `transient`.
+`ngCrossfilter`'s constructor accepts three parameters &ndash; the last two being optional. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; whereas the third parameter allows you to change the <a href="#custom-filtering">filtering strategy</a> &ndash; either `persistent` or `transient`.
 
 For timing information and other useful information for development, you can enable debug mode.
 
@@ -50,8 +50,8 @@ Filtering
  * Unfilter by **word**: `words.unfilterBy('word')`;
  * Unfilter all: `words.unfilterAll()`;
 
- <h3><code>Filter By</code></h3>
- Third argument allows the specifying of a custom filtering function &ndash; see custom functions.
+ <h5><code>filterBy</code></h5>
+ Third argument allows the specifying of a custom filtering function &ndash; see <a href="#custom-filtering>custom functions</a>.
 
  <h3>Strategies</h3>
  By default the filtering strategy is `persistent` which means that all filters are persistent until they are re-applied, or removed. If you'd like to change to the `transient` behaviour where the previous filter is cleared, you can pass `transient` into `ngCrossfilter`'s constructor as the third argument.
@@ -80,10 +80,10 @@ Sorting
  * Sort by **word**: `words.sortBy('word')`;
  * Unsort by **word**: `words.unsortBy('word')`;
 
- <h3><code>Sort By</code></h3>
+ <h5><code>sortBy</code></h5>
  Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.
 
- <h3><code>Unsort By</code></h3>
+ <h5><code>unsortBy</code></h5>
  Second argument prevents the reverting of the sort order to ascending.
 
 Contributions
