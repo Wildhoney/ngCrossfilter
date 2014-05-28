@@ -72,6 +72,12 @@
         Service.prototype = {
 
             /**
+             * @constant STRATEGIES
+             * @type {Object}
+             */
+            STRATEGIES: { keep: 'persistent', clear: 'transient' },
+
+            /**
              * @property collection
              * @type {crossfilter}
              * @private
@@ -104,7 +110,7 @@
              * @type {String}
              * @return {void}
              */
-            _strategy: 'persistent',
+            _strategy: '',
 
             /**
              * @method _initialise
@@ -123,10 +129,13 @@
 
                 }
 
-                if (typeof strategy !== 'undefined' && ['persistent', 'transient'].indexOf(strategy) === -1) {
+                // Assume a default strategy if one hasn't been defined.
+                strategy = strategy || this.STRATEGIES.keep;
+
+                if ([this.STRATEGIES.keep, this.STRATEGIES.clear].indexOf(strategy) === -1) {
 
                     // Determine if the strategy has been defined as either persistent or transient.
-                    _throwException("Strategy must be either 'persistent' or 'transient'");
+                    _throwException("Strategy must be either '" + this.STRATEGIES.keep + "' or '" + this.STRATEGIES.clear + "'");
 
                 }
 
@@ -165,7 +174,7 @@
 
                 }
 
-                if (this._lastFilter && this._strategy === 'transient') {
+                if (this._lastFilter && this._strategy === this.STRATEGIES.clear) {
 
                     // Clear the previous filter if we're using the transient strategy.
                     this.unfilterBy(this._lastFilter);
