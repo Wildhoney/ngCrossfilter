@@ -1,4 +1,4 @@
-(function($window) {
+(function($window, $RegExp) {
 
     /**
      * @controller WordsController
@@ -25,17 +25,18 @@
 
         });
 
-//        /**
-//         * @method filterInvert
-//         * @param dimension {Object}
-//         * @return {Boolean}
-//         */
-//        $scope.filterInvert = function filterInvert(dimension) {
-//
-////            return dimension.
-//
-//        }
+        /**
+         * @method fuzzyFilter
+         * @param property {String}
+         * @return {Boolean}
+         */
+        $scope.fuzzyFilter = function fuzzyFilter(property) {
+
+            var regExp = new $RegExp($scope.word);
+            return !!property.match(regExp);
+
+        }
 
     });
 
-})(window);
+})(window, window.RegExp);
