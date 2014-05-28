@@ -27,6 +27,21 @@
     }
 
     /**
+     * @method _getCollection
+     * @param crossfilter {Object}
+     * @return {Array}
+     * @private
+     */
+    var _getCollection = function _getCollection(crossfilter) {
+
+        var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
+            sortOrder    = crossfilter._isAscending ? 'top' : 'bottom';
+
+        return crossfilter._dimensions[sortProperty][sortOrder](Infinity);
+
+    };
+
+    /**
      * @module ngCrossfilter
      * @author Adam Timberlake
      * @link http://github.com/Wildhoney/ngCrossfilter
@@ -41,18 +56,7 @@
 
         return function ngCrossfilterFilter(crossfilter) {
 
-            if (crossfilter._debug) {
-
-                // Enable the timing if debug mode is enabled.
-                $console.time('timeTaken');
-
-            }
-
             if (typeof crossfilter._collection === 'undefined') {
-
-                if (crossfilter._debug) {
-                    $console.timeEnd('timeTaken');
-                }
 
                 // If we're not dealing with a Crossfilter, then we'll
                 // return it immediately.
@@ -60,10 +64,27 @@
 
             }
 
+            if (crossfilter._cacheCollection.length &&
+                crossfilter._iterations.current === crossfilter._iterations.previous) {
+
+                // Respond with the cached collection if the iterators are identical.
+                return crossfilter._cacheCollection;
+
+            }
+
+            if (crossfilter._debug) {
+
+                // Enable the timing if debug mode is enabled.
+                $console.time('timeTaken');
+
+            }
+
             // Find the sort key and the sort order.
-            var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
-                sortOrder    = crossfilter._isAscending ? 'top' : 'bottom',
-                collection   = crossfilter._dimensions[sortProperty][sortOrder](Infinity);
+            var collection = _getCollection(crossfilter);
+
+            // Store a cached version of the collection, and update the iteration.
+            crossfilter._cacheCollection = collection;
+            crossfilter._iterations.previous = crossfilter._iterations.current;
 
             if (crossfilter._debug) {
                 $console.timeEnd('timeTaken');
@@ -119,6 +140,12 @@
             _collection: {},
 
             /**
+             * @property _cacheCollection
+             * @type {Array}
+             */
+            _cacheCollection: [],
+
+            /**
              * @property _dimensions
              * @type {Array}
              * @private
@@ -157,9 +184,16 @@
             /**
              * @property strategy
              * @type {String}
-             * @return {void}
+             * @private
              */
             _strategy: '',
+
+            /**
+             * @property _iterations
+             * @type {Object}
+             * @private
+             */
+            _iterations: { current: 1, previous: 1 },
 
             /**
              * @property _debug
@@ -234,6 +268,8 @@
 
                 }
 
+                this._incrementIteration();
+
                 if (this._lastFilter && this._strategy === this.STRATEGY_TRANSIENT) {
 
                     // Clear the previous filter if we're using the transient strategy.
@@ -252,7 +288,6 @@
 
                 }
 
-
                 // Let's filter by the desired filter!
                 this._dimensions[property].filter(value);
 
@@ -265,6 +300,7 @@
              */
             unfilterBy: function unfilterBy(property) {
 
+                this._incrementIteration();
                 this._assertDimensionExists(property);
                 this._dimensions[property].filterAll();
 
@@ -275,6 +311,8 @@
              * @return {void}
              */
             unfilterAll: function unfilterAll() {
+
+                this._incrementIteration();
 
                 // Clear all of the dimensions that we have.
                 $angular.forEach(this._dimensions, function forEach(dimension) {
@@ -292,6 +330,7 @@
             sortBy: function sortBy(property, isAscending) {
 
                 this._assertDimensionExists(property);
+                this._incrementIteration();
 
                 if (typeof isAscending === 'boolean') {
 
@@ -322,6 +361,7 @@
             unsortBy: function unsortBy(property, maintainSortOrder) {
 
                 this._assertDimensionExists(property);
+                this._incrementIteration();
 
                 if (this._sortProperty !== property) {
 
@@ -341,32 +381,22 @@
                 }
 
             },
-//
-//            /**
-//             * @method pageNext
-//             * @return {void}
-//             */
-//            pageNext: function pageNext() {},
-//
-//            /**
-//             * @method pagePrevious
-//             * @return {void}
-//             */
-//            pagePrevious: function pagePrevious() {},
-//
-//            /**
-//             * @method pageLimit
-//             * @param limit {Number}
-//             * @return {void}
-//             */
-//            pageLimit: function(limit) {},
-//
-//            /**
-//             * @method pageNumber
-//             * @param number {Number}
-//             * @return {void}
-//             */
-//            pageNumber: function pageNumber(number) {},
+
+            /**
+             * @method first
+             * @return {Object}
+             */
+            first: function first() {
+                return _getCollection(this)[0];
+            },
+
+            /**
+             * @method last
+             * @return {Object}
+             */
+            last: function last() {
+                return _getCollection(this)[this._cacheCollection.length - 1];
+            },
 
             /**
              * @method debugMode
@@ -375,6 +405,15 @@
              */
             debugMode: function debugMode(state) {
                 this._debug = !!state;
+            },
+
+            /**
+             * @method _incrementIteration
+             * @return {void}
+             * @private
+             */
+            _incrementIteration: function _incrementIteration() {
+                this._iterations.current++;
             },
 
             /**
