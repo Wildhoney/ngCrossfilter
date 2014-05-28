@@ -62,7 +62,7 @@
 
             // Find the sort key and the sort order.
             var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
-                sortOrder    = crossfilter._sortOrder || 'top',
+                sortOrder    = crossfilter._isAscending ? 'top' : 'bottom',
                 collection   = crossfilter._dimensions[sortProperty][sortOrder](Infinity);
 
             if (crossfilter._debug) {
@@ -140,12 +140,12 @@
             _sortProperty: '',
 
             /**
-             * @property _sortOrder
-             * @type {String}
-             * @default top
+             * @property _isAscending
+             * @type {Boolean}
+             * @default true
              * @private
              */
-            _sortOrder: 'top',
+            _isAscending: true,
 
             /**
              * @property _lastFilter
@@ -265,13 +265,7 @@
              */
             unfilterBy: function unfilterBy(property) {
 
-                if (typeof this._dimensions[property] === 'undefined') {
-
-                    // Ensure we can find the dimension.
-                    _throwException("Unable to find dimension named '" + property + "'");
-
-                }
-
+                this._assertDimensionExists(property);
                 this._dimensions[property].filterAll();
 
             },
@@ -292,17 +286,61 @@
             /**
              * @method sortBy
              * @param property {String}
-             * @param direction {String}
+             * @param isAscending {Boolean}
              * @return {void}
              */
-//            sortBy: function sortBy(property, direction) {},
-//
-//            /**
-//             * @method unsortBy
-//             * @param property {String}
-//             * @return {void}
-//             */
-//            unsortBy: function unsortBy(property) {},
+            sortBy: function sortBy(property, isAscending) {
+
+                this._assertDimensionExists(property);
+
+                if (typeof isAscending === 'boolean') {
+
+                    // Use the sorting specified by the developer.
+                    this._isAscending  = isAscending;
+                    this._sortProperty = property;
+                    return;
+
+                }
+
+                // Determine if we should invert what we currently have if we're using the same property
+                // as previously.
+                if (this._sortProperty === property) {
+                    this._isAscending = !this._isAscending;
+                }
+
+                // Otherwise we'll simply update the sort property.
+                this._sortProperty = property;
+
+            },
+
+            /**
+             * @method unsortBy
+             * @param property {String}
+             * @param maintainSortOrder {Boolean}
+             * @return {void}
+             */
+            unsortBy: function unsortBy(property, maintainSortOrder) {
+
+                this._assertDimensionExists(property);
+
+                if (this._sortProperty !== property) {
+
+                    // Ensure we're currently sorting by this property.
+                    _throwException("Currently not sorting by property '" + property + "'");
+
+                }
+
+                // Sort by the default property, which is the primary key.
+                this._sortProperty = this._primaryKey;
+
+                if (maintainSortOrder !== true) {
+
+                    // Reset the sort order unless otherwise instructed.
+                    this._isAscending = true;
+
+                }
+
+            },
 //
 //            /**
 //             * @method pageNext
@@ -337,6 +375,23 @@
              */
             debugMode: function debugMode(state) {
                 this._debug = !!state;
+            },
+
+            /**
+             * @method _assertDimensionExists
+             * @param property {String}
+             * @return {Boolean}
+             * @private
+             */
+            _assertDimensionExists: function _assertDimensionExists(property) {
+
+                if (typeof this._dimensions[property] === 'undefined') {
+
+                    // Ensure we can find the dimension.
+                    _throwException("Unable to find dimension named '" + property + "'");
+
+                }
+
             },
 
             /**
