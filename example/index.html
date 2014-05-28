@@ -23,6 +23,9 @@
 
     <ul class="words">
 
+        <li><strong>First Word: {{ words.first().word }}</strong></li>
+        <li><strong>Last Word: {{ words.last().word }}</strong></li>
+
         <li ng-repeat="model in words | crossfilter | limitTo: 100">
             {{model.id}} &mdash; {{model.word}}
         </li>

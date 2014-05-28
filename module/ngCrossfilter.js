@@ -27,6 +27,22 @@
     }
 
     /**
+     * @method _getCollection
+     * @param crossfilter {Object}
+     * @param sortMethod {String}
+     * @return {Array}
+     * @private
+     */
+    var _getCollection = function _getCollection(crossfilter, sortMethod) {
+
+        var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
+            sortOrder    = crossfilter._isAscending ? 'top' : 'bottom';
+
+        return crossfilter._dimensions[sortProperty][sortMethod || sortOrder](Infinity);
+
+    };
+
+    /**
      * @module ngCrossfilter
      * @author Adam Timberlake
      * @link http://github.com/Wildhoney/ngCrossfilter
@@ -65,9 +81,7 @@
             }
 
             // Find the sort key and the sort order.
-            var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
-                sortOrder    = crossfilter._isAscending ? 'top' : 'bottom',
-                collection   = crossfilter._dimensions[sortProperty][sortOrder](Infinity);
+            var collection = _getCollection(crossfilter);
 
             // Store a cached version of the collection, and update the iteration.
             crossfilter._cacheCollection = collection;
@@ -367,6 +381,22 @@
 
                 }
 
+            },
+
+            /**
+             * @method first
+             * @return {Object}
+             */
+            first: function first() {
+                return _getCollection(this, 'top')[0];
+            },
+
+            /**
+             * @method last
+             * @return {Object}
+             */
+            last: function last() {
+                return _getCollection(this, 'bottom')[0];
             },
 
             /**
