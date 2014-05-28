@@ -9,15 +9,12 @@
 </head>
 <body ng-app="myApp" ng-controller="WordsController">
 
-    <!--<input type="text" ng-model="word" />-->
-    <!--<button crossfilter="words" ng-model="word">Filter</button>-->
-
     <input type="text" ng-model="word" />
     <button ng-click="words.filterBy('word', word)">Filter</button>
 
-    <ul class="books">
-        <li ng-repeat="book in books | crossfilter: 'name': value : 'id': direction : 'reduce'">
-            {{book.id}} &ndash; {{book.name}}
+    <ul class="words">
+        <li ng-repeat="model in words | crossfilter: words">
+            {{model.word}}
         </li>
     </ul>
 

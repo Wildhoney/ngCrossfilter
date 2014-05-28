@@ -75,7 +75,33 @@
              * @param property {String}
              * @return {void}
              */
-            unsortBy: function unsortBy(property) {}
+            unsortBy: function unsortBy(property) {},
+
+            /**
+             * @method pageNext
+             * @return {void}
+             */
+            pageNext: function pageNext() {},
+
+            /**
+             * @method pagePrevious
+             * @return {void}
+             */
+            pagePrevious: function pagePrevious() {},
+
+            /**
+             * @method pageLimit
+             * @param limit {Number}
+             * @return {void}
+             */
+            pageLimit: function(limit) {},
+
+            /**
+             * @method pageNumber
+             * @param number {Number}
+             * @return {void}
+             */
+            pageNumber: function pageNumber(number) {}
 
         };
 
