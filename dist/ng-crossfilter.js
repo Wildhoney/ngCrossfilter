@@ -27,21 +27,6 @@
     }
 
     /**
-     * @method _getCollection
-     * @param crossfilter {Object}
-     * @return {Array}
-     * @private
-     */
-    var _getCollection = function _getCollection(crossfilter) {
-
-        var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
-            sortOrder    = crossfilter._isAscending ? 'top' : 'bottom';
-
-        return crossfilter._dimensions[sortProperty][sortOrder](Infinity);
-
-    };
-
-    /**
      * @module ngCrossfilter
      * @author Adam Timberlake
      * @link http://github.com/Wildhoney/ngCrossfilter
@@ -80,7 +65,7 @@
             }
 
             // Find the sort key and the sort order.
-            var collection = _getCollection(crossfilter);
+            var collection = crossfilter.getCollection();
 
             // Store a cached version of the collection, and update the iteration.
             crossfilter._cacheCollection = collection;
@@ -261,6 +246,8 @@
              */
             filterBy: function filterBy(property, value, customFilter) {
 
+                this._assertDimensionExists(property);
+
                 if (typeof customFilter !== 'undefined' && typeof customFilter !== 'function') {
 
                     // Ensure the third argument is a function, if it has been defined.
@@ -300,8 +287,8 @@
              */
             unfilterBy: function unfilterBy(property) {
 
-                this._incrementIteration();
                 this._assertDimensionExists(property);
+                this._incrementIteration();
                 this._dimensions[property].filterAll();
 
             },
@@ -341,9 +328,12 @@
 
                 }
 
+                // Use the primary key if the current sort property hasn't been set yet.
+                var currentSortProperty = this._sortProperty || this._primaryKey;
+
                 // Determine if we should invert what we currently have if we're using the same property
                 // as previously.
-                if (this._sortProperty === property) {
+                if (currentSortProperty === property) {
                     this._isAscending = !this._isAscending;
                 }
 
@@ -383,19 +373,47 @@
             },
 
             /**
-             * @method first
-             * @return {Object}
+             * @method getCollection
+             * @return {Array}
              */
-            first: function first() {
-                return _getCollection(this)[0];
+            getCollection: function getCollection() {
+
+                var sortProperty = this._sortProperty || this._primaryKey,
+                    sortOrder    = this._isAscending ? 'bottom' : 'top';
+
+                return this._dimensions[sortProperty][sortOrder](Infinity);
+
             },
 
             /**
-             * @method last
+             * @method getFirst
              * @return {Object}
              */
-            last: function last() {
-                return _getCollection(this)[this._cacheCollection.length - 1];
+            getFirst: function getFirst() {
+                return this.getModel(0);
+            },
+
+            /**
+             * @method getLast
+             * @return {Object}
+             */
+            getLast: function getLast() {
+                return this.getModel(this._cacheCollection.length - 1);
+            },
+
+            /**
+             * @method getModel
+             */
+            getModel: function getModel(number) {
+                return this.getCollection()[number];
+            },
+
+            /**
+             * @method getCount
+             * @return {Number}
+             */
+            getCount: function getCount() {
+                return this._cacheCollection.length;
             },
 
             /**
@@ -419,7 +437,7 @@
             /**
              * @method _assertDimensionExists
              * @param property {String}
-             * @return {Boolean}
+             * @return {void}
              * @private
              */
             _assertDimensionExists: function _assertDimensionExists(property) {
