@@ -20,7 +20,7 @@
 
     <ul class="words">
 
-        <li ng-repeat="model in words | crossfilter">
+        <li ng-repeat="model in words | crossfilter | limitTo: 100">
             {{model.id}} &mdash; {{model.word}}
         </li>
 

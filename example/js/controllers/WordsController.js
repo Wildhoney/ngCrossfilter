@@ -21,7 +21,8 @@
         $http.get('words.json').then(function then(response) {
 
             // Voila!
-            $scope.words = new Crossfilter(response.data.splice(0, 100), 'id', 'persistent');
+            $scope.words = new Crossfilter(response.data, 'id', 'persistent');
+            $scope.words.debugMode(true);
 
         });
 
@@ -33,7 +34,7 @@
         $scope.fuzzyFilter = function fuzzyFilter(property) {
 
             var regExp = new $RegExp($scope.word);
-            return !!property.match(regExp);
+            return !!property.match(regExp, 'i');
 
         }
 

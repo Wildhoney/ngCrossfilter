@@ -1,4 +1,4 @@
-(function($angular, $crossfilter, $array) {
+(function($angular, $crossfilter, $array, $console) {
 
     "use strict";
 
@@ -41,7 +41,18 @@
 
         return function ngCrossfilterFilter(crossfilter) {
 
+            if (crossfilter._debug) {
+
+                // Enable the timing if debug mode is enabled.
+                $console.time('timeTaken');
+
+            }
+
             if (typeof crossfilter._collection === 'undefined') {
+
+                if (crossfilter._debug) {
+                    $console.timeEnd('timeTaken');
+                }
 
                 // If we're not dealing with a Crossfilter, then we'll
                 // return it immediately.
@@ -51,9 +62,14 @@
 
             // Find the sort key and the sort order.
             var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
-                sortOrder    = crossfilter._sortOrder || 'top';
+                sortOrder    = crossfilter._sortOrder || 'top',
+                collection   = crossfilter._dimensions[sortProperty][sortOrder](Infinity);
 
-            return crossfilter._dimensions[sortProperty][sortOrder](Infinity);
+            if (crossfilter._debug) {
+                $console.timeEnd('timeTaken');
+            }
+
+            return collection;
 
         };
 
@@ -144,6 +160,14 @@
              * @return {void}
              */
             _strategy: '',
+
+            /**
+             * @property _debug
+             * @type {Boolean}
+             * @default false
+             * @private
+             */
+            _debug: false,
 
             /**
              * @method _initialise
@@ -307,6 +331,15 @@
 //            pageNumber: function pageNumber(number) {},
 
             /**
+             * @method debugMode
+             * @param state {Boolean}
+             * @return {void}
+             */
+            debugMode: function debugMode(state) {
+                this._debug = !!state;
+            },
+
+            /**
              * @method _getProperties
              * @param model {Object}
              * @return {Array}
@@ -334,4 +367,4 @@
 
     });
 
-})(window.angular, window.crossfilter, window.Array);
+})(window.angular, window.crossfilter, window.Array, window.console);
