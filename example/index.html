@@ -17,6 +17,7 @@
 
     <input type="text" ng-model="word" />
     <button ng-click="words.filterBy('word', word, fuzzyFilter)">Filter</button>
+    <button ng-click="words.unfilterBy('word')">Unfilter</button>
 
     <button ng-click="words.sortBy('word')">Sort by Word</button>
     <button ng-click="words.unsortBy('word')">Unsort</button>

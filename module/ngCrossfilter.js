@@ -29,16 +29,15 @@
     /**
      * @method _getCollection
      * @param crossfilter {Object}
-     * @param sortMethod {String}
      * @return {Array}
      * @private
      */
-    var _getCollection = function _getCollection(crossfilter, sortMethod) {
+    var _getCollection = function _getCollection(crossfilter) {
 
         var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
             sortOrder    = crossfilter._isAscending ? 'top' : 'bottom';
 
-        return crossfilter._dimensions[sortProperty][sortMethod || sortOrder](Infinity);
+        return crossfilter._dimensions[sortProperty][sortOrder](Infinity);
 
     };
 
@@ -388,7 +387,7 @@
              * @return {Object}
              */
             first: function first() {
-                return _getCollection(this, 'top')[0];
+                return _getCollection(this)[0];
             },
 
             /**
@@ -396,7 +395,7 @@
              * @return {Object}
              */
             last: function last() {
-                return _getCollection(this, 'bottom')[0];
+                return _getCollection(this)[this._cacheCollection.length - 1];
             },
 
             /**
