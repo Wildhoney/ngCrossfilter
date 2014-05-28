@@ -51,7 +51,7 @@ Filtering
  * Unfilter all: `words.unfilterAll()`;
 
  <h5><code>filterBy</code></h5>
- Third argument allows the specifying of a custom filtering function &ndash; see <a href="#custom-filtering>custom functions</a>.
+ Third argument allows the specifying of a custom filtering function &ndash; see <a href="#custom-filtering">custom functions</a>.
 
  <h3>Strategies</h3>
  By default the filtering strategy is `persistent` which means that all filters are persistent until they are re-applied, or removed. If you'd like to change to the `transient` behaviour where the previous filter is cleared, you can pass `transient` into `ngCrossfilter`'s constructor as the third argument.
