@@ -32,6 +32,7 @@
         /**
          * @module ngCrossfilter
          * @submodule ngCrossfilterService
+         * @constructor
          */
         var Service = function ngCrossfilterService(collection, primaryKey) {
 
@@ -99,10 +100,19 @@
              * @method filterBy
              * @param property {String}
              * @param value {String}
-             * @param modifiers {String}
+             * @param customFilter {Function}
              * @return {void}
              */
-            filterBy: function filterBy(property, value, modifiers) {},
+            filterBy: function filterBy(property, value, customFilter) {
+
+                if (typeof customFilter !== 'undefined' && typeof customFilter !== 'function') {
+
+                    // Ensure the third argument is a function, if it has been defined.
+                    throw this._throwException("Custom filter method must be a function.");
+
+                }
+
+            },
 
             /**
              * @method unfilterBy
@@ -114,10 +124,10 @@
             /**
              * @method sortBy
              * @param property {String}
-             * @param value {String}
+             * @param direction {String}
              * @return {void}
              */
-            sortBy: function sortBy(property, value) {},
+            sortBy: function sortBy(property, direction) {},
 
             /**
              * @method unsortBy
@@ -172,6 +182,16 @@
 
                 return properties;
 
+            },
+
+            /**
+             * @method _throwException
+             * @param message {String}
+             * @return {void}
+             * @private
+             */
+            _throwException: function _throwException(message) {
+                throw "ngCrossfilter: " + message;
             }
 
         };

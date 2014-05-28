@@ -25,6 +25,17 @@
 
         });
 
+//        /**
+//         * @method filterInvert
+//         * @param dimension {Object}
+//         * @return {Boolean}
+//         */
+//        $scope.filterInvert = function filterInvert(dimension) {
+//
+////            return dimension.
+//
+//        }
+
     });
 
 })(window);

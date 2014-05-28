@@ -10,7 +10,7 @@
 <body ng-app="myApp" ng-controller="WordsController">
 
     <input type="text" ng-model="word" />
-    <button ng-click="words.filterBy('word', word)">Filter</button>
+    <button ng-click="words.filterExactBy('word', word)">Filter</button>
 
     <ul class="words">
         <li ng-repeat="model in words | crossfilter: words">
