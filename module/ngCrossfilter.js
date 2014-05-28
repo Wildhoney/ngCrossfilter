@@ -41,18 +41,7 @@
 
         return function ngCrossfilterFilter(crossfilter) {
 
-            if (crossfilter._debug) {
-
-                // Enable the timing if debug mode is enabled.
-                $console.time('timeTaken');
-
-            }
-
             if (typeof crossfilter._collection === 'undefined') {
-
-                if (crossfilter._debug) {
-                    $console.timeEnd('timeTaken');
-                }
 
                 // If we're not dealing with a Crossfilter, then we'll
                 // return it immediately.
@@ -63,12 +52,15 @@
             if (crossfilter._cacheCollection.length &&
                 crossfilter._iterations.current === crossfilter._iterations.previous) {
 
-                if (crossfilter._debug) {
-                    $console.timeEnd('timeTaken');
-                }
-
                 // Respond with the cached collection if the iterators are identical.
                 return crossfilter._cacheCollection;
+
+            }
+
+            if (crossfilter._debug) {
+
+                // Enable the timing if debug mode is enabled.
+                $console.time('timeTaken');
 
             }
 
@@ -376,32 +368,6 @@
                 }
 
             },
-//
-//            /**
-//             * @method pageNext
-//             * @return {void}
-//             */
-//            pageNext: function pageNext() {},
-//
-//            /**
-//             * @method pagePrevious
-//             * @return {void}
-//             */
-//            pagePrevious: function pagePrevious() {},
-//
-//            /**
-//             * @method pageLimit
-//             * @param limit {Number}
-//             * @return {void}
-//             */
-//            pageLimit: function(limit) {},
-//
-//            /**
-//             * @method pageNumber
-//             * @param number {Number}
-//             * @return {void}
-//             */
-//            pageNumber: function pageNumber(number) {},
 
             /**
              * @method debugMode
