@@ -15,7 +15,76 @@ Angular uses native JavaScript methods for sorting, whereas `ngCrossfilter` uses
 Getting Started
 -------------
 
-Previous documentation is invalid due to major refactor for v1.0.0.
+Firstly you need to initialise Crossfilter with your collection of items.
+
+```javascript
+$scope.words = new Crossfilter(response.data, 'id', 'persistent');
+```
+
+`ngCrossfilter`'s constructor accepts three parameters &ndash; the last two being optional. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; whereas the third parameter allows you to change the filtering strategy &ndash; either `persistent` or `transient`.
+
+For timing information and other useful information for development, you can enable debug mode.
+
+```javascript
+$scope.words.debugMode(true);
+```
+
+Once you've configured your Crossfilter collection, you can begin filtering and sorting. From within your view you should reference your collection &ndash; in our case, `$scope.words`.
+
+```html
+<button ng-click="words.filterBy('word', word)">Filter</button>
+```
+
+After you've applied all of your filters, you need to add the `ngCrossfilter` filter to your `ng-repeat` directive.
+
+```html
+<li ng-repeat="model in words | crossfilter | limitTo: 100">
+```
+
+You should place the `crossfilter` filter before any other filters so that a standard array is piped to the subsequent filters.
+
+Filtering
+-------------
+
+ * Filter by **word**: `words.filterBy('word', word)`;
+ * Unfilter by **word**: `words.unfilterBy('word')`;
+ * Unfilter all: `words.unfilterAll()`;
+
+ <h3><code>Filter By</code></h3>
+ Third argument allows the specifying of a custom filtering function &ndash; see custom functions.
+
+ <h3>Strategies</h3>
+ By default the filtering strategy is `persistent` which means that all filters are persistent until they are re-applied, or removed. If you'd like to change to the `transient` behaviour where the previous filter is cleared, you can pass `transient` into `ngCrossfilter`'s constructor as the third argument.
+
+ <h3>Custom Filtering</h3>
+ By specifying a custom function on the third argument of the `filterBy` method you can implement your own sorting logic.
+
+ ```javascript
+ $scope.fuzzyFilter = function fuzzyFilter(property) {
+
+     var regExp = new $RegExp($scope.word);
+     return !!property.match(regExp, 'i');
+
+ }
+ ```
+
+ Which can then be utilised by passing it as the third argument in your view.
+
+ ```html
+ <button ng-click="words.filterBy('word', word, fuzzyFilter)">
+ ```
+
+Sorting
+-------------
+
+ * Sort by **word**: `words.sortBy('word')`;
+ * Unsort by **word**: `words.unsortBy('word')`;
+
+ <h3><code>Sort By</code></h3>
+ Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.
+
+ <h3><code>Unsort By</code></h3>
+ Second argument prevents the reverting of the sort order to ascending.
 
 Contributions
 -------------
