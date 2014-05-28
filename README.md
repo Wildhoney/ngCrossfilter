@@ -5,6 +5,8 @@ ngCrossfilter
 &nbsp;
 <img src="https://badge.fury.io/js/ng-crossfilter.png" />
 
+Heroku: [http://ng-crossfilter.herokuapp.com/](http://ng-crossfilter.herokuapp.com/)
+
 Introduction
 -------------
 
