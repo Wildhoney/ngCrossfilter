@@ -1,4 +1,4 @@
-(function($angular, $crossfilter, $array) {
+(function($angular, $crossfilter, $array, $console) {
 
     "use strict";
 
@@ -41,9 +41,18 @@
 
         return function ngCrossfilterFilter(crossfilter) {
 
-            console.log('Here');
+            if (crossfilter._debug) {
+
+                // Enable the timing if debug mode is enabled.
+                $console.time('timeTaken');
+
+            }
 
             if (typeof crossfilter._collection === 'undefined') {
+
+                if (crossfilter._debug) {
+                    $console.timeEnd('timeTaken');
+                }
 
                 // If we're not dealing with a Crossfilter, then we'll
                 // return it immediately.
@@ -53,9 +62,14 @@
 
             // Find the sort key and the sort order.
             var sortProperty = crossfilter._sortProperty || crossfilter._primaryKey,
-                sortOrder    = crossfilter._sortOrder || 'top';
+                sortOrder    = crossfilter._isAscending ? 'top' : 'bottom',
+                collection   = crossfilter._dimensions[sortProperty][sortOrder](Infinity);
 
-            return crossfilter._dimensions[sortProperty][sortOrder](Infinity);
+            if (crossfilter._debug) {
+                $console.timeEnd('timeTaken');
+            }
+
+            return collection;
 
         };
 
@@ -86,10 +100,16 @@
         Service.prototype = {
 
             /**
-             * @constant STRATEGIES
-             * @type {Object}
+             * @constant STRATEGY_PERSISTENT
+             * @type {string}
              */
-            STRATEGIES: { keep: 'persistent', clear: 'transient' },
+            STRATEGY_PERSISTENT: 'persistent',
+
+            /**
+             * @constant STRATEGY_TRANSIENT
+             * @type {string}
+             */
+            STRATEGY_TRANSIENT: 'transient',
 
             /**
              * @property collection
@@ -120,12 +140,12 @@
             _sortProperty: '',
 
             /**
-             * @property _sortOrder
-             * @type {String}
-             * @default top
+             * @property _isAscending
+             * @type {Boolean}
+             * @default true
              * @private
              */
-            _sortOrder: 'top',
+            _isAscending: true,
 
             /**
              * @property _lastFilter
@@ -140,6 +160,14 @@
              * @return {void}
              */
             _strategy: '',
+
+            /**
+             * @property _debug
+             * @type {Boolean}
+             * @default false
+             * @private
+             */
+            _debug: false,
 
             /**
              * @method _initialise
@@ -159,12 +187,14 @@
                 }
 
                 // Assume a default strategy if one hasn't been defined.
-                strategy = strategy || this.STRATEGIES.keep;
+                strategy = strategy || this.STRATEGY_PERSISTENT;
 
-                if ([this.STRATEGIES.keep, this.STRATEGIES.clear].indexOf(strategy) === -1) {
+                if ([this.STRATEGY_PERSISTENT, this.STRATEGY_TRANSIENT].indexOf(strategy) === -1) {
 
                     // Determine if the strategy has been defined as either persistent or transient.
-                    _throwException("Strategy must be either '" + this.STRATEGIES.keep + "' or '" + this.STRATEGIES.clear + "'");
+                    _throwException("Strategy must be either '" +
+                        this.STRATEGY_PERSISTENT + "' or '" +
+                        this.STRATEGY_TRANSIENT + "'");
 
                 }
 
@@ -204,7 +234,7 @@
 
                 }
 
-                if (this._lastFilter && this._strategy === this.STRATEGIES.clear) {
+                if (this._lastFilter && this._strategy === this.STRATEGY_TRANSIENT) {
 
                     // Clear the previous filter if we're using the transient strategy.
                     this.unfilterBy(this._lastFilter);
@@ -222,6 +252,7 @@
 
                 }
 
+
                 // Let's filter by the desired filter!
                 this._dimensions[property].filter(value);
 
@@ -234,13 +265,7 @@
              */
             unfilterBy: function unfilterBy(property) {
 
-                if (typeof this._dimensions[property] === 'undefined') {
-
-                    // Ensure we can find the dimension.
-                    _throwException("Unable to find dimension named '" + property + "'");
-
-                }
-
+                this._assertDimensionExists(property);
                 this._dimensions[property].filterAll();
 
             },
@@ -261,17 +286,61 @@
             /**
              * @method sortBy
              * @param property {String}
-             * @param direction {String}
+             * @param isAscending {Boolean}
              * @return {void}
              */
-//            sortBy: function sortBy(property, direction) {},
-//
-//            /**
-//             * @method unsortBy
-//             * @param property {String}
-//             * @return {void}
-//             */
-//            unsortBy: function unsortBy(property) {},
+            sortBy: function sortBy(property, isAscending) {
+
+                this._assertDimensionExists(property);
+
+                if (typeof isAscending === 'boolean') {
+
+                    // Use the sorting specified by the developer.
+                    this._isAscending  = isAscending;
+                    this._sortProperty = property;
+                    return;
+
+                }
+
+                // Determine if we should invert what we currently have if we're using the same property
+                // as previously.
+                if (this._sortProperty === property) {
+                    this._isAscending = !this._isAscending;
+                }
+
+                // Otherwise we'll simply update the sort property.
+                this._sortProperty = property;
+
+            },
+
+            /**
+             * @method unsortBy
+             * @param property {String}
+             * @param maintainSortOrder {Boolean}
+             * @return {void}
+             */
+            unsortBy: function unsortBy(property, maintainSortOrder) {
+
+                this._assertDimensionExists(property);
+
+                if (this._sortProperty !== property) {
+
+                    // Ensure we're currently sorting by this property.
+                    _throwException("Currently not sorting by property '" + property + "'");
+
+                }
+
+                // Sort by the default property, which is the primary key.
+                this._sortProperty = this._primaryKey;
+
+                if (maintainSortOrder !== true) {
+
+                    // Reset the sort order unless otherwise instructed.
+                    this._isAscending = true;
+
+                }
+
+            },
 //
 //            /**
 //             * @method pageNext
@@ -298,6 +367,32 @@
 //             * @return {void}
 //             */
 //            pageNumber: function pageNumber(number) {},
+
+            /**
+             * @method debugMode
+             * @param state {Boolean}
+             * @return {void}
+             */
+            debugMode: function debugMode(state) {
+                this._debug = !!state;
+            },
+
+            /**
+             * @method _assertDimensionExists
+             * @param property {String}
+             * @return {Boolean}
+             * @private
+             */
+            _assertDimensionExists: function _assertDimensionExists(property) {
+
+                if (typeof this._dimensions[property] === 'undefined') {
+
+                    // Ensure we can find the dimension.
+                    _throwException("Unable to find dimension named '" + property + "'");
+
+                }
+
+            },
 
             /**
              * @method _getProperties
@@ -327,4 +422,4 @@
 
     });
 
-})(window.angular, window.crossfilter, window.Array);
+})(window.angular, window.crossfilter, window.Array, window.console);
