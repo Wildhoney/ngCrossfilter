@@ -165,8 +165,26 @@
 
                 }
 
-                // Store the last filter so we can filter anew.
-                this._lastFilter = property;
+                if (this._lastFilter && this._strategy === 'transient') {
+
+                    // Clear the previous filter if we're using the transient strategy.
+                    this.unfilterBy(this._lastFilter);
+
+                    // Store the last filter so we can filter anew.
+                    this._lastFilter = property;
+
+                }
+
+                if (typeof customFilter === 'function') {
+
+                    // Filter using the developer's custom function if it's been defined.
+                    this._dimensions[property].filterFunction(customFilter);
+                    return;
+
+                }
+
+                // Let's filter by the desired filter!
+                this._dimensions[property].filter(value);
 
             },
 
