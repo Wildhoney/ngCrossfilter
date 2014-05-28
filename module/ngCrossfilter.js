@@ -63,19 +63,34 @@
 
             /**
              * @property _primaryKey
-             * @type {String|null}
+             * @type {String}
              * @private
              */
-            _primaryKey: null,
+            _primaryKey: '',
+
+            /**
+             * @property _lastFilter
+             * @type {String}
+             * @private
+             */
+            _lastFilter: '',
+
+            /**
+             * @property strategy
+             * @type {String}
+             * @return {void}
+             */
+            _strategy: 'persistent',
 
             /**
              * @method _initialise
              * @param collection {Array}
              * @param primaryKey {String}
+             * @param filteringStrategy {String} Either "persistent" or "transient"
              * @return {void}
              * @private
              */
-            _initialise: function _initialise(collection, primaryKey) {
+            _initialise: function _initialise(collection, primaryKey, filteringStrategy) {
 
                 // Discover the unique properties in the collection.
                 var properties = this._getProperties(collection[0]),
@@ -84,6 +99,7 @@
                 // Initialise the Crossfilter collection, with the primary key.
                 this._collection = $crossfilter(collection);
                 this._primaryKey = primaryKey || properties[0];
+                this._strategy   = filteringStrategy;
 
                     // Iterate over each property to create its related dimension.
                 $angular.forEach(properties, function(property) {
@@ -111,6 +127,9 @@
                     throw this._throwException("Custom filter method must be a function.");
 
                 }
+
+                // Store the last filter so we can filter anew.
+                this._lastFilter = property;
 
             },
 
