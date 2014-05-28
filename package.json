@@ -5,14 +5,17 @@
   "description": "Usual Angular.js style filtering and sorting with a twist of Crossfilter for improved performance.",
   "main": "index.js",
   "scripts": {
-    "test": "grunt test"
+    "test": "grunt test",
+    "start": "node server/default.js",
+    "preinstall": "npm install --ignore-scripts",
+    "postinstall": "bower install; grunt build"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/Wildhoney/ngCrossfilter.git"
   },
   "author": "Adam Timberlake <adam.timberlake@gmail.com>",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Wildhoney/ngCrossfilter/issues"
   },
@@ -33,6 +36,7 @@
     "crossfilter",
     "angular",
     "filtering",
+    "ordering",
     "sorting"
   ]
 }
