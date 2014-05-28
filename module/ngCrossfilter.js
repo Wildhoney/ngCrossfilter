@@ -175,13 +175,31 @@
              * @param property {String}
              * @return {void}
              */
-            unfilterBy: function unfilterBy(property) {},
+            unfilterBy: function unfilterBy(property) {
+
+                if (typeof this._dimensions[property] === 'undefined') {
+
+                    // Ensure we can find the dimension.
+                    _throwException("Unable to find dimension named '" + property + "'");
+
+                }
+
+                this._dimensions[property].filterAll();
+
+            },
 
             /**
              * @method unfilterAll
              * @return {void}
              */
-            unfilterAll: function unfilterAll() {},
+            unfilterAll: function unfilterAll() {
+
+                // Clear all of the dimensions that we have.
+                $angular.forEach(this._dimensions, function forEach(dimension) {
+                    dimension.filterAll();
+                });
+
+            },
 
             /**
              * @method sortBy
