@@ -3,6 +3,30 @@
     "use strict";
 
     /**
+     * @method _throwException
+     * @param message {String}
+     * @return {void}
+     * @private
+     */
+    var _throwException = function _throwException(message) {
+        throw "ngCrossfilter: " + message + ".";
+    };
+
+    if (typeof $angular === 'undefined') {
+
+        // Add a check for Angular.
+        _throwException("Angular dependency is a requirement");
+
+    }
+
+    if (typeof $crossfilter === 'undefined') {
+
+        // Add a check for Crossfilter.
+        _throwException("Crossfilter dependency is a requirement");
+
+    }
+
+    /**
      * @module ngCrossfilter
      * @author Adam Timberlake
      * @link http://github.com/Wildhoney/ngCrossfilter
@@ -95,14 +119,14 @@
                 if (typeof $array.isArray === 'function' && !$array.isArray(collection)) {
 
                     // Determine if the collection is a valid array.
-                    this._throwException("Collection must be an array");
+                    _throwException("Collection must be an array");
 
                 }
 
                 if (typeof strategy !== 'undefined' && ['persistent', 'transient'].indexOf(strategy) === -1) {
 
                     // Determine if the strategy has been defined as either persistent or transient.
-                    this._throwException("Strategy must be either 'persistent' or 'transient'");
+                    _throwException("Strategy must be either 'persistent' or 'transient'");
 
                 }
 
@@ -137,7 +161,7 @@
                 if (typeof customFilter !== 'undefined' && typeof customFilter !== 'function') {
 
                     // Ensure the third argument is a function, if it has been defined.
-                    throw this._throwException("Custom filter method must be a function");
+                    throw _throwException("Custom filter method must be a function");
 
                 }
 
@@ -214,16 +238,6 @@
 
                 return properties;
 
-            },
-
-            /**
-             * @method _throwException
-             * @param message {String}
-             * @return {void}
-             * @private
-             */
-            _throwException: function _throwException(message) {
-                throw "ngCrossfilter: " + message + ".";
             }
 
         };
