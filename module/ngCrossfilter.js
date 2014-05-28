@@ -41,7 +41,7 @@
 
         return function ngCrossfilterFilter(collection) {
 
-            return [1, 2, 3];
+            return collection.top(Infinity);
 
         };
 
@@ -58,10 +58,10 @@
          * @submodule ngCrossfilterService
          * @constructor
          */
-        var Service = function ngCrossfilterService(collection, primaryKey) {
+        var Service = function ngCrossfilterService(collection) {
 
             // Initialise the Crossfilter with the array of models.
-            this._initialise(collection, primaryKey);
+            this._initialise(collection);
 
         };
 
@@ -92,13 +92,6 @@
             _dimensions: [],
 
             /**
-             * @property _primaryKey
-             * @type {String}
-             * @private
-             */
-            _primaryKey: '',
-
-            /**
              * @property _lastFilter
              * @type {String}
              * @private
@@ -115,12 +108,11 @@
             /**
              * @method _initialise
              * @param collection {Array}
-             * @param primaryKey {String}
              * @param strategy {String} Either "persistent" or "transient"
              * @return {void}
              * @private
              */
-            _initialise: function _initialise(collection, primaryKey, strategy) {
+            _initialise: function _initialise(collection, strategy) {
 
                 if (typeof $array.isArray === 'function' && !$array.isArray(collection)) {
 
@@ -142,9 +134,8 @@
                 // Discover the unique properties in the collection.
                 var properties = this._getProperties(collection[0]);
 
-                // Initialise the Crossfilter collection, with the primary key.
+                // Initialise the Crossfilter collection.
                 this._collection = $crossfilter(collection);
-                this._primaryKey = primaryKey || properties[0];
                 this._strategy   = strategy;
 
                 // Iterate over each property to create its related dimension.
