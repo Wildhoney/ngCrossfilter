@@ -11,6 +11,20 @@
 
     /**
      * @module ngCrossfilter
+     * @submodule CrossfilterFilter
+     */
+    ngCrossfilter.filter('crossfilter', function CrossfilterFilter() {
+
+        return function ngCrossfilterFilter(collection) {
+
+            return [1, 2, 3];
+
+        };
+
+    });
+
+    /**
+     * @module ngCrossfilter
      * @submodule CrossfilterService
      */
     ngCrossfilter.service('Crossfilter', function CrossfilterService() {
