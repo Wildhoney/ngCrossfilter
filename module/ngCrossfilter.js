@@ -93,22 +93,21 @@
             _initialise: function _initialise(collection, primaryKey, filteringStrategy) {
 
                 // Discover the unique properties in the collection.
-                var properties = this._getProperties(collection[0]),
-                    dimensions = this._dimensions;
+                var properties = this._getProperties(collection[0]);
 
                 // Initialise the Crossfilter collection, with the primary key.
                 this._collection = $crossfilter(collection);
                 this._primaryKey = primaryKey || properties[0];
                 this._strategy   = filteringStrategy;
 
-                    // Iterate over each property to create its related dimension.
+                // Iterate over each property to create its related dimension.
                 $angular.forEach(properties, function(property) {
 
-                    dimensions[property] = _crossfilter.dimension(function(model) {
+                    this._dimensions[property] = this._collection.dimension(function(model) {
                         return model[property];
                     });
 
-                });
+                }.bind(this));
 
             },
 

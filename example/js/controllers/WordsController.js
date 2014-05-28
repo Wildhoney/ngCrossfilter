@@ -21,7 +21,7 @@
         $http.get('words.json').then(function then(response) {
 
             // Voila!
-            $scope.words = new Crossfilter(response.data);
+            $scope.words = new Crossfilter(response.data, 'id', 'persistent');
 
         });
 
