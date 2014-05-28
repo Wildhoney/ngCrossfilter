@@ -1,4 +1,4 @@
-(function($angular, $crossfilter) {
+(function($angular, $crossfilter, $array) {
 
     "use strict";
 
@@ -86,11 +86,25 @@
              * @method _initialise
              * @param collection {Array}
              * @param primaryKey {String}
-             * @param filteringStrategy {String} Either "persistent" or "transient"
+             * @param strategy {String} Either "persistent" or "transient"
              * @return {void}
              * @private
              */
-            _initialise: function _initialise(collection, primaryKey, filteringStrategy) {
+            _initialise: function _initialise(collection, primaryKey, strategy) {
+
+                if (typeof $array.isArray === 'function' && !$array.isArray(collection)) {
+
+                    // Determine if the collection is a valid array.
+                    this._throwException("Collection must be an array");
+
+                }
+
+                if (typeof strategy !== 'undefined' && ['persistent', 'transient'].indexOf(strategy) === -1) {
+
+                    // Determine if the strategy has been defined as either persistent or transient.
+                    this._throwException("Strategy must be either 'persistent' or 'transient'");
+
+                }
 
                 // Discover the unique properties in the collection.
                 var properties = this._getProperties(collection[0]);
@@ -98,7 +112,7 @@
                 // Initialise the Crossfilter collection, with the primary key.
                 this._collection = $crossfilter(collection);
                 this._primaryKey = primaryKey || properties[0];
-                this._strategy   = filteringStrategy;
+                this._strategy   = strategy;
 
                 // Iterate over each property to create its related dimension.
                 $angular.forEach(properties, function(property) {
@@ -123,7 +137,7 @@
                 if (typeof customFilter !== 'undefined' && typeof customFilter !== 'function') {
 
                     // Ensure the third argument is a function, if it has been defined.
-                    throw this._throwException("Custom filter method must be a function.");
+                    throw this._throwException("Custom filter method must be a function");
 
                 }
 
@@ -209,7 +223,7 @@
              * @private
              */
             _throwException: function _throwException(message) {
-                throw "ngCrossfilter: " + message;
+                throw "ngCrossfilter: " + message + ".";
             }
 
         };
@@ -218,4 +232,4 @@
 
     });
 
-})(window.angular, window.crossfilter);
+})(window.angular, window.crossfilter, window.Array);
