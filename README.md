@@ -21,7 +21,7 @@ In the following HTML, the first item in the object is for the filtering, wherea
 <li ng-repeat="book in books | crossfilter: 'name': value : 'id': 'asc'">
 ```
 
-From the above you can see that we're using the `name` property to filter on with its corresponding `value`, and for the sorting we're using the `id property with the **asc** value.
+From the above you can see that we're using the `name` property to filter on with its corresponding `value`, and for the sorting we're using the `id` property with the **asc** value.
 
 As is typical with Angular, if you update any of the properties then the filtering and sorting will automatically change. Each property should ideally be set with a variable as opposed to an explicit string.
 
