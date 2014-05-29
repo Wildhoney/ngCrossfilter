@@ -215,10 +215,17 @@ describe('ngCrossfilter', function() {
         });
 
         it('Should be able to add a model and filter on it;', function() {
-            $service.addModel({ city: 'St. Petersburg', country: 'RU', population: 4.8 });
+            var number = $service.addModel({ city: 'St. Petersburg', country: 'RU', population: 4.8 });
+            expect(number).toEqual(1);
             expect($service.getCollection().length).toEqual(7);
             $service.filterBy('country', 'RU');
             expect($service.getCollection().length).toEqual(2);
+        });
+
+        it('Should be able to remove a model;', function() {
+            var model = { city: 'Hong Kong', country: 'HK', population: 7.1 };
+            $service.deleteModel(model);
+            expect($service.getCollection().length).toEqual(5);
         });
 
     });

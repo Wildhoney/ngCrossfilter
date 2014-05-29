@@ -107,15 +107,21 @@
 
             /**
              * @constant STRATEGY_PERSISTENT
-             * @type {string}
+             * @type {String}
              */
             STRATEGY_PERSISTENT: 'persistent',
 
             /**
              * @constant STRATEGY_TRANSIENT
-             * @type {string}
+             * @type {String}
              */
             STRATEGY_TRANSIENT: 'transient',
+
+            /**
+             * @constant PRIMARY_DIMENSION
+             * @type {String}
+             */
+            PRIMARY_DIMENSION: '__primaryKey',
 
             /**
              * @property collection
@@ -233,6 +239,11 @@
                         return model[property];
                     });
 
+                }.bind(this));
+
+                // Add a special dimension for removing models.
+                this._dimensions[this.PRIMARY_DIMENSION] = this._collection.dimension(function(model) {
+                    return model[this._primaryKey];
                 }.bind(this));
 
             },
@@ -429,19 +440,62 @@
             /**
              * @method addModel
              * @param model {Object}
-             * @return {void}
+             * @return {Number}
              */
             addModel: function addModel(model) {
-                this.addModels([model]);
+                return this.addModels([model]);
             },
 
             /**
              * @method addModels
              * @param models {Array}
-             * @return {void}
+             * @return {Number}
              */
             addModels: function addModels(models) {
                 this._collection.add(models);
+                return models.length;
+            },
+
+            /**
+             * @property deleteModel
+             * @param model {Object}
+             * @return {Number}
+             */
+            deleteModel: function deleteModel(model) {
+                return this.deleteModels([model]);
+            },
+
+            /**
+             * @property deleteModels
+             * @param models {Array}
+             * @return {Number}
+             */
+            deleteModels: function deleteModel(models) {
+
+                var deleteKeys = [];
+
+                $angular.forEach(models, function forEach(model) {
+
+                    var primaryKey = model[this._primaryKey];
+
+                    if (typeof primaryKey === 'undefined') {
+
+                        // Ensure the primary key is valid.
+                        _throwException("Unable to find the primary key in model: '" + this._primaryKey + "'");
+
+                    }
+
+                    deleteKeys.push(primaryKey);
+
+                }.bind(this));
+
+                // Use the special primary key dimension to remove the model(s).
+                this._dimensions[this.PRIMARY_DIMENSION].filter(function filter(property) {
+                    return (deleteKeys.indexOf(property) === -1);
+                });
+
+                return deleteKeys.length;
+
             },
 
             /**
