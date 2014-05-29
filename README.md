@@ -46,9 +46,23 @@ You should place the `crossfilter` filter before any other filters so that a sta
 Filtering
 -------------
 
- * Filter by **word**: `words.filterBy('word', word)`;
- * Unfilter by **word**: `words.unfilterBy('word')`;
- * Unfilter all: `words.unfilterAll()`;
+ Filter by **word**:
+
+ ```javascript
+ words.filterBy('word', word)`
+ ```
+
+ Unfilter by **word**:
+
+ ```javascript
+ words.unfilterBy('word')
+ ```
+
+ Unfilter all:
+
+ ```javascript
+ words.unfilterAll()
+ ```
 
  <h5><code>filterBy</code></h5>
  Third argument allows the specifying of a custom filtering function &ndash; see <a href="#custom-filtering">custom functions</a>.
@@ -77,8 +91,17 @@ Filtering
 Sorting
 -------------
 
- * Sort by **word**: `words.sortBy('word')`;
- * Unsort by **word**: `words.unsortBy('word')`;
+ Sort by **word**:
+
+ ```javascript
+ words.sortBy('word')
+ ```
+
+ Unsort by **word**:
+
+ ```javascript
+ words.unsortBy('word')
+ ```
 
  <h5><code>sortBy</code></h5>
  Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.
