@@ -23,6 +23,13 @@
          */
         $scope.loading = true;
 
+        /**
+         * @property pageNumber
+         * @type {Number}
+         * @default 10
+         */
+        $scope.pageNumber = 10;
+
         // Fetch all of the words to create the Crossfilter from.
         $http.get('words.json').then(function then(response) {
 
@@ -34,15 +41,26 @@
         });
 
         /**
+         * @method applyWordFilter
+         * @param word {String}
+         * @param customFilter {Function}
+         * @return {void}
+         */
+        $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
+            $scope.pageNumber = 10;
+            $scope.words.filterBy('word', word, customFilter);
+            $scope.word = word;
+        };
+
+        /**
          * @method fuzzyFilter
-         * @param property {String}
+         * @param expected {String}
+         * @param actual {String}
          * @return {Boolean}
          */
-        $scope.fuzzyFilter = function fuzzyFilter(property) {
-
-            var regExp = new $RegExp($scope.word);
-            return !!property.match(regExp, 'i');
-
+        $scope.fuzzyFilter = function fuzzyFilter(expected, actual) {
+            var regExp = new $RegExp(expected, 'i');
+            return !!actual.match(regExp);
         }
 
     });

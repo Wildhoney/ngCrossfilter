@@ -20,20 +20,17 @@
 </head>
 <body ng-app="myApp" ng-controller="WordsController">
 
-    <!--<button ng-click="words.sortBy('word')">Sort by Word</button>-->
-    <!--<button ng-click="words.unsortBy('word')">Unsort</button>-->
-
     <section class="sidebar">
 
         <input type="text" ng-model="word" class="search" placeholder="Filter by word..." />
 
         <div class="btn-group">
             <button type="button" class="btn btn-xs btn-default"
-                    ng-click="words.filterBy('word', word, fuzzyFilter)">
+                    ng-click="applyWordFilter(word, fuzzyFilter)">
                 Filter
             </button>
             <button type="button" class="btn btn-xs btn-default"
-                    ng-click="words.unfilterBy('word', word)">
+                    ng-click="word = ''; words.unfilterBy('word', word)">
                 Clear
             </button>
         </div>
@@ -62,17 +59,36 @@
             <tr ng-show="loading">
                 <td colspan="3">Loading Words&hellip;</td>
             </tr>
-            <tr ng-repeat="model in words | crossfilter | limitTo: 100">
+            <tr ng-show="!loading && words.getCollection().length == 0">
+                <td colspan="3">
+                    Oops! Everything disappeared &ndash;
+                    <a ng-click="word = ''; words.unfilterAll()">clear all filters</a>.
+                </td>
+            </tr>
+            <tr ng-repeat="model in words | crossfilter | limitTo: pageNumber | limitTo: -10">
                 <td>{{model.id}}</td>
                 <td>{{model.word}}</td>
                 <td>
-                    <button class="btn btn-xs btn-default" ng-click="words.filterBy('word', model.word)">
+                    <button class="btn btn-xs btn-default" ng-click="applyWordFilter(model.word)">
                         Filter by word
                     </button>
                 </td>
             </tr>
             <tr>
-                <td class="etc" colspan="3">Et cetera&hellip;</td>
+                <td class="etc" colspan="3">
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-xs btn-default"
+                                ng-click="pageNumber = pageNumber - 10">
+                            &lt; Previous Page
+                        </button>
+                        <button type="button" class="btn btn-xs btn-default"
+                                ng-click="pageNumber = pageNumber + 10">
+                            Next Page &gt;
+                        </button>
+                    </div>
+
+                </td>
             </tr>
         </table>
 
