@@ -59,6 +59,9 @@
                     <span class="glyphicon glyphicon-filter"></span>
                 </th>
             </tr>
+            <tr ng-show="loading">
+                <td colspan="3">Loading Words&hellip;</td>
+            </tr>
             <tr ng-repeat="model in words | crossfilter | limitTo: 100">
                 <td>{{model.id}}</td>
                 <td>{{model.word}}</td>

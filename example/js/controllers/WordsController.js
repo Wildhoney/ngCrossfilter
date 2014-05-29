@@ -17,12 +17,19 @@
          */
         $scope.word = '';
 
+        /**
+         * @property loading
+         * @type {Boolean}
+         */
+        $scope.loading = true;
+
         // Fetch all of the words to create the Crossfilter from.
         $http.get('words.json').then(function then(response) {
 
             // Voila!
             $scope.words = new Crossfilter(response.data, 'id', 'persistent');
             $scope.words.debugMode(true);
+            $scope.loading = false;
 
         });
 
