@@ -7,7 +7,6 @@
   "scripts": {
     "test": "grunt test",
     "start": "node server/default.js",
-    "preinstall": "npm install --ignore-scripts",
     "postinstall": "bower install; grunt build"
   },
   "repository": {
@@ -28,7 +27,8 @@
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-jasmine": "^0.6.4",
     "grunt-contrib-jshint": "^0.7.2",
-    "grunt-contrib-uglify": "^0.2.7"
+    "grunt-contrib-uglify": "^0.2.7",
+    "grunt-lib-phantomjs": "^0.6.0"
   },
   "directories": {
     "example": "example",
