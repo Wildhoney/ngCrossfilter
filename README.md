@@ -73,10 +73,10 @@ Filtering
  By specifying a custom function on the third argument of the `filterBy` method you can implement your own sorting logic.
 
  ```javascript
- $scope.fuzzyFilter = function fuzzyFilter(property) {
+ $scope.fuzzyFilter = function fuzzyFilter(expected, actual) {
 
-     var regExp = new $RegExp($scope.word);
-     return !!property.match(regExp, 'i');
+     var regExp = new $RegExp(expected);
+     return !!actual.match(regExp, 'i');
 
  }
  ```

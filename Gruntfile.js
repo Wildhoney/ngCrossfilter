@@ -67,16 +67,36 @@ module.exports = function(grunt) {
                     { flatten: true, src: ['dist/**'], dest: './', filter: 'isFile' }
                 ]
             }
+        },
+
+        /**
+         * @property jasmine
+         * @type {Object}
+         */
+        jasmine: {
+            pivotal: {
+                src: 'module/ngCrossfilter.js',
+                options: {
+                    specs: 'tests/spec.js',
+                    helpers: [
+                        'example/js/vendor/angular/angular.js',
+                        'example/js/vendor/crossfilter/crossfilter.js',
+                        'example/js/vendor/angular-mocks/angular-mocks.js'
+                    ]
+                }
+            }
         }
+
     });
 
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-compress');
 
-    grunt.registerTask('build', ['copy', 'uglify', 'compress']);
-    grunt.registerTask('test', ['jshint']);
-    grunt.registerTask('default', ['jshint', 'compress', 'copy', 'uglify']);
+    grunt.registerTask('build', ['jasmine', 'copy', 'uglify', 'compress']);
+    grunt.registerTask('test', ['jasmine', 'jshint']);
+    grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify']);
 
 };
