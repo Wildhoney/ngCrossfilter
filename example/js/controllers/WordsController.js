@@ -26,9 +26,9 @@
         /**
          * @property pageNumber
          * @type {Number}
-         * @default 10
+         * @default 50
          */
-        $scope.pageNumber = 10;
+        $scope.pageNumber = 50;
 
         // Fetch all of the words to create the Crossfilter from.
         $http.get('words.json').then(function then(response) {
@@ -47,7 +47,7 @@
          * @return {void}
          */
         $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
-            $scope.pageNumber = 10;
+            $scope.pageNumber = 50;
             $scope.words.filterBy('word', word, customFilter);
             $scope.word = word;
         };

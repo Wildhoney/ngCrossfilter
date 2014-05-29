@@ -65,7 +65,7 @@
                     <a ng-click="word = ''; words.unfilterAll()">clear all filters</a>.
                 </td>
             </tr>
-            <tr ng-repeat="model in words | crossfilter | limitTo: pageNumber | limitTo: -10">
+            <tr ng-repeat="model in words | crossfilter | limitTo: pageNumber | limitTo: -50">
                 <td>{{model.id}}</td>
                 <td>{{model.word}}</td>
                 <td>
