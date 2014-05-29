@@ -262,15 +262,18 @@
                     // Clear the previous filter if we're using the transient strategy.
                     this.unfilterBy(this._lastFilter);
 
-                    // Store the last filter so we can filter anew.
-                    this._lastFilter = property;
-
                 }
+
+                // Store the last filter so we can filter anew.
+                this._lastFilter = property;
 
                 if (typeof customFilter === 'function') {
 
                     // Filter using the developer's custom function if it's been defined.
-                    this._dimensions[property].filterFunction(customFilter);
+                    this._dimensions[property].filterFunction(function customFilterFunction(actual) {
+                        return customFilter(value, actual);
+                    });
+
                     return;
 
                 }
@@ -302,9 +305,14 @@
                 this._incrementIteration();
 
                 // Clear all of the dimensions that we have.
-                $angular.forEach(this._dimensions, function forEach(dimension) {
-                    dimension.filterAll();
-                });
+                for (var key in this._dimensions) {
+
+                    // Usual suspect!
+                    if (this._dimensions.hasOwnProperty(key)) {
+                        this._dimensions[key].filterAll();
+                    }
+
+                }
 
             },
 
