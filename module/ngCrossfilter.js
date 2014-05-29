@@ -235,8 +235,6 @@
                 // Iterate over each property to create its related dimension.
                 $angular.forEach(properties, function(property) {
 
-                    this._assertValidDimensionName(name);
-                    
                     this._dimensions[property] = this._collection.dimension(function(model) {
                         return model[property];
                     });
