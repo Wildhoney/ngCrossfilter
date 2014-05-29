@@ -235,6 +235,8 @@
                 // Iterate over each property to create its related dimension.
                 $angular.forEach(properties, function(property) {
 
+                    this._assertValidDimensionName(name);
+                    
                     this._dimensions[property] = this._collection.dimension(function(model) {
                         return model[property];
                     });
@@ -398,6 +400,7 @@
              * @return {void}
              */
             addDimension: function addDimension(name, setupFunction) {
+                this._assertValidDimensionName(name);
                 this._dimensions[name] = this._collection.dimension(setupFunction);
             },
 
@@ -536,6 +539,30 @@
 
                     // Ensure we can find the dimension.
                     _throwException("Unable to find dimension named '" + property + "'");
+
+                }
+
+            },
+
+            /**
+             * @method _assertValidDimensionName
+             * @param name {String}
+             * @return {void}
+             * @private
+             */
+            _assertValidDimensionName: function _assertValidDimensionName(name) {
+
+                // Ensure it doesn't use the special primary dimension.
+                if (name === this.PRIMARY_DIMENSION) {
+                    _throwException("Cannot define dimension using special dimension: '" + this.PRIMARY_DIMENSION + "'")
+                }
+
+                // Ensure it's a unique dimension name.
+                for (var key in this._dimensions) {
+
+                    if (key === name) {
+                        _throwException("Cannot overwrite an existing dimension: '" + key + "'");
+                    }
 
                 }
 
