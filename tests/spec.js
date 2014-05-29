@@ -214,6 +214,13 @@ describe('ngCrossfilter', function() {
             expect($service.getCollection().length).toEqual(1);
         });
 
+        it('Should be able to add a model and filter on it;', function() {
+            $service.addModel({ city: 'St. Petersburg', country: 'RU', population: 4.8 });
+            expect($service.getCollection().length).toEqual(7);
+            $service.filterBy('country', 'RU');
+            expect($service.getCollection().length).toEqual(2);
+        });
+
     });
 
 });

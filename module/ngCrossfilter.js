@@ -427,6 +427,24 @@
             },
 
             /**
+             * @method addModel
+             * @param model {Object}
+             * @return {void}
+             */
+            addModel: function addModel(model) {
+                this.addModels([model]);
+            },
+
+            /**
+             * @method addModels
+             * @param models {Array}
+             * @return {void}
+             */
+            addModels: function addModels(models) {
+                this._collection.add(models);
+            },
+
+            /**
              * @method getCount
              * @return {Number}
              */
