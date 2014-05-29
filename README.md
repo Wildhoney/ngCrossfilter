@@ -49,8 +49,10 @@ Filtering
  Filter by **word**:
 
  ```javascript
- words.filterBy('word', word)`
+ words.filterBy('word', word)
  ```
+
+ *Third argument allows the specifying of a custom filtering function &ndash; see <a href="#custom-filtering">custom functions</a>.*
 
  Unfilter by **word**:
 
@@ -63,9 +65,6 @@ Filtering
  ```javascript
  words.unfilterAll()
  ```
-
- <h5><code>filterBy</code></h5>
- Third argument allows the specifying of a custom filtering function &ndash; see <a href="#custom-filtering">custom functions</a>.
 
  <h3>Strategies</h3>
  By default the filtering strategy is `persistent` which means that all filters are persistent until they are re-applied, or removed. If you'd like to change to the `transient` behaviour where the previous filter is cleared, you can pass `transient` into `ngCrossfilter`'s constructor as the third argument.
@@ -97,17 +96,15 @@ Sorting
  words.sortBy('word')
  ```
 
+ *Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.*
+
  Unsort by **word**:
 
  ```javascript
  words.unsortBy('word')
  ```
 
- <h5><code>sortBy</code></h5>
- Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.
-
- <h5><code>unsortBy</code></h5>
- Second argument prevents the reverting of the sort order to ascending.
+ *Second argument prevents the reverting of the sort order to ascending.*
 
 Contributions
 -------------
