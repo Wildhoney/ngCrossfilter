@@ -1,4 +1,4 @@
-describe('ngPourOver', function() {
+describe('ngCrossfilter', function() {
 
     var $service, $filter;
 
