@@ -503,7 +503,7 @@
              * @return {Number}
              */
             getCount: function getCount() {
-                return this._cacheCollection.length;
+                return this._cacheCollection.length || this.getCollection().length;
             },
 
             /**

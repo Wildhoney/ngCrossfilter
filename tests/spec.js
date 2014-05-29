@@ -225,7 +225,7 @@ describe('ngCrossfilter', function() {
         it('Should be able to remove a model;', function() {
             var model = { city: 'Hong Kong', country: 'HK', population: 7.1 };
             $service.deleteModel(model);
-            expect($service.getCollection().length).toEqual(5);
+            expect($service.getCount()).toEqual(5);
         });
 
     });
