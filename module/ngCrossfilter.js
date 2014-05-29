@@ -381,6 +381,16 @@
             },
 
             /**
+             * @method addDimension
+             * @param name {String}
+             * @param setupFunction {Function}
+             * @return {void}
+             */
+            addDimension: function addDimension(name, setupFunction) {
+                this._dimensions[name] = this._collection.dimension(setupFunction);
+            },
+
+            /**
              * @method getCollection
              * @return {Array}
              */

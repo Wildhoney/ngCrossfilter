@@ -206,6 +206,14 @@ describe('ngCrossfilter', function() {
             expect($service.getModel(0).country).toEqual('HK');
         });
 
+        it('Should be able to add a custom dimension and filter on it;', function() {
+            $service.addDimension('countryCity', function(model) {
+                return model.country + ': ' + model.city;
+            });
+            $service.filterBy('countryCity', 'UK: London');
+            expect($service.getCollection().length).toEqual(1);
+        });
+
     });
 
 });
