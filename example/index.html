@@ -42,8 +42,14 @@
             </li>
             <li>First Word: {{words.getFirst().word}}</li>
             <li>Last Word: {{words.getLast().word}}</li>
-            <li>"abandon": {{words.countBy('id', 52) || 0}}</li>
-            <li>"lightsome": {{words.countBy('id', 75526) || 0}}</li>
+            <li><h3>Word Count</h3></li>
+            <li>
+                <div class="count" ng-repeat="count in countGrouped"
+                                   ng-class="{ 'is-none': count.value == 0, active: currentCountFilter == count.key }"
+                                   ng-click="toggleCountFilter(count.key)">
+                    {{count.key}}
+                </div>
+            </li>
         </ul>
 
     </section>
@@ -54,6 +60,7 @@
             <tr>
                 <th ng-click="words.sortBy('id')">ID</th>
                 <th ng-click="words.sortBy('word')">Word</th>
+                <th ng-click="words.sortBy('wordCount')">Length</th>
                 <th>
                     <span class="glyphicon glyphicon-filter"></span>
                 </th>
@@ -70,6 +77,7 @@
             <tr ng-repeat="model in words | crossfilter | limitTo: pageNumber | limitTo: -50">
                 <td>{{model.id}}</td>
                 <td>{{model.word}}</td>
+                <td>{{model.word.length}}</td>
                 <td>
                     <button class="btn btn-xs btn-default" ng-click="applyWordFilter(model.word)">
                         Filter by word

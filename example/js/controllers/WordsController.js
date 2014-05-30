@@ -30,11 +30,49 @@
          */
         $scope.pageNumber = 50;
 
+        /**
+         * @property countGrouped
+         * @type {Array}
+         */
+        $scope.countGrouped = [];
+
+        /**
+         * @property currentCountFilter
+         * @type {Number}
+         */
+        $scope.currentCountFilter = 0;
+
+        // When the Crossfilter collection has been updated.
+        $scope.$on('crossfilter/updated', function crossfilterUpdated() {
+            $scope.countGrouped = $scope.words.groupBy('wordCount');
+        });
+
+        /**
+         * @method toggleCountFilter
+         * @param count {Number}
+         * @return {void}
+         */
+        $scope.toggleCountFilter = function toggleCountFilter(count) {
+
+            if ($scope.currentCountFilter == count) {
+                $scope.currentCountFilter = null;
+                $scope.words.unfilterBy('wordCount');
+                return;
+            }
+
+            $scope.currentCountFilter = count;
+            $scope.words.filterBy('wordCount', count);
+
+        };
+
         // Fetch all of the words to create the Crossfilter from.
         $http.get('words.json').then(function then(response) {
 
             // Voila!
             $scope.words = new Crossfilter(response.data, 'id', 'persistent');
+            $scope.words.addDimension('wordCount', function wordCount(model) {
+                return model.word.length;
+            });
             $scope.words.debugMode(true);
             $scope.loading = false;
 

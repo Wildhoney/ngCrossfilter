@@ -27,6 +27,30 @@ section.sidebar div.btn-group {
     position: absolute;
 }
 
+section.sidebar h3 {
+    font-size: 14px;
+}
+
+section.sidebar div.count {
+    background-color: rgba(0, 0, 0, .1);
+    cursor: pointer;
+    border-radius: 30px;
+    float: left;
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    margin: 0 8px 8px 0;
+    text-align: center;
+}
+
+section.sidebar div.count.is-none {
+    background-color: indianred;
+}
+
+section.sidebar div.count.active {
+    background-color: dodgerblue;
+}
+
 section.sidebar ul {
     clear: both;
     width: 100%;
@@ -38,6 +62,7 @@ section.sidebar ul li {
     height: 32px;
     font-size: 11px;
     line-height: 32px;
+    list-style-type: none;
 }
 
 section.sidebar ul li:nth-of-type(2) {

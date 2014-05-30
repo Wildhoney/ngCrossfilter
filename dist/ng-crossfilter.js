@@ -85,7 +85,7 @@
      * @module ngCrossfilter
      * @submodule CrossfilterService
      */
-    ngCrossfilter.service('Crossfilter', function CrossfilterService() {
+    ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', function CrossfilterService($rootScope, $timeout) {
 
         /**
          * @module ngCrossfilter
@@ -259,6 +259,9 @@
                     return model[this._primaryKey];
                 }.bind(this));
 
+                // Broadcast the changes to the masses!
+                this._broadcastChanges();
+
             },
 
             /**
@@ -279,7 +282,7 @@
 
                 }
 
-                this._incrementIteration();
+                this._prepareChanges();
 
                 if (this._lastFilter && this._strategy === this.STRATEGY_TRANSIENT) {
 
@@ -315,7 +318,7 @@
             unfilterBy: function unfilterBy(property) {
 
                 this._assertDimensionExists(property);
-                this._incrementIteration();
+                this._prepareChanges();
                 this._dimensions[property].filterAll();
 
             },
@@ -326,7 +329,7 @@
              */
             unfilterAll: function unfilterAll() {
 
-                this._incrementIteration();
+                this._prepareChanges();
 
                 // Clear all of the dimensions that we have.
                 for (var key in this._dimensions) {
@@ -349,7 +352,7 @@
             sortBy: function sortBy(property, isAscending) {
 
                 this._assertDimensionExists(property);
-                this._incrementIteration();
+                this._prepareChanges();
 
                 if (typeof isAscending === 'boolean') {
 
@@ -383,7 +386,7 @@
             unsortBy: function unsortBy(property, maintainSortOrder) {
 
                 this._assertDimensionExists(property);
-                this._incrementIteration();
+                this._prepareChanges();
 
                 if (this._sortProperty !== property) {
 
@@ -509,7 +512,7 @@
 
                 }
 
-                // Store the cache for the next time, until it's invalidated by the `_incrementIteration`
+                // Store the cache for the next time, until it's invalidated by the `_prepareChanges`
                 // method.
                 this._cacheGroups[property] = groups;
 
@@ -615,17 +618,36 @@
             },
 
             /**
-             * @method _incrementIteration
+             * @method _prepareChanges
              * @return {void}
              * @private
              */
-            _incrementIteration: function _incrementIteration() {
+            _prepareChanges: function _prepareChanges() {
 
                 // Invalidate the groups cache.
                 this._cacheGroups = {};
 
                 // ...And then increment the current iteration.
                 this._iterations.current++;
+
+                // Broadcast the changes to the masses!
+                this._broadcastChanges();
+
+            },
+
+            /**
+             * @method _broadcastChanges
+             * @return {void}
+             * @private
+             */
+            _broadcastChanges: function _broadcastChanges() {
+
+                $timeout(function timeout() {
+
+                    // Broadcast that the Crossfilter has been updated!
+                    $rootScope.$broadcast('crossfilter/updated');
+
+                }, 1);
 
             },
 
@@ -696,6 +718,6 @@
 
         return Service;
 
-    });
+    }]);
 
 })(window.angular, window.crossfilter, window.Array, window.console);
