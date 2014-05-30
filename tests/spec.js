@@ -282,6 +282,8 @@ describe('ngCrossfilter', function() {
             expect($service.countBy('country', 'UK')).toEqual(2);
             $service.filterBy('country', 'HK');
             expect($service.countBy('country', 'UK')).toEqual(2);
+            $service.filterBy('country', 'HK');
+            expect($service.countBy('country', 'UK')).toEqual(2);
             expect($service.countBy('city', 'Hong Kong')).toEqual(1);
             expect($service.countBy('city', 'Moscow')).toEqual(0);
         });
