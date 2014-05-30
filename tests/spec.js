@@ -177,7 +177,7 @@ describe('ngCrossfilter', function() {
             $service.sortBy('country', true);
             expect($service.getModel(0).country).toEqual('BR');
             $service.sortBy('country', true);
-            expect($service.getModel($service.getCollection().length - 1).country).toEqual('UK');
+            expect($service.getLast().country).toEqual('UK');
         });
 
         it('Should be able to reverse the sort when sorting by same property;', function() {

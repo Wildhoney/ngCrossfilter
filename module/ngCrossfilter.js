@@ -428,7 +428,7 @@
              * @return {Object}
              */
             getLast: function getLast() {
-                return this.getModel(this._cacheCollection.length - 1);
+                return this.getModel(this.getCount() - 1);
             },
 
             /**
