@@ -483,7 +483,7 @@
                 if (this._cacheGroups[property]) {
 
                     // Firstly we need to attempt to return the cached version.
-                    return this._cacheGroups[value] || 0;
+                    return this._cacheGroups[property][value] || 0;
 
                 }
 
