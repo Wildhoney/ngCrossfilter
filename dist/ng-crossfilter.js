@@ -524,6 +524,21 @@
             },
 
             /**
+             * @method groupBy
+             * @param property {String}
+             * @return {Array}
+             */
+            groupBy: function groupBy(property) {
+
+                this._assertDimensionExists(property);
+
+                return this._dimensions[property].group(function group(property) {
+                    return property;
+                }).all();
+
+            },
+
+            /**
              * @method addModel
              * @param model {Object}
              * @return {Number}

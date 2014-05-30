@@ -286,6 +286,13 @@ describe('ngCrossfilter', function() {
             expect($service.countBy('city', 'Moscow')).toEqual(0);
         });
 
+        it('Should be able to group by on any given property;', function() {
+            expect($service.getCount()).toEqual(6);
+            var collection = $service.groupBy('country');
+            expect(collection[3].value).toEqual(1);
+            expect(collection[4].value).toEqual(2);
+        });
+
     });
 
 });

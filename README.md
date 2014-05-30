@@ -132,6 +132,7 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
  * `getLast`: Last model in the collection;
  * `getModel`: *nth* model in the collection;
  * `countBy`: Count values &ndash; see <a href="#counting">Counting</a>;
+ * `groupBy`: Group by any given dimension;
  * `addModel`: Add a model to the collection;
  * `addModels`: Add models to the collection;
  * `deleteModel`: Delete a model from the collection;

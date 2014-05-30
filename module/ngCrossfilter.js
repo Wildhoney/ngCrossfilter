@@ -496,9 +496,7 @@
                 var groups = {};
 
                 // Use reduce method to return the count for the dimension.
-                var sums = this._dimensions[property].group().reduceSum(function reduceSum() {
-                    return 1;
-                }).all();
+                var sums = this._dimensions[property].group().all();
 
                 // Iterate over each sum model to package it nicely.
                 for (var key in sums) {
@@ -520,6 +518,21 @@
                 }
 
                 return groups[value] || 0;
+
+            },
+
+            /**
+             * @method groupBy
+             * @param property {String}
+             * @return {Array}
+             */
+            groupBy: function groupBy(property) {
+
+                this._assertDimensionExists(property);
+
+                return this._dimensions[property].group(function group(property) {
+                    return property;
+                }).all();
 
             },
 
