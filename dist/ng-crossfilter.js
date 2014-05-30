@@ -85,7 +85,7 @@
      * @module ngCrossfilter
      * @submodule CrossfilterService
      */
-    ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', function CrossfilterService($rootScope, $timeout) {
+    ngCrossfilter.service('Crossfilter', ['$rootScope', function CrossfilterService($rootScope) {
 
         /**
          * @module ngCrossfilter
@@ -642,12 +642,8 @@
              */
             _broadcastChanges: function _broadcastChanges() {
 
-                $timeout(function timeout() {
-
-                    // Broadcast that the Crossfilter has been updated!
-                    $rootScope.$broadcast('crossfilter/updated');
-
-                }, 1);
+                // Broadcast that the Crossfilter has been updated!
+                $rootScope.$broadcast('crossfilter/updated');
 
             },
 

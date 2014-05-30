@@ -1,6 +1,6 @@
 describe('ngCrossfilter', function() {
 
-    var $service, $filter;
+    var $service, $filter, $rootScope;
 
     var $collection = [
         { city: 'London', country: 'UK', population: 8.3 },
@@ -15,9 +15,14 @@ describe('ngCrossfilter', function() {
 
         module('ngCrossfilter');
 
-        inject(function(Crossfilter, _$filter_) {
+        inject(function($injector, Crossfilter, _$filter_) {
+
             $service = new Crossfilter($collection);
             $filter  = _$filter_;
+
+            $rootScope = $injector.get('$rootScope');
+            spyOn($rootScope, '$broadcast');
+
         });
 
     });
@@ -39,7 +44,7 @@ describe('ngCrossfilter', function() {
             expect($service._iterations.current).toEqual(1);
             expect($service._cacheCollection.length).toEqual(0);
             $service.filterBy('country', 'SG');
-            var collection = $filter('crossfilter')($service);
+            $filter('crossfilter')($service);
             expect($service._iterations.previous).toEqual(2);
             expect($service._iterations.current).toEqual(2);
             expect($service._cacheCollection.length).toEqual(1);
@@ -58,8 +63,6 @@ describe('ngCrossfilter', function() {
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, 'country');
             });
-
-//            {{layout handle="sales_email_order_items" order=$order}}
 
             expect($service._primaryKey).toEqual('country');
 
@@ -129,6 +132,7 @@ describe('ngCrossfilter', function() {
             expect($service.getCollection().length).toEqual(6);
             $service.filterBy('country', 'UK');
             expect($service.getCollection().length).toEqual(2);
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
         it('Should be able to detect when a non-function is passed;', function() {
@@ -149,6 +153,7 @@ describe('ngCrossfilter', function() {
             expect($service.getCollection().length).toEqual(2);
             $service.unfilterBy('country');
             expect($service.getCollection().length).toEqual(6);
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
         it('Should be able to remove all applied filters;', function() {
@@ -157,6 +162,7 @@ describe('ngCrossfilter', function() {
             expect($service.getCollection().length).toEqual(1);
             $service.unfilterAll();
             expect($service.getCollection().length).toEqual(6);
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
         it('Should be able to apply a range filter;', function() {
@@ -169,6 +175,7 @@ describe('ngCrossfilter', function() {
                 return expected !== actual;
             });
             expect($service.getCollection().length).toEqual(4);
+            expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
         it('Should be able to apply filters in a transient fashion;', function() {
