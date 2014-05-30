@@ -55,13 +55,20 @@ describe('ngCrossfilter', function() {
 
         it('Should be able to change the primary key', function() {
 
-            inject(function(Crossfilter, _$filter_) {
+            inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, 'country');
-                $filter  = _$filter_;
             });
 
             expect($service._primaryKey).toEqual('country');
 
+        });
+
+        it('Should be able to validate the specified primary key;', function() {
+            inject(function(Crossfilter) {
+                expect(function() {
+                    $service = new Crossfilter($collection, 'id');
+                }).toThrow("ngCrossfilter: Primary key 'id' is not in the collection.");
+            });
         });
 
         it('Should be able to assume the default strategy;', function() {
@@ -70,9 +77,8 @@ describe('ngCrossfilter', function() {
 
         it('Should be able to change the strategy;', function() {
 
-            inject(function(Crossfilter, _$filter_) {
+            inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, null, $service.STRATEGY_TRANSIENT);
-                $filter  = _$filter_;
             });
 
             expect($service._strategy).toEqual($service.STRATEGY_TRANSIENT);
@@ -91,6 +97,22 @@ describe('ngCrossfilter', function() {
             expect($service._collection.dimension).toBeDefined();
         });
 
+        it('Should be able to determine when the collection is not an array;', function() {
+            inject(function(Crossfilter) {
+                expect(function() {
+                    $service = new Crossfilter('not an array');
+                }).toThrow("ngCrossfilter: Collection must be an array.");
+            });
+        });
+
+        it('Should be able to detect an invalid filtering strategy;', function() {
+            inject(function(Crossfilter) {
+                expect(function() {
+                    $service = new Crossfilter($collection, 'city', 'invalid strategy');
+                }).toThrow("ngCrossfilter: Strategy must be either 'persistent' or 'transient'.");
+            });
+        });
+
         it('Should be able to enable the debug mode;', function() {
             expect($service._debug).toBeFalsy();
             $service.debugMode(true);
@@ -105,6 +127,15 @@ describe('ngCrossfilter', function() {
             expect($service.getCollection().length).toEqual(6);
             $service.filterBy('country', 'UK');
             expect($service.getCollection().length).toEqual(2);
+        });
+
+        it('Should be able to detect when a non-function is passed;', function() {
+            inject(function(Crossfilter) {
+                expect(function() {
+                    $service = new Crossfilter($collection);
+                    $service.filterBy('city', 'Hong Kong', 'non-function');
+                }).toThrow("ngCrossfilter: Custom filter method must be a function.");
+            });
         });
 
         it('Should be able to remove the applied filter;', function() {
@@ -144,9 +175,8 @@ describe('ngCrossfilter', function() {
             $service.filterBy('country', 'UK');
             expect($service.getCollection().length).toEqual(1);
 
-            inject(function(Crossfilter, _$filter_) {
+            inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, null, $service.STRATEGY_TRANSIENT);
-                $filter  = _$filter_;
             });
 
             $service.filterBy('city', 'London');
@@ -159,9 +189,8 @@ describe('ngCrossfilter', function() {
 
         it('Should be able to memorise the last applied filter;', function() {
 
-            inject(function(Crossfilter, _$filter_) {
+            inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, null, $service.STRATEGY_TRANSIENT);
-                $filter  = _$filter_;
             });
 
             $service.filterBy('population', [7, 12]);
@@ -218,6 +247,9 @@ describe('ngCrossfilter', function() {
             expect($service._dimensions.city).toBeDefined();
             $service.deleteDimension('city');
             expect($service._dimensions.city).toBeUndefined();
+            expect(function() {
+                $service.filterBy('city', 'Moscow');
+            }).toThrow("ngCrossfilter: Unable to find dimension named 'city'.");
         });
 
         it('Should be able to add a model and filter on it;', function() {
@@ -233,6 +265,16 @@ describe('ngCrossfilter', function() {
             $service.deleteModel(model);
             expect($service.getCount()).toEqual(5);
         });
+
+//        it('Should be able to validate the primary key when deleting a model;', function() {
+//            inject(function(Crossfilter) {
+//                expect(function() {
+//                    $service = new Crossfilter($collection);
+//                    var model = { country: 'HK', population: 7.1 };
+//                    $service.deleteModel(model);
+//                }).toThrow("ngCrossfilter: Unable to find the primary key in model: 'city'.");
+//            });
+//        });
 
     });
 

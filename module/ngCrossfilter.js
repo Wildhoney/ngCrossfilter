@@ -223,6 +223,13 @@
 
                 }
 
+                if ((primaryKey)  && !(primaryKey in collection[0])) {
+
+                    // Ensure the specified primary key is in the collection.
+                    _throwException("Primary key '" + primaryKey + "' is not in the collection");
+
+                }
+
                 // Discover the unique properties in the collection.
                 var properties = this._getProperties(collection[0]);
 
