@@ -214,6 +214,12 @@ describe('ngCrossfilter', function() {
             expect($service.getCollection().length).toEqual(1);
         });
 
+        it('Should be able to delete a dimension;', function() {
+            expect($service._dimensions.city).toBeDefined();
+            $service.deleteDimension('city');
+            expect($service._dimensions.city).toBeUndefined();
+        });
+
         it('Should be able to add a model and filter on it;', function() {
             var number = $service.addModel({ city: 'St. Petersburg', country: 'RU', population: 4.8 });
             expect(number).toEqual(1);

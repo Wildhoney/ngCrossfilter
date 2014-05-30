@@ -403,6 +403,17 @@
             },
 
             /**
+             * @method deleteDimension
+             * @param name {String}
+             * @return {void}
+             */
+            deleteDimension: function deleteDimension(name) {
+                this._assertDimensionExists(name);
+                this._dimensions[name].dispose();
+                delete this._dimensions[name];
+            },
+
+            /**
              * @method getCollection
              * @return {Array}
              */
