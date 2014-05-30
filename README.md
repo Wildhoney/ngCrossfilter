@@ -115,6 +115,10 @@ However, there is one proviso and that is the `countBy` method may **not** behav
 
 In a nutshell, if you're filtering on the `name` property, and you're also counting by the `name` property, the `name` filter will be disregarded &ndash; instead you need to count on a dimension that you're not using in the filtering process &ndash; unless the default behaviour is useful *(and in most cases it actually makes sense)*. You can implement this by adding a custom dimension with `addDimension`, or by counting on the primary key &ndash; assuming it's not being used in the filtering process.
 
+```javascript
+words.countBy('word', 'Adam')
+```
+
 Other Methods
 -------------
 
