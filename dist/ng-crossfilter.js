@@ -85,7 +85,7 @@
      * @module ngCrossfilter
      * @submodule CrossfilterService
      */
-    ngCrossfilter.service('Crossfilter', ['$rootScope', function CrossfilterService($rootScope) {
+    ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', function CrossfilterService($rootScope, $timeout) {
 
         /**
          * @module ngCrossfilter
@@ -260,7 +260,7 @@
                 }.bind(this));
 
                 // Broadcast the changes to the masses!
-                this._broadcastChanges();
+                this._broadcastChanges(true);
 
             },
 
@@ -637,13 +637,29 @@
 
             /**
              * @method _broadcastChanges
+             * @param useTimeout {Boolean}
              * @return {void}
              * @private
              */
-            _broadcastChanges: function _broadcastChanges() {
+            _broadcastChanges: function _broadcastChanges(useTimeout) {
 
-                // Broadcast that the Crossfilter has been updated!
-                $rootScope.$broadcast('crossfilter/updated');
+                /**
+                 * @method broadcast
+                 * @return {void}
+                 */
+                var broadcast = function broadcast() {
+
+                    // Broadcast that the Crossfilter has been updated!
+                    $rootScope.$broadcast('crossfilter/updated');
+
+                };
+
+                if (useTimeout) {
+                    $timeout(broadcast, 1);
+                    return;
+                }
+
+                broadcast();
 
             },
 
