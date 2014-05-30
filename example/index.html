@@ -42,6 +42,8 @@
             </li>
             <li>First Word: {{words.getFirst().word}}</li>
             <li>Last Word: {{words.getLast().word}}</li>
+            <li>"abandon": {{words.countBy('id', 52) || 0}}</li>
+            <li>"lightsome": {{words.countBy('id', 75526) || 0}}</li>
         </ul>
 
     </section>

@@ -137,6 +137,12 @@
             _cacheCollection: [],
 
             /**
+             * @property _cacheGroups
+             * @type {Object}
+             */
+            _cacheGroups: {},
+
+            /**
              * @property _dimensions
              * @type {Array}
              * @private
@@ -451,9 +457,70 @@
 
             /**
              * @method getModel
+             * @return {Object}
              */
             getModel: function getModel(number) {
                 return this.getCollection()[number];
+            },
+
+            /**
+             * @method getModels
+             * @alias getCollection
+             * @return {Array}
+             */
+            getModels: function getModels() {
+                return this.getCollection();
+            },
+
+            /**
+             * @method countBy
+             * @param property {String}
+             * @param value {String}
+             * @return {Number}
+             */
+            countBy: function countBy(property, value) {
+
+                if (this._cacheGroups[property]) {
+
+                    // Firstly we need to attempt to return the cached version.
+                    return this._cacheGroups[value] || 0;
+
+                }
+
+                if (crossfilter._debug) {
+                    $console.time('timeTaken');
+                }
+
+                this._assertDimensionExists(property);
+
+                var groups = {};
+
+                // Use reduce method to return the count for the dimension.
+                var sums = this._dimensions[property].group().reduceSum(function reduceSum() {
+                    return 1;
+                }).all();
+
+                // Iterate over each sum model to package it nicely.
+                for (var key in sums) {
+
+                    // Usual suspect!
+                    if (sums.hasOwnProperty(key)) {
+                        var model = sums[key];
+                        groups[model.key] = model.value;
+                    }
+
+                }
+
+                // Store the cache for the next time, until it's invalidated by the `_incrementIteration`
+                // method.
+                this._cacheGroups[property] = groups;
+
+                if (crossfilter._debug) {
+                    $console.timeEnd('timeTaken');
+                }
+
+                return groups[value] || 0;
+
             },
 
             /**
@@ -540,7 +607,13 @@
              * @private
              */
             _incrementIteration: function _incrementIteration() {
+
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
+
+                // ...And then increment the current iteration.
                 this._iterations.current++;
+
             },
 
             /**

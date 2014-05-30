@@ -59,6 +59,8 @@ describe('ngCrossfilter', function() {
                 $service = new Crossfilter($collection, 'country');
             });
 
+//            {{layout handle="sales_email_order_items" order=$order}}
+
             expect($service._primaryKey).toEqual('country');
 
         });
@@ -257,7 +259,7 @@ describe('ngCrossfilter', function() {
             expect(number).toEqual(1);
             expect($service.getCollection().length).toEqual(7);
             $service.filterBy('country', 'RU');
-            expect($service.getCollection().length).toEqual(2);
+            expect($service.getModels().length).toEqual(2);
         });
 
         it('Should be able to remove a model;', function() {
@@ -266,15 +268,23 @@ describe('ngCrossfilter', function() {
             expect($service.getCount()).toEqual(5);
         });
 
-//        it('Should be able to validate the primary key when deleting a model;', function() {
-//            inject(function(Crossfilter) {
-//                expect(function() {
-//                    $service = new Crossfilter($collection);
-//                    var model = { country: 'HK', population: 7.1 };
-//                    $service.deleteModel(model);
-//                }).toThrow("ngCrossfilter: Unable to find the primary key in model: 'city'.");
-//            });
-//        });
+        it('Should be able to validate the primary key when deleting a model;', function() {
+            inject(function(Crossfilter) {
+                expect(function() {
+                    $service = new Crossfilter($collection);
+                    var model = { country: 'HK', population: 7.1 };
+                    $service.deleteModel(model);
+                }).toThrow("ngCrossfilter: Unable to find the primary key in model: 'city'.");
+            });
+        });
+
+        it('Should be able to count on any given property;', function() {
+            expect($service.countBy('country', 'UK')).toEqual(2);
+            $service.filterBy('country', 'HK');
+            expect($service.countBy('country', 'UK')).toEqual(2);
+            expect($service.countBy('city', 'Hong Kong')).toEqual(1);
+            expect($service.countBy('city', 'Moscow')).toEqual(0);
+        });
 
     });
 

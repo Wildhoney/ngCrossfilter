@@ -451,9 +451,33 @@
 
             /**
              * @method getModel
+             * @return {Object}
              */
             getModel: function getModel(number) {
                 return this.getCollection()[number];
+            },
+
+            /**
+             * @method getModels
+             * @alias getCollection
+             * @return {Array}
+             */
+            getModels: function getModels() {
+                return this.getCollection();
+            },
+
+            /**
+             * @method countBy
+             * @param property {String}
+             * @param value {String}
+             * @return {Number}
+             */
+            countBy: function countBy(property, value) {
+                this._assertDimensionExists(property);
+                var group = this._dimensions[property].group(function(property) {
+                    return property;
+                });
+                return group.all();
             },
 
             /**
