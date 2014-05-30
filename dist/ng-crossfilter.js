@@ -496,9 +496,7 @@
                 var groups = {};
 
                 // Use reduce method to return the count for the dimension.
-                var sums = this._dimensions[property].group().reduceSum(function reduceSum() {
-                    return 1;
-                }).all();
+                var sums = this._dimensions[property].group().all();
 
                 // Iterate over each sum model to package it nicely.
                 for (var key in sums) {
