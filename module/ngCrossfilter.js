@@ -229,7 +229,7 @@
 
                 }
 
-                if ((primaryKey)  && !(primaryKey in collection[0])) {
+                if ((primaryKey) && !(primaryKey in collection[0])) {
 
                     // Ensure the specified primary key is in the collection.
                     _throwException("Primary key '" + primaryKey + "' is not in the collection");
@@ -245,19 +245,29 @@
                 this._strategy   = strategy;
                 this._primaryKey = primaryKey || properties[0];
 
-                // Iterate over each property to create its related dimension.
+                /**
+                 * @method createDimension
+                 * @param name {String}
+                 * @param property {String}
+                 * @return {void}
+                 */
+                var createDimension = function createDimension(name, property) {
+
+                    this._dimensions[name] = this._collection.dimension(function(model) {
+                        return model[property || name];
+                    });
+
+                }.bind(this);
+
                 $angular.forEach(properties, function(property) {
 
-                    this._dimensions[property] = this._collection.dimension(function(model) {
-                        return model[property];
-                    });
+                    // Iterate over each property to create its related dimension.
+                    createDimension(property);
 
                 }.bind(this));
 
                 // Add a special dimension for removing models.
-                this._dimensions[this.PRIMARY_DIMENSION] = this._collection.dimension(function(model) {
-                    return model[this._primaryKey];
-                }.bind(this));
+                createDimension(this.PRIMARY_DIMENSION, this._primaryKey);
 
                 // Broadcast the changes to the masses!
                 this._broadcastChanges(true);
