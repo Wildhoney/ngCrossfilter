@@ -58,7 +58,7 @@ describe('ngCrossfilter', function() {
             expect($service._primaryKey).toEqual('city');
         });
 
-        it('Should be able to change the primary key', function() {
+        it('Should be able to change the primary key;', function() {
 
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, 'country');
@@ -74,6 +74,18 @@ describe('ngCrossfilter', function() {
                     $service = new Crossfilter($collection, 'id');
                 }).toThrow("ngCrossfilter: Primary key 'id' is not in the collection.");
             });
+        });
+
+        it('Should be able to supply a list of properties for the dimensions;', function() {
+
+            inject(function(Crossfilter) {
+                $service = new Crossfilter($collection, 'country', $service.STRATEGY_TRANSIENT, ['city', 'country']);
+            });
+
+            expect($service._dimensions.city).toBeDefined();
+            expect($service._dimensions.country).toBeDefined();
+            expect($service._dimensions.population).toBeUndefined();
+
         });
 
         it('Should be able to assume the default strategy;', function() {

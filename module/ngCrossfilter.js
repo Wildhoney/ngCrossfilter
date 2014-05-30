@@ -92,10 +92,13 @@
          * @submodule ngCrossfilterService
          * @constructor
          */
-        var Service = function ngCrossfilterService(collection, primaryKey, strategy) {
+        var Service = function ngCrossfilterService(collection, primaryKey, strategy, properties) {
+
+            // Reset all of the arrays and objects.
+            this._resetAll();
 
             // Initialise the Crossfilter with the array of models.
-            this._initialise(collection, primaryKey, strategy);
+            this._initialise(collection, primaryKey, strategy, properties);
 
         };
 
@@ -205,10 +208,11 @@
              * @param collection {Array}
              * @param primaryKey {String}
              * @param strategy {String} Either "persistent" or "transient"
+             * @param properties {Array} List of properties for the dimensions
              * @return {void}
              * @private
              */
-            _initialise: function _initialise(collection, primaryKey, strategy) {
+            _initialise: function _initialise(collection, primaryKey, strategy, properties) {
 
                 if (typeof $array.isArray === 'function' && !$array.isArray(collection)) {
 
@@ -237,7 +241,7 @@
                 }
 
                 // Discover the unique properties in the collection.
-                var properties = this._getProperties(collection[0]);
+                properties = properties || this._getProperties(collection[0]);
 
                 // Initialise the Crossfilter collection, and either use the defined primary key, or infer
                 // it from the properties.
@@ -733,6 +737,21 @@
                 }
 
                 return properties;
+
+            },
+
+            /**
+             * @method _resetAll
+             * @return {void}
+             * @private
+             */
+            _resetAll: function _resetAll() {
+
+                this._collection      = {};
+                this._cacheCollection = [];
+                this._cacheGroups     = {};
+                this._dimensions      = {};
+                this._iterations      = { current: 1, previous: 1 };
 
             }
 
