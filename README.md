@@ -106,6 +106,35 @@ Sorting
 
  *Second argument prevents the reverting of the sort order to ascending.*
 
+Counting
+-------------
+
+With filters it's useful to compute the `length` of any given property and value pair &ndash; with `ngCrossfilter` we can do this with the `countBy` method.
+
+However, there is one proviso and that is the `countBy` method may **not** behave as you expect it to as it disregards the dimension you're counting on &ndash; see [Crossfilter's Map-Reduce documentation](https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce).
+
+In a nutshell, if you're filtering on the `name` property, and you're also counting by the `name` property, the `name` filter will be disregarded &ndash; instead you need to count on a dimension that you're not using in the filtering process &ndash; unless the default behaviour is useful *(and in most cases it actually makes sense)*. You can implement this by adding a custom dimension with `addDimension`, or by counting on the primary key &ndash; assuming it's not being used in the filtering process.
+
+Other Methods
+-------------
+
+For the entire list of features for `ngCrossfilter` it is advised to refer to the unit tests &ndash; as these have full coverage of **all** `ngCrossfilter` methods and their usages.
+
+ * `addDimension`: Add a custom dimension;
+ * `deleteDimension`: Delete a dimension;
+ * `getCollection`: Collection as a standard array;
+ * `getModels`: Alias for `getCollection`;
+ * `getFirst`: First model in the collection;
+ * `getLast`: Last model in the collection;
+ * `getModel`: *nth* model in the collection;
+ * `countBy`: See <a href="#counting">`Counting`</a>;
+ * `addModel`: Add a model to the collection;
+ * `addModels`: Add models to the collection;
+ * `deleteModel`: Delete a model from the collection;
+ * `deleteModels`: Delete models from the collection;
+ * `getCount`: Get a count of the collection;
+ * `debugMode`: Enable/disable debugging mode;
+
 Contributions
 -------------
 
