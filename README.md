@@ -10,7 +10,7 @@ Heroku: [http://ng-crossfilter.herokuapp.com/](http://ng-crossfilter.herokuapp.c
 Introduction
 -------------
 
-Angular uses native JavaScript methods for sorting, whereas `ngCrossfilter` uses <a href="https://github.com/square/crossfilter" target="_blank">Crossfilter</a> for a significant improvement in performance. It introduces an intuitive microsyntax for filtering which is simple to get to grips with.
+Angular uses native JavaScript methods for sorting, whereas `ngCrossfilter` uses <a href="https://github.com/square/crossfilter" target="_blank">Crossfilter</a> for a significant improvement in performance.
 
 Getting Started
 -------------
@@ -18,10 +18,10 @@ Getting Started
 Firstly you need to initialise Crossfilter with your collection of items.
 
 ```javascript
-$scope.words = new Crossfilter(response.data, 'id', 'persistent');
+$scope.words = new Crossfilter(response.data, 'id', 'persistent', ['id', 'name', 'age']);
 ```
 
-`ngCrossfilter`'s constructor accepts three parameters &ndash; the last two being optional. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; whereas the third parameter allows you to change the <a href="#custom-filtering">filtering strategy</a> &ndash; either `persistent` or `transient`.
+`ngCrossfilter`'s constructor accepts four parameters &ndash; with only the first being mandatory. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; the third parameter allows you to change the <a href="#custom-filtering">filtering strategy</a> &ndash; either `persistent` or `transient`, whereas the fourth parameter allows you to specify which properties to create dimensions with.
 
 For timing information and other useful information for development, you can enable debug mode.
 
