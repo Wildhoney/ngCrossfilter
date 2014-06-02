@@ -85,7 +85,9 @@
      * @module ngCrossfilter
      * @submodule CrossfilterService
      */
-    ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', function CrossfilterService($rootScope, $timeout) {
+    ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', '$window',
+
+    function CrossfilterService($rootScope, $timeout, $window) {
 
         /**
          * @module ngCrossfilter
@@ -202,6 +204,36 @@
              * @private
              */
             _debug: false,
+
+            /**
+             * List of common filters bundled into ngCrossfilter.
+             *
+             * @property filters
+             * @type {Object}
+             */
+            filters: {
+
+                /**
+                 * @method fuzzy
+                 * @param flags {String}
+                 * @return {Function}
+                 */
+                fuzzy: function fuzzyFilter(flags) {
+
+                    /**
+                     * @method fuzzy
+                     * @param expected {String}
+                     * @param actual {String}
+                     * @return {Boolean}
+                     */
+                    return function fuzzy(expected, actual) {
+                        var regExp = new $window.RegExp(expected, flags);
+                        return !!actual.match(regExp);
+                    };
+
+                }
+
+            },
 
             /**
              * @method _initialise

@@ -314,6 +314,22 @@ describe('ngCrossfilter', function() {
             expect(collection[4].value).toEqual(2);
         });
 
+        it('Should be able to use the fuzzy filter with default params;', function() {
+            expect($service.getCount()).toEqual(6);
+            var collection = $service.filterBy('city', 'M', $service.filters.fuzzy());
+            expect($service.getCount()).toEqual(2);
+            $service.unfilterBy('city');
+            expect($service.getCount()).toEqual(6);
+            collection = $service.filterBy('city', 'S', $service.filters.fuzzy());
+            expect($service.getCount()).toEqual(1);
+        });
+
+        it('Should be able to use the fuzzy filter with insensitivity;', function() {
+            expect($service.getCount()).toEqual(6);
+            var collection = $service.filterBy('city', 'S', $service.filters.fuzzy('i'));
+            expect($service.getCount()).toEqual(3);
+        });
+
     });
 
 });
