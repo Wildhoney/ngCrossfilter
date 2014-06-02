@@ -134,6 +134,28 @@ $scope.$on('crossfilter/updated', function() {
 });
 ```
 
+Bundled Filters
+-------------
+
+As there are common filtering techniques that Crossfilter doesn't implement, `ngCrossfilter` comes with a fine selection of bundled filters for common tasks.
+
+ **Fuzzy Filter**
+
+ With the [fuzzy filter](http://en.wikipedia.org/wiki/Fuzzy_logic) you can filter with incomplete expressions.
+
+ ```javascript
+ $service.filterBy('city', 'M', $service.filters.fuzzy());
+ ```
+
+ You will notice that the `fuzzy` method is invoking the method immediately &ndash; this allows you to pass valid regular expression flags for insensitivity, et cetera...
+
+ ```javascript
+ $service.filterBy('city', 'M', $service.filters.fuzzy('i'));
+ ```
+
+ By default no flags will be defined for the regular expression matching.
+
+
 Other Methods
 -------------
 
