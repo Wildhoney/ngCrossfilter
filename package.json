@@ -1,7 +1,7 @@
 {
   "name": "ng-crossfilter",
   "buildName": "ngCrossfilter",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "Usual Angular.js style filtering and sorting with a twist of Crossfilter for improved performance.",
   "main": "index.js",
   "scripts": {
