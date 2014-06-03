@@ -165,6 +165,22 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  You can pass either an expression or an actual `RegExp` object to the filter.
 
+ **InArray Filter**
+
+ With the `inArray` filter you can check an array against an array &ndash; using the `some` and `every` array methods &ndash; please check the [http://caniuse.com/](browser support) before using it.
+
+ ```javascript
+ $service.filterBy('twinCities', ['Beijing', 'Tokyo'],
+                    $service.filters.inArray());
+ ```
+
+ By default the `inArray` filter uses the `every` method, which means in the above example only entries where `twinCities` has both Beijing and Tokyo will be returned &ndash; you can use `some` instead by passing it into `inArray` filter method.
+
+ ```javascript
+ $service.filterBy('twinCities', ['Beijing', 'Tokyo'],
+                    $service.filters.inArray('some'));
+ ```
+
 Other Methods
 -------------
 
