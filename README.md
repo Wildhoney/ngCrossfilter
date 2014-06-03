@@ -26,13 +26,13 @@ $scope.words = new Crossfilter(response.data, 'id', 'persistent', ['name', 'age'
 For timing information and other useful information for development, you can enable debug mode.
 
 ```javascript
-$scope.words.debugMode(true);
+$scope.$ngc.debugMode(true);
 ```
 
 Once you've configured your Crossfilter collection, you can begin filtering and sorting. From within your view you should reference your collection &ndash; in our case, `$scope.words`.
 
 ```html
-<button ng-click="words.filterBy('word', word)">Filter</button>
+<button ng-click="$ngc.filterBy('word', word)">Filter</button>
 ```
 
 After you've applied all of your filters, you need to add the `ngCrossfilter` filter to your `ng-repeat` directive.
@@ -49,7 +49,7 @@ Filtering
  Filter by **word**:
 
  ```javascript
- words.filterBy('word', word)
+ $ngc.filterBy('word', word)
  ```
 
  *Third argument allows the specifying of a custom filtering function &ndash; see <a href="#custom-filtering">custom functions</a>.*
@@ -57,13 +57,13 @@ Filtering
  Unfilter by **word**:
 
  ```javascript
- words.unfilterBy('word')
+ $ngc.unfilterBy('word')
  ```
 
  Unfilter all:
 
  ```javascript
- words.unfilterAll()
+ $ngc.unfilterAll()
  ```
 
  <h3>Strategies</h3>
@@ -84,7 +84,7 @@ Filtering
  Which can then be utilised by passing it as the third argument in your view.
 
  ```html
- <button ng-click="words.filterBy('word', word, fuzzyFilter)">
+ <button ng-click="$ngc.filterBy('word', word, fuzzyFilter)">
  ```
 
 Sorting
@@ -93,7 +93,7 @@ Sorting
  Sort by **word**:
 
  ```javascript
- words.sortBy('word')
+ $ngc.sortBy('word')
  ```
 
  *Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.*
@@ -101,7 +101,7 @@ Sorting
  Unsort by **word**:
 
  ```javascript
- words.unsortBy('word')
+ $ngc.unsortBy('word')
  ```
 
  *Second argument prevents the reverting of the sort order to ascending.*
@@ -112,7 +112,7 @@ Counting
 With filters it's useful to compute the `length` of any given property and value pair &ndash; with `ngCrossfilter` we can do this with the `countBy` method.
 
 ```javascript
-words.countBy('word', 'Adam')
+$ngc.countBy('word', 'Adam')
 ```
 
 However, there is one proviso and that is the `countBy` method may **not** behave as you expect it to as it disregards the dimension you're counting on &ndash; see [Crossfilter's Map-Reduce documentation](https://github.com/square/crossfilter/wiki/API-Reference#group-map-reduce).
@@ -177,6 +177,14 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  ```javascript
  $ngc.filterBy('twinCities', ['Beijing', 'Tokyo'], $ngc.filters.inArray('some'));
+ ```
+
+ **Bitwise Filter**
+
+ Simple filter using the bitwise `&` operator against the collection.
+
+ ```javascript
+ $ngc.filterBy('climate', 2, $service.filters.bitwise());
  ```
 
 Other Methods

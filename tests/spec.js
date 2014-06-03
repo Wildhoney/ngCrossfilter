@@ -3,12 +3,12 @@ describe('ngCrossfilter', function() {
     var $service, $filter, $rootScope;
 
     var $collection = [
-        { city: 'London', country: 'UK', population: 8.3, twinCities: ['Beijing', 'Tokyo', 'Paris'] },
-        { city: 'Moscow', country: 'RU', population: 11.5, twinCities: ['Ankara', 'Manila', 'Tallinn'] },
-        { city: 'Singapore', country: 'SG', population: 5.3, twinCities: ['Batam', 'Johor Bahru'] },
-        { city: 'Rio de Janeiro', country: 'BR', population: 6.3, twinCities: ['Maryland', 'Beijing'] },
-        { city: 'Hong Kong', country: 'HK', population: 7.1, twinCities: [] },
-        { city: 'Manchester', country: 'UK', population: 2.5, twinCities: ['Los Angeles', 'Wuhan'] }
+        { city: 'London', country: 'UK', population: 8.3, climate: 4, twinCities: ['Beijing', 'Tokyo', 'Paris'] },
+        { city: 'Moscow', country: 'RU', population: 11.5, climate: 1, twinCities: ['Ankara', 'Manila', 'Tallinn'] },
+        { city: 'Singapore', country: 'SG', population: 5.3, climate: 8, twinCities: ['Batam', 'Johor Bahru'] },
+        { city: 'Rio de Janeiro', country: 'BR', population: 6.3, climate: 9, twinCities: ['Maryland', 'Beijing'] },
+        { city: 'Hong Kong', country: 'HK', population: 7.1, climate: 2, twinCities: [] },
+        { city: 'Manchester', country: 'UK', population: 2.5, climate: 18, twinCities: ['Los Angeles', 'Wuhan'] }
     ];
 
     beforeEach(function() {
@@ -314,85 +314,97 @@ describe('ngCrossfilter', function() {
             expect(collection[4].value).toEqual(2);
         });
 
-        it('Should be able to use the fuzzy filter;', function() {
+        describe('Bundled Filters', function() {
 
-            expect($service.getCount()).toEqual(6);
+            it('Should be able to use the fuzzy filter;', function() {
 
-            $service.filterBy('city', 'M', $service.filters.fuzzy());
-            expect($service.getCount()).toEqual(2);
-            $service.unfilterBy('city');
+                expect($service.getCount()).toEqual(6);
 
-            expect($service.getCount()).toEqual(6);
-            $service.filterBy('city', 'S', $service.filters.fuzzy());
-            expect($service.getCount()).toEqual(1);
-            $service.unfilterBy('city');
+                $service.filterBy('city', 'M', $service.filters.fuzzy());
+                expect($service.getCount()).toEqual(2);
+                $service.unfilterBy('city');
 
-            expect($service.getCount()).toEqual(6);
-            $service.filterBy('city', 'S', $service.filters.fuzzy('i'));
-            expect($service.getCount()).toEqual(3);
+                expect($service.getCount()).toEqual(6);
+                $service.filterBy('city', 'S', $service.filters.fuzzy());
+                expect($service.getCount()).toEqual(1);
+                $service.unfilterBy('city');
 
-        });
+                expect($service.getCount()).toEqual(6);
+                $service.filterBy('city', 'S', $service.filters.fuzzy('i'));
+                expect($service.getCount()).toEqual(3);
 
-        it('Should be able to use the regexp filter;', function() {
+            });
 
-            expect($service.getCount()).toEqual(6);
+            it('Should be able to use the regexp filter;', function() {
 
-            $service.filterBy('city', /^m/i, $service.filters.regexp());
-            expect($service.getCount()).toEqual(2);
-            $service.unfilterBy('city');
+                expect($service.getCount()).toEqual(6);
 
-            $service.filterBy('city', /o$/, $service.filters.regexp());
-            expect($service.getCount()).toEqual(1);
-            $service.unfilterBy('city');
+                $service.filterBy('city', /^m/i, $service.filters.regexp());
+                expect($service.getCount()).toEqual(2);
+                $service.unfilterBy('city');
 
-            $service.filterBy('city', new RegExp('o$'), $service.filters.regexp());
-            expect($service.getCount()).toEqual(1);
+                $service.filterBy('city', /o$/, $service.filters.regexp());
+                expect($service.getCount()).toEqual(1);
+                $service.unfilterBy('city');
 
-            expect(function() {
-                $service.filterBy('city', 'o$', $service.filters.regexp());
-            }).toThrow("ngCrossfilter: Expression must be an instance of RegExp.");
+                $service.filterBy('city', new RegExp('o$'), $service.filters.regexp());
+                expect($service.getCount()).toEqual(1);
 
-        });
+                expect(function() {
+                    $service.filterBy('city', 'o$', $service.filters.regexp());
+                }).toThrow("ngCrossfilter: Expression must be an instance of RegExp.");
 
-        it('Should be able to use the inArray filter;', function() {
+            });
 
-            expect($service.getCount()).toEqual(6);
+            it('Should be able to use the bitwise filter;', function() {
 
-            $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], $service.filters.inArray());
-            expect($service.getCount()).toEqual(1);
-            $service.unfilterBy('twinCities');
+                expect($service.getCount()).toEqual(6);
+                $service.filterBy('climate', 2, $service.filters.bitwise());
+                expect($service.getCount()).toEqual(2);
 
-            expect($service.getCount()).toEqual(6);
+            });
 
-            $service.filterBy('twinCities', ['Beijing'], $service.filters.inArray());
-            expect($service.getCount()).toEqual(2);
-            $service.unfilterBy('twinCities');
+            it('Should be able to use the inArray filter;', function() {
 
-            expect($service.getCount()).toEqual(6);
+                expect($service.getCount()).toEqual(6);
 
-            $service.filterBy('twinCities', 'Beijing', $service.filters.inArray());
-            expect($service.getCount()).toEqual(2);
-            $service.unfilterBy('twinCities');
+                $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], $service.filters.inArray());
+                expect($service.getCount()).toEqual(1);
+                $service.unfilterBy('twinCities');
 
-            expect($service.getCount()).toEqual(6);
+                expect($service.getCount()).toEqual(6);
 
-            $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('every'));
-            expect($service.getCount()).toEqual(0);
-            $service.unfilterBy('twinCities');
+                $service.filterBy('twinCities', ['Beijing'], $service.filters.inArray());
+                expect($service.getCount()).toEqual(2);
+                $service.unfilterBy('twinCities');
 
-            expect($service.getCount()).toEqual(6);
+                expect($service.getCount()).toEqual(6);
 
-            $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('some'));
-            expect($service.getCount()).toEqual(3);
-            $service.unfilterBy('twinCities');
+                $service.filterBy('twinCities', 'Beijing', $service.filters.inArray());
+                expect($service.getCount()).toEqual(2);
+                $service.unfilterBy('twinCities');
 
-            expect(function() {
-                $service.filterBy('city', 'Tokyo', $service.filters.inArray());
-            }).toThrow("ngCrossfilter: Using inArray filter on a non-array like property.");
+                expect($service.getCount()).toEqual(6);
 
-            expect(function() {
-                $service.filterBy('twinCities', 'Tokyo', $service.filters.inArray('pfft!'));
-            }).toThrow("ngCrossfilter: You must pass either 'every' or 'some'.");
+                $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('every'));
+                expect($service.getCount()).toEqual(0);
+                $service.unfilterBy('twinCities');
+
+                expect($service.getCount()).toEqual(6);
+
+                $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('some'));
+                expect($service.getCount()).toEqual(3);
+                $service.unfilterBy('twinCities');
+
+                expect(function() {
+                    $service.filterBy('city', 'Tokyo', $service.filters.inArray());
+                }).toThrow("ngCrossfilter: Using inArray filter on a non-array like property.");
+
+                expect(function() {
+                    $service.filterBy('twinCities', 'Tokyo', $service.filters.inArray('pfft!'));
+                }).toThrow("ngCrossfilter: You must pass either 'every' or 'some'.");
+
+            });
 
         });
 
