@@ -29,7 +29,7 @@ For timing information and other useful information for development, you can ena
 $scope.$ngc.debugMode(true);
 ```
 
-Once you've configured your Crossfilter collection, you can begin filtering and sorting. From within your view you should reference your collection &ndash; in our case, `$scope.words`.
+Once you've configured your Crossfilter collection, you can begin filtering and sorting. From within your view you should reference your collection &ndash; in our case, `$ngc`.
 
 ```html
 <button ng-click="$ngc.filterBy('word', word)">Filter</button>
@@ -181,7 +181,7 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  **Bitwise Filter**
 
- Simple filter using the bitwise `&` operator against the collection &ndash.
+ Simple filter using the bitwise `&` operator against the collection.
 
  ```javascript
  $ngc.filterBy('climate', 2, $service.filters.bitwise());
