@@ -400,6 +400,13 @@ describe('ngCrossfilter', function() {
                 $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
                 expect($service.getCount()).toEqual(1);
 
+                $service.unfilterBy('added');
+                expect($service.getCount()).toEqual(6);
+
+                expect(function() {
+                    $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('blah'));
+                }).toThrow("ngCrossfilter: Date/Time parsing appears to be using invalid format.");
+
             });
 
             it('Should be able to use the inArray filter;', function() {

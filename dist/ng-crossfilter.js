@@ -1,4 +1,4 @@
-(function($angular, $crossfilter, $array, $console, $moment) {
+(function($angular, $crossfilter, $array, $console, $moment, $math) {
 
     "use strict";
 
@@ -921,4 +921,4 @@
 
     }]);
 
-})(window.angular, window.crossfilter, window.Array, window.console, window.moment);
+})(window.angular, window.crossfilter, window.Array, window.console, window.moment, window.Math);
