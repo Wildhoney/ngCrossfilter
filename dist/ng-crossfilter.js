@@ -291,8 +291,8 @@
 
                     /**
                      * @method inArray
-                     * @param expected {String}
-                     * @param actual {String}
+                     * @param expected {String|Number|Array}
+                     * @param actual {Array}
                      * @return {Boolean}
                      */
                     return function inArray(expected, actual) {
