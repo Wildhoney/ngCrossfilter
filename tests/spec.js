@@ -3,12 +3,12 @@ describe('ngCrossfilter', function() {
     var $service, $filter, $rootScope;
 
     var $collection = [
-        { city: 'London', country: 'UK', population: 8.3 },
-        { city: 'Moscow', country: 'RU', population: 11.5 },
-        { city: 'Singapore', country: 'SG', population: 5.3 },
-        { city: 'Rio de Janeiro', country: 'BR', population: 6.3 },
-        { city: 'Hong Kong', country: 'HK', population: 7.1 },
-        { city: 'Manchester', country: 'UK', population: 2.5 }
+        { city: 'London', country: 'UK', population: 8.3, twinCities: ['Beijing', 'Tokyo', 'Paris'] },
+        { city: 'Moscow', country: 'RU', population: 11.5, twinCities: ['Ankara', 'Manila', 'Tallinn'] },
+        { city: 'Singapore', country: 'SG', population: 5.3, twinCities: ['Batam', 'Johor Bahru'] },
+        { city: 'Rio de Janeiro', country: 'BR', population: 6.3, twinCities: ['Maryland', 'Beijing'] },
+        { city: 'Hong Kong', country: 'HK', population: 7.1, twinCities: [] },
+        { city: 'Manchester', country: 'UK', population: 2.5, twinCities: ['Los Angeles', 'Wuhan'] }
     ];
 
     beforeEach(function() {
@@ -337,16 +337,46 @@ describe('ngCrossfilter', function() {
 
             expect($service.getCount()).toEqual(6);
 
-            $service.filterBy('city', null, $service.filters.regexp(/^m/i));
+            $service.filterBy('city', /^m/i, $service.filters.regexp());
             expect($service.getCount()).toEqual(2);
             $service.unfilterBy('city');
 
-            $service.filterBy('city', null, $service.filters.regexp(/o$/));
+            $service.filterBy('city', /o$/, $service.filters.regexp());
             expect($service.getCount()).toEqual(1);
             $service.unfilterBy('city');
 
-            $service.filterBy('city', null, $service.filters.regexp(new RegExp('o$')));
+            $service.filterBy('city', new RegExp('o$'), $service.filters.regexp());
             expect($service.getCount()).toEqual(1);
+
+            expect(function() {
+                $service.filterBy('city', 'o$', $service.filters.regexp());
+            }).toThrow("ngCrossfilter: Expression must be an instance of RegExp.");
+
+        });
+
+        it('Should be able to use the inArray filter;', function() {
+
+            expect($service.getCount()).toEqual(6);
+
+            $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], $service.filters.inArray());
+            expect($service.getCount()).toEqual(1);
+            $service.unfilterBy('twinCities');
+
+            expect($service.getCount()).toEqual(6);
+
+            $service.filterBy('twinCities', ['Beijing'], $service.filters.inArray());
+            expect($service.getCount()).toEqual(2);
+            $service.unfilterBy('twinCities');
+
+            expect($service.getCount()).toEqual(6);
+
+            $service.filterBy('twinCities', 'Beijing', $service.filters.inArray());
+            expect($service.getCount()).toEqual(2);
+            $service.unfilterBy('twinCities');
+
+            expect(function() {
+                $service.filterBy('city', 'Tokyo', $service.filters.inArray());
+            }).toThrow("ngCrossfilter: Using inArray filter on a non-array like property.");
 
         });
 

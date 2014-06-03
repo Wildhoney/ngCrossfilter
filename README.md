@@ -160,11 +160,10 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  With the regular expression filtering you can specify an expression to filter on.
 
  ```javascript
- $service.filterBy('city', null, $service.filters.regexp(/o$/));
+ $service.filterBy('city', /o$/, $service.filters.regexp());
  ```
 
- You can pass either an expression or an actual `RegExp` object to the filter. In the *expected* parameter &ndash; second parameter which is `null`, you can either pass the expected value, or simply pass `null` because in the regular expression filter, the expected parameter is disregarded in favour of the expression itself.
-
+ You can pass either an expression or an actual `RegExp` object to the filter.
 
 Other Methods
 -------------

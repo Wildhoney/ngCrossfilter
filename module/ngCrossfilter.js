@@ -235,10 +235,9 @@
 
                 /**
                  * @method regexp
-                 * @param expression {String}
                  * @return {Function}
                  */
-                regexp: function regexpFilter(expression) {
+                regexp: function regexpFilter() {
 
                     /**
                      * @method regexp
@@ -247,7 +246,54 @@
                      * @return {Boolean}
                      */
                     return function regexp(expected, actual) {
-                        return !!actual.match(expression);
+
+                        if (!(expected instanceof $window.RegExp)) {
+                            _throwException("Expression must be an instance of RegExp");
+                        }
+
+                        return !!actual.match(expected);
+
+                    }
+
+                },
+
+                /**
+                 * @method inArray
+                 * @return {Function}
+                 */
+                inArray: function inArrayFilter() {
+
+                    /**
+                     * @method inArray
+                     * @param expected {String}
+                     * @param actual {String}
+                     * @return {Boolean}
+                     */
+                    return function inArray(expected, actual) {
+
+                        if (typeof $array.isArray === 'function') {
+
+                            if (!$array.isArray(actual)) {
+                                _throwException("Using inArray filter on a non-array like property");
+                            }
+
+                            if (!$array.isArray(expected)) {
+
+                                // Convert the expected into an array if it isn't already.
+                                expected = [expected];
+
+                            }
+
+                        }
+
+                        if (typeof [].every !== 'function') {
+                            _throwException("Browser does not support `every` method");
+                        }
+
+                        return expected.every(function every(property) {
+                            return (actual.indexOf(property) !== -1);
+                        });
+
                     }
 
                 }
