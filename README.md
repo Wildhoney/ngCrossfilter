@@ -18,7 +18,7 @@ Getting Started
 Firstly you need to initialise Crossfilter with your collection of items.
 
 ```javascript
-$scope.words = new Crossfilter(response.data, 'id', 'persistent', ['id', 'name', 'age']);
+$scope.words = new Crossfilter(response.data, 'id', 'persistent', ['name', 'age']);
 ```
 
 `ngCrossfilter`'s constructor accepts four parameters &ndash; with only the first being mandatory. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; the third parameter allows you to change the <a href="#custom-filtering">filtering strategy</a> &ndash; either `persistent` or `transient`, whereas the fourth parameter allows you to specify which properties to create dimensions with.
@@ -144,13 +144,13 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  With the [fuzzy filter](http://en.wikipedia.org/wiki/Fuzzy_logic) you can filter with incomplete expressions.
 
  ```javascript
- $service.filterBy('city', 'M', $service.filters.fuzzy());
+ $ngc.filterBy('city', 'M', $ngc.filters.fuzzy());
  ```
 
  You will notice that the `fuzzy` method is invoking the method immediately &ndash; this allows you to pass valid regular expression flags for insensitivity, et cetera...
 
  ```javascript
- $service.filterBy('city', 'M', $service.filters.fuzzy('i'));
+ $ngc.filterBy('city', 'M', $ngc.filters.fuzzy('i'));
  ```
 
  By default no flags will be defined for the regular expression matching.
@@ -160,7 +160,7 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  With the regular expression filtering you can specify an expression to filter on.
 
  ```javascript
- $service.filterBy('city', /o$/, $service.filters.regexp());
+ $ngc.filterBy('city', /o$/, $ngc.filters.regexp());
  ```
 
  You can pass either an expression or an actual `RegExp` object to the filter.
@@ -170,15 +170,13 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  With the `inArray` filter you can check an array against an array &ndash; using the `some` and `every` array methods &ndash; please check the [browser support](http://kangax.github.io/compat-table/es5/) before using it.
 
  ```javascript
- $service.filterBy('twinCities', ['Beijing', 'Tokyo'],
-                    $service.filters.inArray());
+ $ngc.filterBy('twinCities', ['Beijing', 'Tokyo'], $ngc.filters.inArray());
  ```
 
  By default the `inArray` filter uses the `every` method, which means in the above example only entries where `twinCities` has both Beijing and Tokyo will be returned &ndash; you can use `some` instead by passing it into `inArray` filter method.
 
  ```javascript
- $service.filterBy('twinCities', ['Beijing', 'Tokyo'],
-                    $service.filters.inArray('some'));
+ $ngc.filterBy('twinCities', ['Beijing', 'Tokyo'], $ngc.filters.inArray('some'));
  ```
 
 Other Methods
