@@ -1,4 +1,4 @@
-(function($angular, $crossfilter, $array, $console) {
+(function($angular, $crossfilter, $array, $console, $moment) {
 
     "use strict";
 
@@ -230,6 +230,39 @@
                         var regExp = new $window.RegExp(expected, flags);
                         return !!actual.match(regExp);
                     };
+
+                },
+
+                /**
+                 * @method dateTimeRange
+                 * @param format {String}
+                 * @return {Function}
+                 */
+                dateTimeRange: function dateTimeRangeFilter(format) {
+
+                    /**
+                     * @method fuzzy
+                     * @param expected {String}
+                     * @param actual {String}
+                     * @return {Boolean}
+                     */
+                    return function dateTimeRange(expected, actual) {
+
+                        if (typeof $moment === 'undefined') {
+
+                            // Ensure we have the Moment.js library installed.
+                            _throwException("You need to install Moment.js to use dateTimeRange");
+
+                        }
+
+                        // Convert each date/time into a Unix timestamp.
+                        var start   = $moment(expected[0], format).unix(),
+                            end     = $moment(expected[1], format).unix(),
+                            current = $moment(actual, format).unix();
+
+                        return (current >= start && current <= end);
+
+                    }
 
                 },
 
@@ -888,4 +921,4 @@
 
     }]);
 
-})(window.angular, window.crossfilter, window.Array, window.console);
+})(window.angular, window.crossfilter, window.Array, window.console, window.moment);

@@ -3,12 +3,30 @@ describe('ngCrossfilter', function() {
     var $service, $filter, $rootScope;
 
     var $collection = [
-        { city: 'London', country: 'UK', population: 8.3, climate: 4, twinCities: ['Beijing', 'Tokyo', 'Paris'] },
-        { city: 'Moscow', country: 'RU', population: 11.5, climate: 1, twinCities: ['Ankara', 'Manila', 'Tallinn'] },
-        { city: 'Singapore', country: 'SG', population: 5.3, climate: 8, twinCities: ['Batam', 'Johor Bahru'] },
-        { city: 'Rio de Janeiro', country: 'BR', population: 6.3, climate: 9, twinCities: ['Maryland', 'Beijing'] },
-        { city: 'Hong Kong', country: 'HK', population: 7.1, climate: 2, twinCities: [] },
-        { city: 'Manchester', country: 'UK', population: 2.5, climate: 18, twinCities: ['Los Angeles', 'Wuhan'] }
+        { city: 'London', country: 'UK', population: 8.3, climate: 4,
+            added: '2014-01-01',
+            twinCities: ['Beijing', 'Tokyo', 'Paris'] },
+
+        { city: 'Moscow', country: 'RU', population: 11.5, climate: 1,
+            added: '2014-05-23',
+            twinCities: ['Ankara', 'Manila', 'Tallinn'] },
+
+        { city: 'Singapore', country: 'SG', population: 5.3, climate: 8,
+            added: '2014-02-12',
+            twinCities: ['Batam', 'Johor Bahru'] },
+
+        { city: 'Rio de Janeiro', country: 'BR', population: 6.3, climate: 9,
+            added: '2013-12-16',
+            twinCities: ['Maryland', 'Beijing'] },
+
+        { city: 'Hong Kong', country: 'HK', population: 7.1, climate: 2,
+            added: '2001-11-04',
+            twinCities: [] },
+
+        { city: 'Manchester', country: 'UK', population: 2.5, climate: 18,
+            added: '2012-11-14',
+            twinCities: ['Los Angeles', 'Wuhan'] }
+
     ];
 
     beforeEach(function() {
@@ -367,6 +385,20 @@ describe('ngCrossfilter', function() {
                 expect($service.getCount()).toEqual(6);
                 $service.filterBy('climate', 2, $service.filters.bitwise('!'));
                 expect($service.getCount()).toEqual(4);
+
+            });
+
+            it('Should be able to use the dateTime range filter;', function() {
+
+                expect($service.getCount()).toEqual(6);
+                $service.filterBy('added', ['2014-01-01', '2014-07-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                expect($service.getCount()).toEqual(3);
+
+                $service.unfilterBy('added');
+
+                expect($service.getCount()).toEqual(6);
+                $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                expect($service.getCount()).toEqual(1);
 
             });
 
