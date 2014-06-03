@@ -167,7 +167,7 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  **InArray Filter**
 
- With the `inArray` filter you can check an array against an array &ndash; using the `some` and `every` array methods &ndash; please check the [browser support](http://caniuse.com/) before using it.
+ With the `inArray` filter you can check an array against an array &ndash; using the `some` and `every` array methods &ndash; please check the [browser support](http://kangax.github.io/compat-table/es5/) before using it.
 
  ```javascript
  $service.filterBy('twinCities', ['Beijing', 'Tokyo'],
