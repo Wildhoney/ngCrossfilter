@@ -179,6 +179,17 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  $ngc.filterBy('twinCities', ['Beijing', 'Tokyo'], $ngc.filters.inArray('some'));
  ```
 
+ **DateTime Filter**
+
+ Allows you to select a date/time range irrespective of the format of the time and/or date &ndash; [Moment.js](http://momentjs.com/) is a requirement to use this filter.
+
+ ```javascript
+ $ngc.filterBy('added', ['2012-01-01', '2012-12-01'],
+                        $service.filters.dateTimeRange('YYYY-MM-DD'));
+ ```
+
+ The first and only parameter of the `dateTimeRange` filter allows you to specify the exact format &ndash; [see Moment.js documentation](http://momentjs.com/docs/#/parsing/string-format/).
+
  **Bitwise Filter**
 
  Simple filter using the bitwise `&` operator against the collection.
