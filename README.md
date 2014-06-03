@@ -181,10 +181,16 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  **Bitwise Filter**
 
- Simple filter using the bitwise `&` operator against the collection.
+ Simple filter using the bitwise `&` operator against the collection &ndash.
 
  ```javascript
  $ngc.filterBy('climate', 2, $service.filters.bitwise());
+ ```
+
+ You can invert the filtering by passing an exclamation mark as the first argument to the `bitwise` method.
+
+ ```javascript
+ $ngc.filterBy('climate', 2, $service.filters.bitwise('!'));
  ```
 
 Other Methods

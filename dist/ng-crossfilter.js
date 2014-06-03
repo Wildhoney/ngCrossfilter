@@ -258,6 +258,31 @@
                 },
 
                 /**
+                 * @method bitwise
+                 * @param flag {String}
+                 * @return {Function}
+                 */
+                bitwise: function bitwiseFilter(flag) {
+
+                    /**
+                     * @method bitwise
+                     * @param expected {Number}
+                     * @param actual {Number}
+                     * @return {Boolean}
+                     */
+                    return function bitwise(expected, actual) {
+
+                        if (flag === '!') {
+                            return !(expected & actual);
+                        }
+
+                        return (expected & actual);
+
+                    }
+
+                },
+
+                /**
                  * @method inArray
                  * @param method {String}
                  * @return {Function}
@@ -295,7 +320,7 @@
                             _throwException("Browser does not support `every` and/or `some` methods");
                         }
 
-                        return expected[method || 'every'](function every(property) {
+                        return expected[method || 'every'](function everySome(property) {
                             return (actual.indexOf(property) !== -1);
                         });
 

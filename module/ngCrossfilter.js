@@ -259,9 +259,10 @@
 
                 /**
                  * @method bitwise
+                 * @param flag {String}
                  * @return {Function}
                  */
-                bitwise: function bitwiseFilter() {
+                bitwise: function bitwiseFilter(flag) {
 
                     /**
                      * @method bitwise
@@ -270,7 +271,13 @@
                      * @return {Boolean}
                      */
                     return function bitwise(expected, actual) {
-                        return expected & actual;
+
+                        if (flag === '!') {
+                            return !(expected & actual);
+                        }
+
+                        return (expected & actual);
+
                     }
 
                 },

@@ -362,6 +362,12 @@ describe('ngCrossfilter', function() {
                 $service.filterBy('climate', 2, $service.filters.bitwise());
                 expect($service.getCount()).toEqual(2);
 
+                $service.unfilterBy('climate');
+
+                expect($service.getCount()).toEqual(6);
+                $service.filterBy('climate', 2, $service.filters.bitwise('!'));
+                expect($service.getCount()).toEqual(4);
+
             });
 
             it('Should be able to use the inArray filter;', function() {
