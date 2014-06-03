@@ -259,9 +259,10 @@
 
                 /**
                  * @method inArray
+                 * @param method {String}
                  * @return {Function}
                  */
-                inArray: function inArrayFilter() {
+                inArray: function inArrayFilter(method) {
 
                     /**
                      * @method inArray
@@ -286,11 +287,15 @@
 
                         }
 
-                        if (typeof [].every !== 'function') {
-                            _throwException("Browser does not support `every` method");
+                        if (method && ['every', 'some'].indexOf(method) === -1) {
+                            _throwException("You must pass either 'every' or 'some'");
                         }
 
-                        return expected.every(function every(property) {
+                        if (typeof [].every !== 'function' || typeof [].some !== 'function') {
+                            _throwException("Browser does not support `every` and/or `some` methods");
+                        }
+
+                        return expected[method || 'every'](function every(property) {
                             return (actual.indexOf(property) !== -1);
                         });
 

@@ -374,9 +374,25 @@ describe('ngCrossfilter', function() {
             expect($service.getCount()).toEqual(2);
             $service.unfilterBy('twinCities');
 
+            expect($service.getCount()).toEqual(6);
+
+            $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('every'));
+            expect($service.getCount()).toEqual(0);
+            $service.unfilterBy('twinCities');
+
+            expect($service.getCount()).toEqual(6);
+
+            $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('some'));
+            expect($service.getCount()).toEqual(3);
+            $service.unfilterBy('twinCities');
+
             expect(function() {
                 $service.filterBy('city', 'Tokyo', $service.filters.inArray());
             }).toThrow("ngCrossfilter: Using inArray filter on a non-array like property.");
+
+            expect(function() {
+                $service.filterBy('twinCities', 'Tokyo', $service.filters.inArray('pfft!'));
+            }).toThrow("ngCrossfilter: You must pass either 'every' or 'some'.");
 
         });
 
