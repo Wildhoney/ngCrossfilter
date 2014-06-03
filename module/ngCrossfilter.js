@@ -231,6 +231,25 @@
                         return !!actual.match(regExp);
                     };
 
+                },
+
+                /**
+                 * @method regexp
+                 * @param expression {String}
+                 * @return {Function}
+                 */
+                regexp: function regexpFilter(expression) {
+
+                    /**
+                     * @method regexp
+                     * @param expected {String}
+                     * @param actual {String}
+                     * @return {Boolean}
+                     */
+                    return function regexp(expected, actual) {
+                        return !!actual.match(expression);
+                    }
+
                 }
 
             },
