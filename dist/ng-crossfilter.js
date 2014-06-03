@@ -1,4 +1,4 @@
-(function($angular, $crossfilter, $array, $console, $moment, $math) {
+(function($angular, $crossfilter, $array, $console, $moment) {
 
     "use strict";
 
@@ -259,6 +259,13 @@
                         var start   = $moment(expected[0], format).unix(),
                             end     = $moment(expected[1], format).unix(),
                             current = $moment(actual, format).unix();
+
+                        if (start < 0 || end < 0 || current < 0) {
+
+                            // Ensure we're not dealing with overtly incorrect dates/times.
+                            _throwException("Date/Time parsing appears to be using invalid format");
+
+                        }
 
                         return (current >= start && current <= end);
 
@@ -921,4 +928,4 @@
 
     }]);
 
-})(window.angular, window.crossfilter, window.Array, window.console, window.moment, window.Math);
+})(window.angular, window.crossfilter, window.Array, window.console, window.moment);
