@@ -45,31 +45,6 @@ describe('ngCrossfilter', function() {
 
     });
 
-    describe('Filter', function() {
-
-        it('Should be able to return standard array if one is passed;', function() {
-            var collection = $filter('crossfilter')($collection);
-            expect(collection.length).toEqual(6);
-        });
-
-        it('Should be able to return standard array if Crossfilter passed;', function() {
-            var collection = $filter('crossfilter')($service);
-            expect(collection.length).toEqual(6);
-        });
-
-        it('Should be able to increment iteration and use cache;', function() {
-            expect($service._iterations.previous).toEqual(1);
-            expect($service._iterations.current).toEqual(1);
-            expect($service._cacheCollection.length).toEqual(0);
-            $service.filterBy('country', 'SG');
-            $filter('crossfilter')($service);
-            expect($service._iterations.previous).toEqual(2);
-            expect($service._iterations.current).toEqual(2);
-            expect($service._cacheCollection.length).toEqual(1);
-        });
-
-    });
-
     describe('Service', function() {
 
         it('Should be able to assume the primary key;', function() {
@@ -128,8 +103,8 @@ describe('ngCrossfilter', function() {
         });
 
         it('Should be able to initialise the collection;', function() {
-            expect(typeof $service._collection).toEqual('object');
-            expect($service._collection.dimension).toBeDefined();
+            expect(typeof $service._crossfilter).toEqual('object');
+            expect($service._crossfilter.dimension).toBeDefined();
         });
 
         it('Should be able to determine when the collection is not an array;', function() {
@@ -159,9 +134,9 @@ describe('ngCrossfilter', function() {
         });
 
         it('Should be able to filter by the country name;', function() {
-            expect($service.getCollection().length).toEqual(6);
+            expect($service.length).toEqual(6);
             $service.filterBy('country', 'UK');
-            expect($service.getCollection().length).toEqual(2);
+            expect($service.length).toEqual(2);
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
@@ -176,40 +151,35 @@ describe('ngCrossfilter', function() {
 
         it('Should be able to remove the applied filter;', function() {
             $service.filterBy('country', 'UK');
-            expect($service.getCollection().length).toEqual(2);
+            expect($service.length).toEqual(2);
             $service.filterBy('city', 'London');
-            expect($service.getCollection().length).toEqual(1);
+            expect($service.length).toEqual(1);
             $service.unfilterBy('city');
-            expect($service.getCollection().length).toEqual(2);
+            expect($service.length).toEqual(2);
             $service.unfilterBy('country');
-            expect($service.getCollection().length).toEqual(6);
+            expect($service.length).toEqual(6);
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
         it('Should be able to remove all applied filters;', function() {
             $service.filterBy('country', 'UK');
             $service.filterBy('city', 'London');
-            expect($service.getCollection().length).toEqual(1);
+            expect($service.length).toEqual(1);
             $service.unfilterAll();
-            expect($service.getCollection().length).toEqual(6);
+            expect($service.length).toEqual(6);
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
-        });
-
-        it('Should be able to limit the amount of models returned;', function() {
-            expect($service.getCollection(4).length).toEqual(4);
-            expect($service.getModels(3).length).toEqual(3);
         });
 
         it('Should be able to apply a range filter;', function() {
             $service.filterBy('population', [7, 12]);
-            expect($service.getCollection().length).toEqual(3);
+            expect($service.length).toEqual(3);
         });
 
         it('Should be able to apply a custom filter;', function() {
-            $service.filterBy('country', 'UK', function(expected, actual) {
+                $service.filterBy('country', 'UK', function(expected, actual) {
                 return expected !== actual;
             });
-            expect($service.getCollection().length).toEqual(4);
+            expect($service.length).toEqual(4);
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
@@ -217,7 +187,7 @@ describe('ngCrossfilter', function() {
 
             $service.filterBy('city', 'London');
             $service.filterBy('country', 'UK');
-            expect($service.getCollection().length).toEqual(1);
+            expect($service.length).toEqual(1);
 
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, null, $service.STRATEGY_TRANSIENT);
@@ -225,9 +195,9 @@ describe('ngCrossfilter', function() {
 
             $service.filterBy('city', 'London');
             $service.filterBy('country', 'UK');
-            expect($service.getCollection().length).toEqual(2);
+            expect($service.length).toEqual(2);
             $service.unfilterAll();
-            expect($service.getCollection().length).toEqual(6);
+            expect($service.length).toEqual(6);
 
         });
 
@@ -244,39 +214,39 @@ describe('ngCrossfilter', function() {
 
         it('Should be able to sort the collection;', function() {
             $service.sortBy('country');
-            expect($service.getModel(0).country).toEqual('BR');
+            expect($service[0].country).toEqual('BR');
             $service.sortBy('country', false);
-            expect($service.getModel(0).country).toEqual('UK');
+            expect($service[0].country).toEqual('UK');
             $service.sortBy('country', true);
-            expect($service.getModel(0).country).toEqual('BR');
+            expect($service.first().country).toEqual('BR');
             $service.sortBy('country', true);
-            expect($service.getLast().country).toEqual('UK');
+            expect($service.last().country).toEqual('UK');
         });
 
         it('Should be able to reverse the sort when sorting by same property;', function() {
             $service.sortBy('country');
-            expect($service.getModel(0).country).toEqual('BR');
+            expect($service[0].country).toEqual('BR');
             $service.sortBy('country');
-            expect($service.getModel(0).country).toEqual('UK');
+            expect($service[0].country).toEqual('UK');
             $service.sortBy('country');
-            expect($service.getModel(0).country).toEqual('BR');
+            expect($service[0].country).toEqual('BR');
         });
 
         it('Should be able to unsort the collection;', function() {
             $service.sortBy('population', false);
-            expect($service.getModel(0).country).toEqual('RU');
+            expect($service[0].country).toEqual('RU');
             $service.unsortBy('population');
-            expect($service.getModel(0).country).toEqual('HK');
+            expect($service[0].country).toEqual('HK');
         });
 
         it('Should be able to unsort the collection and maintaining order;', function() {
             $service.sortBy('population', false);
-            expect($service.getModel(0).country).toEqual('RU');
+            expect($service[0].country).toEqual('RU');
             $service.unsortBy('population', true);
-            expect($service.getModel(0).country).toEqual('SG');
+            expect($service[0].country).toEqual('SG');
             $service.sortBy('population', false);
             $service.unsortBy('population');
-            expect($service.getModel(0).country).toEqual('HK');
+            expect($service[0].country).toEqual('HK');
         });
 
         it('Should be able to add a custom dimension and filter on it;', function() {
@@ -284,7 +254,7 @@ describe('ngCrossfilter', function() {
                 return model.country + ': ' + model.city;
             });
             $service.filterBy('countryCity', 'UK: London');
-            expect($service.getCollection().length).toEqual(1);
+            expect($service.length).toEqual(1);
         });
 
         it('Should be able to delete a dimension;', function() {
@@ -299,15 +269,15 @@ describe('ngCrossfilter', function() {
         it('Should be able to add a model and filter on it;', function() {
             var number = $service.addModel({ city: 'St. Petersburg', country: 'RU', population: 4.8 });
             expect(number).toEqual(1);
-            expect($service.getCollection().length).toEqual(7);
+            expect($service.length).toEqual(7);
             $service.filterBy('country', 'RU');
-            expect($service.getModels().length).toEqual(2);
+            expect($service.length).toEqual(2);
         });
 
         it('Should be able to remove a model;', function() {
             var model = { city: 'Hong Kong', country: 'HK', population: 7.1 };
             $service.deleteModel(model);
-            expect($service.getCount()).toEqual(5);
+            expect($service.length).toEqual(5);
         });
 
         it('Should be able to validate the primary key when deleting a model;', function() {
@@ -331,7 +301,7 @@ describe('ngCrossfilter', function() {
         });
 
         it('Should be able to group by on any given property;', function() {
-            expect($service.getCount()).toEqual(6);
+            expect($service.length).toEqual(6);
             var collection = $service.groupBy('country');
             expect(collection[3].value).toEqual(1);
             expect(collection[4].value).toEqual(2);
@@ -341,37 +311,37 @@ describe('ngCrossfilter', function() {
 
             it('Should be able to use the fuzzy filter;', function() {
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 $service.filterBy('city', 'M', $service.filters.fuzzy());
-                expect($service.getCount()).toEqual(2);
+                expect($service.length).toEqual(2);
                 $service.unfilterBy('city');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
                 $service.filterBy('city', 'S', $service.filters.fuzzy());
-                expect($service.getCount()).toEqual(1);
+                expect($service.length).toEqual(1);
                 $service.unfilterBy('city');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
                 $service.filterBy('city', 'S', $service.filters.fuzzy('i'));
-                expect($service.getCount()).toEqual(3);
+                expect($service.length).toEqual(3);
 
             });
 
             it('Should be able to use the regexp filter;', function() {
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 $service.filterBy('city', /^m/i, $service.filters.regexp());
-                expect($service.getCount()).toEqual(2);
+                expect($service.length).toEqual(2);
                 $service.unfilterBy('city');
 
                 $service.filterBy('city', /o$/, $service.filters.regexp());
-                expect($service.getCount()).toEqual(1);
+                expect($service.length).toEqual(1);
                 $service.unfilterBy('city');
 
                 $service.filterBy('city', new RegExp('o$'), $service.filters.regexp());
-                expect($service.getCount()).toEqual(1);
+                expect($service.length).toEqual(1);
 
                 expect(function() {
                     $service.filterBy('city', 'o$', $service.filters.regexp());
@@ -381,32 +351,32 @@ describe('ngCrossfilter', function() {
 
             it('Should be able to use the bitwise filter;', function() {
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
                 $service.filterBy('climate', 2, $service.filters.bitwise());
-                expect($service.getCount()).toEqual(2);
+                expect($service.length).toEqual(2);
 
                 $service.unfilterBy('climate');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
                 $service.filterBy('climate', 2, $service.filters.bitwise('!'));
-                expect($service.getCount()).toEqual(4);
+                expect($service.length).toEqual(4);
 
             });
 
             it('Should be able to use the dateTime range filter;', function() {
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
                 $service.filterBy('added', ['2014-01-01', '2014-07-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
-                expect($service.getCount()).toEqual(3);
+                expect($service.length).toEqual(3);
 
                 $service.unfilterBy('added');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
                 $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
-                expect($service.getCount()).toEqual(1);
+                expect($service.length).toEqual(1);
 
                 $service.unfilterBy('added');
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 expect(function() {
                     $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('blah'));
@@ -416,34 +386,34 @@ describe('ngCrossfilter', function() {
 
             it('Should be able to use the inArray filter;', function() {
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], $service.filters.inArray());
-                expect($service.getCount()).toEqual(1);
+                expect($service.length).toEqual(1);
                 $service.unfilterBy('twinCities');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 $service.filterBy('twinCities', ['Beijing'], $service.filters.inArray());
-                expect($service.getCount()).toEqual(2);
+                expect($service.length).toEqual(2);
                 $service.unfilterBy('twinCities');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 $service.filterBy('twinCities', 'Beijing', $service.filters.inArray());
-                expect($service.getCount()).toEqual(2);
+                expect($service.length).toEqual(2);
                 $service.unfilterBy('twinCities');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('every'));
-                expect($service.getCount()).toEqual(0);
+                expect($service.length).toEqual(0);
                 $service.unfilterBy('twinCities');
 
-                expect($service.getCount()).toEqual(6);
+                expect($service.length).toEqual(6);
 
                 $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('some'));
-                expect($service.getCount()).toEqual(3);
+                expect($service.length).toEqual(3);
                 $service.unfilterBy('twinCities');
 
                 expect(function() {

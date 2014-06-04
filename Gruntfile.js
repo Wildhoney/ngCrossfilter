@@ -97,7 +97,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-compress');
 
-    grunt.registerTask('build', ['jasmine', 'copy', 'uglify', 'compress']);
+    grunt.registerTask('build', ['copy', 'uglify', 'compress']);
     grunt.registerTask('test', ['jasmine', 'jshint']);
     grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify']);
 

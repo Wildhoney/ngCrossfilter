@@ -38,10 +38,8 @@ Once you've configured your Crossfilter collection, you can begin filtering and 
 After you've applied all of your filters, you need to add the `ngCrossfilter` filter to your `ng-repeat` directive.
 
 ```html
-<li ng-repeat="model in words | crossfilter | limitTo: 100">
+<li ng-repeat="model in words | limitTo: 100">
 ```
-
-You should place the `crossfilter` filter before any other filters so that a standard array is piped to the subsequent filters.
 
 Filtering
 -------------
@@ -209,20 +207,25 @@ Other Methods
 
 For the entire list of features for `ngCrossfilter` it is advised to refer to the unit tests &ndash; as these have full coverage of **all** `ngCrossfilter` methods and their usages.
 
+ ** Accessors **
+ * `first`: First model in the collection;
+ * `last`: Last model in the collection;
+
+ ** Dimensions **
  * `addDimension`: Add a custom dimension;
  * `deleteDimension`: Delete a dimension;
- * `getCollection`: Collection as a standard array;
- * `getModels`: Alias for `getCollection`;
- * `getFirst`: First model in the collection;
- * `getLast`: Last model in the collection;
- * `getModel`: *nth* model in the collection;
+
+ ** Convenience **
  * `countBy`: Count values &ndash; see <a href="#counting">counting</a>;
  * `groupBy`: Group by any given dimension;
+
+ ** Manipulation **
  * `addModel`: Add a model to the collection;
  * `addModels`: Add models to the collection;
  * `deleteModel`: Delete a model from the collection;
  * `deleteModels`: Delete models from the collection;
- * `getCount`: Get a count of the collection;
+
+ ** Developer **
  * `debugMode`: Enable/disable debugging mode;
 
 Contributions

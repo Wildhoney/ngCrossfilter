@@ -69,7 +69,7 @@
         $http.get('words.json').then(function then(response) {
 
             // Voila!
-            $scope.words = new Crossfilter(response.data, 'id', 'persistent');
+            $scope.words = new Crossfilter(response.data.splice(0, 1000), 'id', 'persistent');
             $scope.words.addDimension('wordCount', function wordCount(model) {
                 return model.word.length;
             });
@@ -89,17 +89,6 @@
             $scope.words.filterBy('word', word, customFilter);
             $scope.word = word;
         };
-
-        /**
-         * @method fuzzyFilter
-         * @param expected {String}
-         * @param actual {String}
-         * @return {Boolean}
-         */
-        $scope.fuzzyFilter = function fuzzyFilter(expected, actual) {
-            var regExp = new $RegExp(expected, 'i');
-            return !!actual.match(regExp);
-        }
 
     });
 

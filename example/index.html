@@ -26,7 +26,7 @@
 
         <div class="btn-group">
             <button type="button" class="btn btn-xs btn-default"
-                    ng-click="applyWordFilter(word, fuzzyFilter)">
+                    ng-click="words.filterBy('word', word, words.filters.fuzzy())">
                 Filter
             </button>
             <button type="button" class="btn btn-xs btn-default"
@@ -37,11 +37,11 @@
 
         <ul>
             <li class="word-count">
-                Displaying {{words.getCount() | number: 0}}
-                <ng-pluralize count="words.getCount()" when="{'1': 'word.', 'other': 'words.'}"></ng-pluralize>
+                Displaying {{words.length | number: 0}}
+                <ng-pluralize count="words.length" when="{'1': 'word.', 'other': 'words.'}"></ng-pluralize>
             </li>
-            <li>First Word: {{words.getFirst().word}}</li>
-            <li>Last Word: {{words.getLast().word}}</li>
+            <li>First Word: {{words.first().word}}</li>
+            <li>Last Word: {{words.last().word}}</li>
             <li><h3>Word Count</h3></li>
             <li>
                 <div class="count" ng-repeat="count in countGrouped"
@@ -61,45 +61,43 @@
                 <th ng-click="words.sortBy('id')">ID</th>
                 <th ng-click="words.sortBy('word')">Word</th>
                 <th ng-click="words.sortBy('wordCount')">Length</th>
-                <th>
-                    <span class="glyphicon glyphicon-filter"></span>
-                </th>
+                <th><span class="glyphicon glyphicon-filter"></span></th>
             </tr>
             <tr ng-show="loading">
                 <td colspan="3">Loading Words&hellip;</td>
             </tr>
-            <tr ng-show="!loading && words.getCollection().length == 0">
+            <tr ng-show="!loading && words.length == 0">
                 <td colspan="3">
                     Oops! Everything disappeared &ndash;
                     <a ng-click="word = ''; words.unfilterAll()">clear all filters</a>.
                 </td>
             </tr>
-            <tr ng-repeat="model in words | crossfilter | limitTo: pageNumber | limitTo: -50">
-                <td>{{model.id}}</td>
-                <td>{{model.word}}</td>
-                <td>{{model.word.length}}</td>
+            <tr ng-repeat="word in words | limitTo: 5">
+                <td>{{word.id}}</td>
+                <td>{{word.word}}</td>
+                <td>{{word.word.length}}</td>
                 <td>
-                    <button class="btn btn-xs btn-default" ng-click="applyWordFilter(model.word)">
+                    <button class="btn btn-xs btn-default" ng-click="applyWordFilter(word.word)">
                         Filter by word
                     </button>
                 </td>
             </tr>
-            <tr>
-                <td class="etc" colspan="3">
+            <!--<tr>-->
+                <!--<td class="etc" colspan="3">-->
 
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-xs btn-default"
-                                ng-click="pageNumber = pageNumber - 10">
-                            &lt; Previous Page
-                        </button>
-                        <button type="button" class="btn btn-xs btn-default"
-                                ng-click="pageNumber = pageNumber + 10">
-                            Next Page &gt;
-                        </button>
-                    </div>
+                    <!--<div class="btn-group">-->
+                        <!--<button type="button" class="btn btn-xs btn-default"-->
+                                <!--ng-click="pageNumber = pageNumber - 10">-->
+                            <!--&lt; Previous Page-->
+                        <!--</button>-->
+                        <!--<button type="button" class="btn btn-xs btn-default"-->
+                                <!--ng-click="pageNumber = pageNumber + 10">-->
+                            <!--Next Page &gt;-->
+                        <!--</button>-->
+                    <!--</div>-->
 
-                </td>
-            </tr>
+                <!--</td>-->
+            <!--</tr>-->
         </table>
 
     </section>
