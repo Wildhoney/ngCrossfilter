@@ -1,4 +1,12 @@
-(function($angular, $crossfilter, $array, $console, $moment) {
+/**
+ * @param $angular Angular.js
+ * @param $crossfilter Crossfilter
+ * @param $array window.Array
+ * @param $console window.console
+ * @param $moment Moment.js
+ * @param _ Underscore.js
+ */
+(function($angular, $crossfilter, $array, $console, $moment, _) {
 
     "use strict";
 
@@ -95,6 +103,9 @@
          * @constructor
          */
         var Service = function ngCrossfilterService(collection, primaryKey, strategy, properties) {
+
+            // Determine if we can utilise Underscore.js for badly supported functionality.
+            this.filters.HAS_UNDERSCORE = (typeof _ !== 'undefined');
 
             // Reset all of the arrays and objects.
             this._resetAll();
@@ -214,6 +225,12 @@
             filters: {
 
                 /**
+                 * @constant HAS_UNDERSCORE
+                 * @type {Boolean}
+                 */
+                HAS_UNDERSCORE: false,
+
+                /**
                  * @method fuzzy
                  * @param flags {String}
                  * @return {Function}
@@ -329,6 +346,8 @@
                  */
                 inArray: function inArrayFilter(method) {
 
+                    var hasUnderscore = this.HAS_UNDERSCORE;
+
                     /**
                      * @method inArray
                      * @param expected {String|Number|Array}
@@ -352,17 +371,28 @@
 
                         }
 
+                        // Assign a default if none specified.
+                        method = method || 'every';
+
                         if (method && ['every', 'some'].indexOf(method) === -1) {
                             _throwException("You must pass either 'every' or 'some'");
                         }
 
-                        if (typeof [].every !== 'function' || typeof [].some !== 'function') {
+                        if (!hasUnderscore && (typeof [].every !== 'function' || typeof [].some !== 'function')) {
                             _throwException("Browser does not support `every` and/or `some` methods");
                         }
 
-                        return expected[method || 'every'](function everySome(property) {
+                        /**
+                         * @method everySome
+                         * @param property {String|Number|Boolean}
+                         * @return {Boolean}
+                         */
+                        var everySome = function everySome(property) {
                             return (actual.indexOf(property) !== -1);
-                        });
+                        };
+
+                        // Use Underscore if available, otherwise native.
+                        return hasUnderscore ? _[method](expected, everySome) : expected[method](everySome);
 
                     }
 
@@ -612,14 +642,15 @@
 
             /**
              * @method getCollection
+             * @param limit {Number}
              * @return {Array}
              */
-            getCollection: function getCollection() {
+            getCollection: function getCollection(limit) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder    = this._isAscending ? 'bottom' : 'top';
 
-                return this._dimensions[sortProperty][sortOrder](Infinity);
+                return this._dimensions[sortProperty][sortOrder](limit || Infinity);
 
             },
 
@@ -650,10 +681,11 @@
             /**
              * @method getModels
              * @alias getCollection
+             * @param limit {Number}
              * @return {Array}
              */
-            getModels: function getModels() {
-                return this.getCollection();
+            getModels: function getModels(limit) {
+                return this.getCollection(limit);
             },
 
             /**
@@ -928,4 +960,4 @@
 
     }]);
 
-})(window.angular, window.crossfilter, window.Array, window.console, window.moment);
+})(window.angular, window.crossfilter, window.Array, window.console, window.moment, window._);
