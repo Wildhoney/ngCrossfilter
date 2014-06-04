@@ -612,14 +612,15 @@
 
             /**
              * @method getCollection
+             * @param limit {Number}
              * @return {Array}
              */
-            getCollection: function getCollection() {
+            getCollection: function getCollection(limit) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder    = this._isAscending ? 'bottom' : 'top';
 
-                return this._dimensions[sortProperty][sortOrder](Infinity);
+                return this._dimensions[sortProperty][sortOrder](limit || Infinity);
 
             },
 
@@ -650,10 +651,11 @@
             /**
              * @method getModels
              * @alias getCollection
+             * @param limit {Number}
              * @return {Array}
              */
-            getModels: function getModels() {
-                return this.getCollection();
+            getModels: function getModels(limit) {
+                return this.getCollection(limit);
             },
 
             /**

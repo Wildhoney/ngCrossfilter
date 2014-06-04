@@ -195,6 +195,11 @@ describe('ngCrossfilter', function() {
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
+        it('Should be able to limit the amount of models returned;', function() {
+            expect($service.getCollection(4).length).toEqual(4);
+            expect($service.getModels(3).length).toEqual(3);
+        });
+
         it('Should be able to apply a range filter;', function() {
             $service.filterBy('population', [7, 12]);
             expect($service.getCollection().length).toEqual(3);
