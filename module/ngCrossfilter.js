@@ -804,16 +804,11 @@
              */
             Service.prototype._applyChanges = function _applyChanges() {
 
+                // Use the nifty way of emptying an array.
                 this.length = 0;
-                var collection = this._getCollection();
 
-                for (var key in collection) {
-
-                    if (collection.hasOwnProperty(key)) {
-                        this.push(collection[key]);
-                    }
-
-                }
+                // Apply all of the models to the collection.
+                Array.prototype.push.apply(this, this._getCollection());
 
                 if (this._debug) {
                     $console.timeEnd('timeTaken');
