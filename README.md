@@ -207,25 +207,25 @@ Other Methods
 
 For the entire list of features for `ngCrossfilter` it is advised to refer to the unit tests &ndash; as these have full coverage of **all** `ngCrossfilter` methods and their usages.
 
- ** Accessors **
+ **Accessors**
  * `first`: First model in the collection;
  * `last`: Last model in the collection;
 
- ** Dimensions **
+ **Dimensions**
  * `addDimension`: Add a custom dimension;
  * `deleteDimension`: Delete a dimension;
 
- ** Convenience **
+ **Convenience**
  * `countBy`: Count values &ndash; see <a href="#counting">counting</a>;
  * `groupBy`: Group by any given dimension;
 
- ** Manipulation **
+ **Manipulation**
  * `addModel`: Add a model to the collection;
  * `addModels`: Add models to the collection;
  * `deleteModel`: Delete a model from the collection;
  * `deleteModels`: Delete models from the collection;
 
- ** Developer **
+ **Developer**
  * `debugMode`: Enable/disable debugging mode;
 
 Contributions
