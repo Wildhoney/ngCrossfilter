@@ -233,8 +233,8 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
  <li><code>deleteModels</code>: Delete models from the collection;</li>
 </ul>
 
+**Developer**
 <ul>
- <li><strong>Developer</strong></li>
  <li><code>debugMode</code>: Enable/disable debugging mode;</li>
 </ul>
 
