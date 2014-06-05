@@ -6,6 +6,7 @@
     "Adam Timberlake <adam.timberlake@gmail.com>"
   ],
   "description": "Usual Angular.js style filtering and sorting with a twist of Crossfilter for improved performance.",
+  "main": "dist/ng-crossfilter.js",
   "license": "MIT",
   "ignore": [
     "**/.*",
