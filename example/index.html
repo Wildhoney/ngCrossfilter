@@ -6,6 +6,7 @@
 
     <!-- Dependencies! -->
     <script type="text/javascript" src="js/vendor/angular/angular.js"></script>
+    <script type="text/javascript" src="js/vendor/underscore/underscore.js"></script>
     <script type="text/javascript" src="js/vendor/crossfilter/crossfilter.js"></script>
     <script type="text/javascript" src="js/vendor/ng-crossfilter/ng-crossfilter.js"></script>
 
@@ -72,7 +73,7 @@
                     <a ng-click="word = ''; words.unfilterAll()">clear all filters</a>.
                 </td>
             </tr>
-            <tr ng-repeat="word in words | limitTo: 5">
+            <tr ng-repeat="word in words | limitTo: pageNumber | limitTo: -50">
                 <td>{{word.id}}</td>
                 <td>{{word.word}}</td>
                 <td>{{word.word.length}}</td>
@@ -82,22 +83,22 @@
                     </button>
                 </td>
             </tr>
-            <!--<tr>-->
-                <!--<td class="etc" colspan="3">-->
+            <tr>
+                <td class="etc" colspan="3">
 
-                    <!--<div class="btn-group">-->
-                        <!--<button type="button" class="btn btn-xs btn-default"-->
-                                <!--ng-click="pageNumber = pageNumber - 10">-->
-                            <!--&lt; Previous Page-->
-                        <!--</button>-->
-                        <!--<button type="button" class="btn btn-xs btn-default"-->
-                                <!--ng-click="pageNumber = pageNumber + 10">-->
-                            <!--Next Page &gt;-->
-                        <!--</button>-->
-                    <!--</div>-->
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-xs btn-default"
+                                ng-click="pageNumber = pageNumber - 10">
+                            &lt; Previous Page
+                        </button>
+                        <button type="button" class="btn btn-xs btn-default"
+                                ng-click="pageNumber = pageNumber + 10">
+                            Next Page &gt;
+                        </button>
+                    </div>
 
-                <!--</td>-->
-            <!--</tr>-->
+                </td>
+            </tr>
         </table>
 
     </section>

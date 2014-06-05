@@ -72,6 +72,13 @@
                 // Construct the initial array of items.
                 this._applyChanges();
 
+                // Following is a dirty hack to ensure the object masquerades as an array at all times!
+                var myArray       = [];
+                myArray.length    = collection.length;
+                /*jshint proto: true */
+                myArray.__proto__ = this;
+                return myArray;
+
             };
 
             /**
@@ -757,25 +764,6 @@
             };
 
             /**
-             * @method _prepareChanges
-             * @return {void}
-             * @private
-             */
-            Service.prototype._prepareChanges = function _prepareChanges() {
-
-                if (this._debug) {
-                    $console.time('timeTaken');
-                }
-
-                // Invalidate the groups cache.
-                this._cacheGroups = {};
-
-                // Broadcast the changes to the masses!
-                this._broadcastChanges();
-
-            };
-
-            /**
              * @method getCollection
              * @param limit {Number}
              * @return {Array}
@@ -795,6 +783,25 @@
             };
 
             /**
+             * @method _prepareChanges
+             * @return {void}
+             * @private
+             */
+            Service.prototype._prepareChanges = function _prepareChanges() {
+
+                if (this._debug) {
+                    $console.time('timeTaken');
+                }
+
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
+
+                // Broadcast the changes to the masses!
+                this._broadcastChanges();
+
+            };
+
+            /**
              * Responsible for emptying the array, and then reapplying use the current filters
              * and their states.
              *
@@ -807,8 +814,16 @@
                 // Use the nifty way of emptying an array.
                 this.length = 0;
 
+                var collection = this._getCollection();
+
                 // Apply all of the models to the collection.
-                Array.prototype.push.apply(this, this._getCollection());
+                for (var key in collection) {
+
+                    if (collection.hasOwnProperty(key)) {
+                        this.push(collection[key]);
+                    }
+
+                }
 
                 if (this._debug) {
                     $console.timeEnd('timeTaken');
@@ -918,6 +933,10 @@
                 this._cacheGroups = {};
                 this._dimensions  = {};
 
+            };
+
+            Service.prototype.toString = function toString() {
+                return '[object Array]';
             };
 
             return Service;

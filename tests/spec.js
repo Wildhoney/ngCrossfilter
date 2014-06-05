@@ -61,14 +61,6 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should be able to validate the specified primary key;', function() {
-            inject(function(Crossfilter) {
-                expect(function() {
-                    $service = new Crossfilter($collection, 'id');
-                }).toThrow("ngCrossfilter: Primary key 'id' is not in the collection.");
-            });
-        });
-
         it('Should be able to supply a list of properties for the dimensions;', function() {
 
             inject(function(Crossfilter) {
@@ -426,6 +418,19 @@ describe('ngCrossfilter', function() {
 
             });
 
+        });
+
+        it('Should be reporting itself as a valid array', function() {
+            expect(Object.prototype.toString.call($service)).toEqual('[object Array]');
+            expect(Array.isArray($service)).toBeTruthy();
+        });
+
+        it('Should be able to validate the specified primary key;', function() {
+            inject(function(Crossfilter) {
+                expect(function() {
+                    $service = new Crossfilter($collection, 'id');
+                }).toThrow("ngCrossfilter: Primary key 'id' is not in the collection.");
+            });
         });
 
     });

@@ -69,7 +69,7 @@
         $http.get('words.json').then(function then(response) {
 
             // Voila!
-            $scope.words = new Crossfilter(response.data.splice(0, 1000), 'id', 'persistent');
+            $scope.words = new Crossfilter(response.data, 'id', 'persistent');
             $scope.words.addDimension('wordCount', function wordCount(model) {
                 return model.word.length;
             });
