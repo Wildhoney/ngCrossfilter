@@ -61,6 +61,23 @@ describe('ngCrossfilter', function() {
 
         });
 
+        it('Should not affect other Crossfilters', function() {
+
+            inject(function(Crossfilter) {
+
+                var firstCrossfilter = new Crossfilter($collection),
+                    secondCrossfilter = new Crossfilter($collection),
+                    thirdCrossfilter = new Crossfilter($collection);
+                
+                secondCrossfilter.filterBy('country', 'BR');
+                expect(firstCrossfilter.length).toEqual(6);
+                expect(secondCrossfilter.length).toEqual(1);
+                expect(thirdCrossfilter.length).toEqual(6);
+
+            });
+
+        });
+
         it('Should be reporting itself as a valid array', function() {
             expect(Object.prototype.toString.call($service)).toEqual('[object Array]');
             expect(Array.isArray($service)).toBeTruthy();
