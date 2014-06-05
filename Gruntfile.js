@@ -80,11 +80,37 @@ module.exports = function(grunt) {
                     specs: 'tests/spec.js',
                     helpers: [
                         'example/js/vendor/angular/angular.js',
-//                        'example/js/vendor/underscore/underscore.js',
                         'example/js/vendor/moment/moment.js',
                         'example/js/vendor/crossfilter/crossfilter.js',
                         'example/js/vendor/angular-mocks/angular-mocks.js'
                     ]
+                }
+            }
+        },
+
+        /**
+         * @property comments
+         * @type {Object}
+         */
+        comments: {
+            dist: {
+                options: {
+                    singleline: true,
+                    multiline: true
+                },
+                src: ['dist/ng-crossfilter.js']
+            }
+        },
+
+        /**
+         * @property jsbeautifier
+         * @type {Object}
+         */
+        jsbeautifier : {
+            files: ['dist/ng-crossfilter.js'],
+            options: {
+                js: {
+                    preserveNewlines: false
                 }
             }
         }
@@ -96,9 +122,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-compress');
+    grunt.loadNpmTasks('grunt-stripcomments');
+    grunt.loadNpmTasks('grunt-jsbeautifier');
 
-    grunt.registerTask('build', ['copy', 'uglify', 'compress']);
+    grunt.registerTask('build', ['copy', 'uglify', 'compress', 'comments', 'jsbeautifier']);
     grunt.registerTask('test', ['jasmine', 'jshint']);
-    grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify', 'comments', 'jsbeautifier']);
 
 };
