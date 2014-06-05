@@ -211,21 +211,29 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
  <li><strong>Accessors</strong></li>
  <li>`first`: First model in the collection;</li>
  <li>`last`: Last model in the collection;</li>
+</ul>
 
+<ul>
  <li><strong>Dimensions</strong></li>
  <li>`addDimension`: Add a custom dimension;</li>
  <li>`deleteDimension`: Delete a dimension;</li>
+</ul>
 
+<ul>
  <li><strong>Convenience</strong></li>
  <li>`countBy`: Count values &ndash; see <a href="#counting">counting</a>;</li>
  <li>`groupBy`: Group by any given dimension;</li>
+</ul>
 
+<ul>
  <li><strong>Manipulation</strong></li>
  <li>`addModel`: Add a model to the collection;</li>
  <li>`addModels`: Add models to the collection;</li>
  <li>`deleteModel`: Delete a model from the collection;</li>
  <li>`deleteModels`: Delete models from the collection;</li>
+</ul>
 
+<ul>
  <li><strong>Developer</strong></li>
  <li>`debugMode`: Enable/disable debugging mode;</li>
 </ul>
