@@ -207,26 +207,28 @@ Other Methods
 
 For the entire list of features for `ngCrossfilter` it is advised to refer to the unit tests &ndash; as these have full coverage of **all** `ngCrossfilter` methods and their usages.
 
- * **Accessors**
- * `first`: First model in the collection;
- * `last`: Last model in the collection;
+<ul>
+ <li>**Accessors**
+ <li>`first`: First model in the collection;</li>
+ <li>`last`: Last model in the collection;</li>
 
- * **Dimensions**
- * `addDimension`: Add a custom dimension;
- * `deleteDimension`: Delete a dimension;
+ <li>**Dimensions**
+ <li>`addDimension`: Add a custom dimension;</li>
+ <li>`deleteDimension`: Delete a dimension;</li>
 
- * **Convenience**
- * `countBy`: Count values &ndash; see <a href="#counting">counting</a>;
- * `groupBy`: Group by any given dimension;
+ <li>**Convenience**
+ <li>`countBy`: Count values &ndash; see <a href="#counting">counting</a>;</li>
+ <li>`groupBy`: Group by any given dimension;</li>
 
- * **Manipulation**
- * `addModel`: Add a model to the collection;
- * `addModels`: Add models to the collection;
- * `deleteModel`: Delete a model from the collection;
- * `deleteModels`: Delete models from the collection;
+ <li>**Manipulation**
+ <li>`addModel`: Add a model to the collection;</li>
+ <li>`addModels`: Add models to the collection;</li>
+ <li>`deleteModel`: Delete a model from the collection;</li>
+ <li>`deleteModels`: Delete models from the collection;</li>
 
- * **Developer**
- * `debugMode`: Enable/disable debugging mode;
+ <li>**Developer**</li>
+ <li>`debugMode`: Enable/disable debugging mode;</li>
+<ul>
 
 Contributions
 -------------
