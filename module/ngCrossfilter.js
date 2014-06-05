@@ -1,12 +1,16 @@
 /**
- * @param $angular Angular.js
- * @param $crossfilter Crossfilter
- * @param $array window.Array
- * @param $console window.console
- * @param $moment Moment.js
- * @param _ Underscore.js
+ * @module ngCrossfilter
+ * @author Adam Timberlake
+ * @link https://github.com/Wildhoney/ngCrossfilter
+ *
+ * @param $angular Angular.js      https://angularjs.org/                      [REQUIRED]
+ * @param $crossfilter             https://github.com/square/crossfilter       [REQUIRED]
+ * @param $array                   {window.Array}
+ * @param $console                 {window.console}
+ * @param $moment                  http://momentjs.com/
+ * @param _                        http://underscorejs.org/
  */
-(function($angular, $crossfilter, $array, $console, $moment, _) {
+(function ngCrossfilterBootstrap($angular, $crossfilter, $array, $console, $moment, _) {
 
     "use strict";
 

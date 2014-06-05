@@ -18,7 +18,7 @@ Getting Started
 Firstly you need to initialise Crossfilter with your collection of items.
 
 ```javascript
-$scope.words = new Crossfilter(response.data, 'id', 'persistent', ['name', 'age']);
+$scope.ngc = new Crossfilter(response.data, 'id', 'persistent', ['name', 'age']);
 ```
 
 `ngCrossfilter`'s constructor accepts four parameters &ndash; with only the first being mandatory. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; the third parameter allows you to change the <a href="#custom-filtering">filtering strategy</a> &ndash; either `persistent` or `transient`, whereas the fourth parameter allows you to specify which properties to create dimensions with.
@@ -26,7 +26,7 @@ $scope.words = new Crossfilter(response.data, 'id', 'persistent', ['name', 'age'
 For timing information and other useful information for development, you can enable debug mode.
 
 ```javascript
-$scope.$ngc.debugMode(true);
+$ngc.debugMode(true);
 ```
 
 Once you've configured your Crossfilter collection, you can begin filtering and sorting. From within your view you should reference your collection &ndash; in our case, `$ngc`.
