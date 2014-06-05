@@ -207,35 +207,35 @@ Other Methods
 
 For the entire list of features for `ngCrossfilter` it is advised to refer to the unit tests &ndash; as these have full coverage of **all** `ngCrossfilter` methods and their usages.
 
+**Accessors**
 <ul>
- <li><strong>Accessors</strong></li>
- <li>`first`: First model in the collection;</li>
- <li>`last`: Last model in the collection;</li>
+ <li><code>first</code>: First model in the collection;</li>
+ <li><code>last</code>: Last model in the collection;</li>
 </ul>
 
+**Dimensions**
 <ul>
- <li><strong>Dimensions</strong></li>
- <li>`addDimension`: Add a custom dimension;</li>
- <li>`deleteDimension`: Delete a dimension;</li>
+ <li><code>addDimension</code>: Add a custom dimension;</li>
+ <li><code>deleteDimension</code>: Delete a dimension;</li>
 </ul>
 
+**Convenience**
 <ul>
- <li><strong>Convenience</strong></li>
- <li>`countBy`: Count values &ndash; see <a href="#counting">counting</a>;</li>
- <li>`groupBy`: Group by any given dimension;</li>
+ <li><code>countBy</code>: Count values &ndash; see <a href="#counting">counting</a>;</li>
+ <li><code>groupBy</code>: Group by any given dimension;</li>
 </ul>
 
+**Manipulation**
 <ul>
- <li><strong>Manipulation</strong></li>
- <li>`addModel`: Add a model to the collection;</li>
- <li>`addModels`: Add models to the collection;</li>
- <li>`deleteModel`: Delete a model from the collection;</li>
- <li>`deleteModels`: Delete models from the collection;</li>
+ <li><code>addModel</code>: Add a model to the collection;</li>
+ <li><code>addModels</code>: Add models to the collection;</li>
+ <li><code>deleteModel</code>: Delete a model from the collection;</li>
+ <li><code>deleteModels</code>: Delete models from the collection;</li>
 </ul>
 
 <ul>
  <li><strong>Developer</strong></li>
- <li>`debugMode`: Enable/disable debugging mode;</li>
+ <li><code>debugMode</code>: Enable/disable debugging mode;</li>
 </ul>
 
 Contributions
