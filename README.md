@@ -38,7 +38,7 @@ Once you've configured your Crossfilter collection, you can begin filtering and 
 After you've applied all of your filters, you need to add the `ngCrossfilter` filter to your `ng-repeat` directive.
 
 ```html
-<li ng-repeat="model in words | limitTo: 100">
+<li ng-repeat="word in words | limitTo: 100">
 ```
 
 Filtering
@@ -165,13 +165,13 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  **InArray Filter**
 
- With the `inArray` filter you can check an array against an array &ndash; using the `some` and `every` array methods &ndash; please check the [browser support](http://kangax.github.io/compat-table/es5/) before using it.
+ With the `inArray` filter you can check an array against an array &ndash; using the `some` and `every` array methods &ndash; please check the [browser support](http://kangax.github.io/compat-table/es5/) before using it &ndash; although `ngCrossfilter` will fallback to [Underscore.js](http://underscorejs.org/) if it's installed.
 
  ```javascript
  $ngc.filterBy('twinCities', ['Beijing', 'Tokyo'], $ngc.filters.inArray());
  ```
 
- By default the `inArray` filter uses the `every` method, which means in the above example only entries where `twinCities` has both Beijing and Tokyo will be returned &ndash; you can use `some` instead by passing it into `inArray` filter method.
+ By default the `inArray` filter uses the `every` method, which means in the above example only entries where `twinCities` has both **Beijing** and **Tokyo** will be returned &ndash; you can use `some` instead by passing it into `inArray` filter method.
 
  ```javascript
  $ngc.filterBy('twinCities', ['Beijing', 'Tokyo'], $ngc.filters.inArray('some'));
@@ -186,7 +186,7 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
                         $service.filters.dateTimeRange('YYYY-MM-DD'));
  ```
 
- The first and only parameter of the `dateTimeRange` filter allows you to specify the exact format &ndash; [see Moment.js documentation](http://momentjs.com/docs/#/parsing/string-format/).
+ The first and only parameter of the `dateTimeRange` filter allows you to specify the exact format &ndash; [see Moment.js documentation](http://momentjs.com/docs/#/parsing/string-format/) &ndash; the default being **YYYY-MM-DD**.
 
  **Bitwise Filter**
 
@@ -207,25 +207,25 @@ Other Methods
 
 For the entire list of features for `ngCrossfilter` it is advised to refer to the unit tests &ndash; as these have full coverage of **all** `ngCrossfilter` methods and their usages.
 
- **Accessors**
+ * **Accessors**
  * `first`: First model in the collection;
  * `last`: Last model in the collection;
 
- **Dimensions**
+ * **Dimensions**
  * `addDimension`: Add a custom dimension;
  * `deleteDimension`: Delete a dimension;
 
- **Convenience**
+ * **Convenience**
  * `countBy`: Count values &ndash; see <a href="#counting">counting</a>;
  * `groupBy`: Group by any given dimension;
 
- **Manipulation**
+ * **Manipulation**
  * `addModel`: Add a model to the collection;
  * `addModels`: Add models to the collection;
  * `deleteModel`: Delete a model from the collection;
  * `deleteModels`: Delete models from the collection;
 
- **Developer**
+ * **Developer**
  * `debugMode`: Enable/disable debugging mode;
 
 Contributions
