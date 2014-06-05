@@ -86,7 +86,7 @@
              * @property prototype
              * @type {Array}
              */
-            Service.prototype = Array.prototype;
+            Service.prototype = [];
 
             /**
              * @constant STRATEGY_PERSISTENT
