@@ -63,9 +63,6 @@
                 // Reset all of the arrays and objects.
                 this._resetAll();
 
-                // Store the collection initially.
-                this._collection = collection;
-
                 // Initialise the Crossfilter with the array of models.
                 this._initialise(collection, primaryKey, strategy, properties);
 
@@ -111,13 +108,6 @@
              * @private
              */
             Service.prototype._crossfilter = {};
-
-            /**
-             * @property _collection
-             * @type {Array}
-             * @private
-             */
-            Service.prototype._collection = [];
 
             /**
              * @property _cacheGroups
@@ -775,7 +765,7 @@
                     sortOrder    = this._isAscending ? 'bottom' : 'top';
 
                 if (typeof this._dimensions[sortProperty] === 'undefined') {
-                    return this._collection;
+                    return this;
                 }
 
                 return this._dimensions[sortProperty][sortOrder](limit || Infinity);
