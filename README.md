@@ -228,7 +228,7 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
 
  <li>**Developer**</li>
  <li>`debugMode`: Enable/disable debugging mode;</li>
-<ul>
+</ul>
 
 Contributions
 -------------
