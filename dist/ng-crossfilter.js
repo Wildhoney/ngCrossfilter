@@ -14,15 +14,16 @@
         function CrossfilterService($rootScope, $timeout, $window) {
             var Service = function ngCrossfilterService(collection, primaryKey, strategy, properties) {
                 this.filters.HAS_UNDERSCORE = (typeof _ !== 'undefined');
+                this.filters._isArray = this._isArray;
                 this._resetAll();
                 this._initialise(collection, primaryKey, strategy, properties);
                 this._applyChanges();
-                var myArray = [];
-                myArray.length = collection.length;
-                myArray.__proto__ = this;
-                return myArray;
+                var masquerade = [];
+                masquerade.length = collection.length;
+                masquerade.__proto__ = this;
+                return masquerade;
             };
-            Service.prototype = Array.prototype;
+            Service.prototype = [];
             Service.prototype.STRATEGY_PERSISTENT = 'persistent';
             Service.prototype.STRATEGY_TRANSIENT = 'transient';
             Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
@@ -74,15 +75,14 @@
                     }
                 },
                 inArray: function inArrayFilter(method) {
-                    var hasUnderscore = this.HAS_UNDERSCORE;
+                    var hasUnderscore = this.HAS_UNDERSCORE,
+                        isArray = this._isArray;
                     return function inArray(expected, actual) {
-                        if (typeof $array.isArray === 'function') {
-                            if (!$array.isArray(actual)) {
-                                _throwException("Using inArray filter on a non-array like property");
-                            }
-                            if (!$array.isArray(expected)) {
-                                expected = [expected];
-                            }
+                        if (!isArray(actual)) {
+                            _throwException("Using inArray filter on a non-array like property");
+                        }
+                        if (!isArray(expected)) {
+                            expected = [expected];
                         }
                         method = method || 'every';
                         if (method && ['every', 'some'].indexOf(method) === -1) {
@@ -99,7 +99,7 @@
                 }
             };
             Service.prototype._initialise = function _initialise(collection, primaryKey, strategy, properties) {
-                if (typeof $array.isArray === 'function' && !$array.isArray(collection)) {
+                if (!this._isArray(collection)) {
                     _throwException("Collection must be an array");
                 }
                 strategy = strategy || this.STRATEGY_PERSISTENT;
@@ -319,6 +319,15 @@
                     }
                 }
                 return properties;
+            };
+            Service.prototype._isArray = function _isArray(item) {
+                if (typeof $array.isArray === 'function') {
+                    return $array.isArray(item);
+                }
+                if (typeof _ !== 'undefined') {
+                    return _.isArray(item);
+                }
+                return (typeof item === '[object Array]');
             };
             Service.prototype._resetAll = function _resetAll() {
                 this._crossfilter = {};
