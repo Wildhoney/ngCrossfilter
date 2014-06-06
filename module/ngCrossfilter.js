@@ -61,8 +61,10 @@
              */
             var Service = function ngCrossfilterService(collection, primaryKey, strategy, properties) {
 
-                // Determine if we can utilise Underscore.js for badly supported functionality.
+                // Determine if we can utilise Underscore.js for badly supported functionality,
+                // also create an alias for the `_isArray` method.
                 this.filters.HAS_UNDERSCORE = (typeof _ !== 'undefined');
+                this.filters._isArray = this._isArray;
 
                 // Reset all of the arrays and objects.
                 this._resetAll();
@@ -300,7 +302,8 @@
                  */
                 inArray: function inArrayFilter(method) {
 
-                    var hasUnderscore = this.HAS_UNDERSCORE;
+                    var hasUnderscore = this.HAS_UNDERSCORE,
+                        isArray       = this._isArray;
 
                     /**
                      * @method inArray
@@ -310,18 +313,14 @@
                      */
                     return function inArray(expected, actual) {
 
-                        if (typeof $array.isArray === 'function') {
+                        if (!isArray(actual)) {
+                            _throwException("Using inArray filter on a non-array like property");
+                        }
 
-                            if (!$array.isArray(actual)) {
-                                _throwException("Using inArray filter on a non-array like property");
-                            }
+                        if (!isArray(expected)) {
 
-                            if (!$array.isArray(expected)) {
-
-                                // Convert the expected into an array if it isn't already.
-                                expected = [expected];
-
-                            }
+                            // Convert the expected into an array if it isn't already.
+                            expected = [expected];
 
                         }
 
@@ -365,7 +364,7 @@
              */
             Service.prototype._initialise = function _initialise(collection, primaryKey, strategy, properties) {
 
-                if (typeof $array.isArray === 'function' && !$array.isArray(collection)) {
+                if (!this._isArray(collection)) {
 
                     // Determine if the collection is a valid array.
                     _throwException("Collection must be an array");
@@ -913,6 +912,26 @@
                 }
 
                 return properties;
+
+            };
+
+            /**
+             * @method _isArray
+             * @return {Boolean}
+             * @private
+             */
+            Service.prototype._isArray = function _isArray(item) {
+
+                if (typeof $array.isArray === 'function') {
+                    return $array.isArray(item);
+                }
+
+                if (typeof _ !== 'undefined') {
+                    return _.isArray(item);
+                }
+
+                /* jshint -W122 */
+                return (typeof item === '[object Array]');
 
             };
 
