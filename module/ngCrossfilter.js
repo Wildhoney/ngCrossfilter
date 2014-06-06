@@ -929,6 +929,10 @@
 
             };
 
+            /**
+             * @method toString
+             * @return {String}
+             */
             Service.prototype.toString = function toString() {
                 return '[object Array]';
             };
