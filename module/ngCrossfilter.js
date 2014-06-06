@@ -74,11 +74,11 @@
                 this._applyChanges();
 
                 // Following is a dirty hack to ensure the object masquerades as an array at all times!
-                var myArray       = [];
-                myArray.length    = collection.length;
+                var masquerade       = [];
+                masquerade.length    = collection.length;
                 /*jshint proto: true */
-                myArray.__proto__ = this;
-                return myArray;
+                masquerade.__proto__ = this;
+                return masquerade;
 
             };
 
