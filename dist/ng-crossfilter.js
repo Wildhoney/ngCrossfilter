@@ -207,7 +207,7 @@
                         if (this._cacheGroups[property]) {
                             return this._cacheGroups[property][value] || 0;
                         }
-                        if (crossfilter._debug) {
+                        if (this._debug) {
                             $window.console.time('timeTaken');
                         }
                         this._assertDimensionExists(property);
@@ -220,7 +220,7 @@
                             }
                         }
                         this._cacheGroups[property] = groups;
-                        if (crossfilter._debug) {
+                        if (this._debug) {
                             $window.console.timeEnd('timeTaken');
                         }
                         return groups[value] || 0;
