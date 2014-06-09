@@ -92,6 +92,7 @@ describe('ngCrossfilter;', function() {
         });
 
         it('Should not be registering methods/properties on the prototype chain;', function() {
+            expect([]._crossfilter).toBeUndefined();
             expect([].filterBy).toBeUndefined();
         });
 
