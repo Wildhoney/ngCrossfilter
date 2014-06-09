@@ -213,6 +213,13 @@
                  */
                 dateTimeRange: function dateTimeRangeFilter(format) {
 
+                    if (typeof $moment === 'undefined') {
+
+                        // Ensure we have the Moment.js library installed.
+                        _throwException("You need to install Moment.js to use dateTimeRange");
+
+                    }
+
                     /**
                      * @method fuzzy
                      * @param expected {String}
@@ -220,13 +227,6 @@
                      * @return {Boolean}
                      */
                     return function dateTimeRange(expected, actual) {
-
-                        if (typeof $moment === 'undefined') {
-
-                            // Ensure we have the Moment.js library installed.
-                            _throwException("You need to install Moment.js to use dateTimeRange");
-
-                        }
 
                         // Convert each date/time into a Unix timestamp.
                         var start   = $moment(expected[0], format).unix(),
