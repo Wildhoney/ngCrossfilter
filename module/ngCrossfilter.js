@@ -426,11 +426,11 @@
             /**
              * @method filterBy
              * @param property {String}
-             * @param value {String}
+             * @param expected {String}
              * @param customFilter {Function}
              * @return {void}
              */
-            Service.prototype.filterBy = function filterBy(property, value, customFilter) {
+            Service.prototype.filterBy = function filterBy(property, expected, customFilter) {
 
                 this._assertDimensionExists(property);
 
@@ -450,14 +450,14 @@
 
                 }
 
-                // Store the last filter so we can filter anew.
+                // Store the last filter property to allowing filtering transiently.
                 this._lastFilter = property;
 
                 if (typeof customFilter === 'function') {
 
                     // Filter using the developer's custom function if it's been defined.
                     this._dimensions[property].filterFunction(function customFilterFunction(actual) {
-                        return customFilter(value, actual);
+                        return customFilter(expected, actual);
                     });
 
                     this._applyChanges();
@@ -466,7 +466,7 @@
                 }
 
                 // Let's filter by the desired filter!
-                this._dimensions[property].filter(value);
+                this._dimensions[property].filter(expected);
 
                 // Voila!
                 this._applyChanges();
