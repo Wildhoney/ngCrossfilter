@@ -120,6 +120,14 @@
             Service.prototype._cacheGroups = {};
 
             /**
+             * @property _isTiming
+             * @type {Boolean}
+             * @default false
+             * @private
+             */
+            Service.prototype._isTiming = false;
+
+            /**
              * @property _dimensions
              * @type {Object}
              * @private
@@ -635,10 +643,7 @@
 
                 }
 
-                if (this._debug) {
-                    $window.console.time('timeTaken');
-                }
-
+                this._timerManager();
                 this._assertDimensionExists(property);
 
                 var groups = {};
@@ -660,10 +665,7 @@
                 // Store the cache for the next time, until it's invalidated by the `_prepareChanges`
                 // method.
                 this._cacheGroups[property] = groups;
-
-                if (this._debug) {
-                    $window.console.timeEnd('timeTaken');
-                }
+                this._timerManager();
 
                 return groups[value] || 0;
 
@@ -757,12 +759,12 @@
             };
 
             /**
-             * @method getCollection
+             * @method _collection
              * @param limit {Number}
-             * @return {Array}
+             * @return {Array|Service}
              * @private
              */
-            Service.prototype._getCollection = function getCollection(limit) {
+            Service.prototype._collection = function getCollection(limit) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder    = this._isAscending ? 'bottom' : 'top';
@@ -782,9 +784,7 @@
              */
             Service.prototype._prepareChanges = function _prepareChanges() {
 
-                if (this._debug) {
-                    $window.console.time('timeTaken');
-                }
+                this._timerManager();
 
                 // Invalidate the groups cache.
                 this._cacheGroups = {};
@@ -807,7 +807,7 @@
                 // Use the nifty way of emptying an array.
                 this.length = 0;
 
-                var collection = this._getCollection();
+                var collection = this._collection(Infinity);
 
                 // Apply all of the models to the collection.
                 for (var key in collection) {
@@ -818,9 +818,7 @@
 
                 }
 
-                if (this._debug) {
-                    $window.console.timeEnd('timeTaken');
-                }
+                this._timerManager();
 
             };
 
@@ -890,6 +888,25 @@
                     }
 
                 }
+
+            };
+
+            /**
+             * @method _timerManager
+             * @return {void}
+             * @private
+             */
+            Service.prototype._timerManager = function _timerManager() {
+
+                if (!this._debug) {
+                    return;
+                }
+
+                // Determine whether we're beginning the timing, or ending it. We'll then invert the
+                // `_isTiming` boolean, and calculate the duration.
+                var method = this._isTiming ? 'time' : 'timeEnd';
+                this._isTiming = !this._isTiming;
+                $window.console[method]('timeTaken');
 
             };
 
