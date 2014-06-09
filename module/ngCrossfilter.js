@@ -25,14 +25,14 @@
     if (typeof $angular === 'undefined') {
 
         // Add a check for Angular.
-        _throwException("Requires Angular.js: https://angularjs.org/");
+        _throwException("ngCrossfilter Requires Angular.js");
 
     }
 
     if (typeof $crossfilter === 'undefined') {
 
         // Add a check for Crossfilter.
-        _throwException("Requires Crossfilter: https://github.com/square/crossfilter");
+        _throwException("ngCrossfilter Requires Crossfilter");
 
     }
 
