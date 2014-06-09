@@ -3,8 +3,8 @@
  * @author Adam Timberlake
  * @link https://github.com/Wildhoney/ngCrossfilter
  *
- * @param $angular Angular.js      https://angularjs.org/                      [REQUIRED]
- * @param $crossfilter             https://github.com/square/crossfilter       [REQUIRED]
+ * @param $angular Angular.js      https://angularjs.org/                      (Required)
+ * @param $crossfilter             https://github.com/square/crossfilter       (Required)
  * @param $moment                  http://momentjs.com/
  * @param _                        http://underscorejs.org/
  */
@@ -39,7 +39,7 @@
     /**
      * @module ngCrossfilter
      * @author Adam Timberlake
-     * @link http://github.com/Wildhoney/ngCrossfilter
+     * @link https://github.com/Wildhoney/ngCrossfilter
      */
     var ngCrossfilter = $angular.module('ngCrossfilter', []);
 
