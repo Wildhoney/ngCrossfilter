@@ -32,6 +32,7 @@
                     Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
                     Service.prototype._crossfilter = {};
                     Service.prototype._cacheGroups = {};
+                    Service.prototype._isTiming = false;
                     Service.prototype._dimensions = {};
                     Service.prototype._primaryKey = '';
                     Service.prototype._sortProperty = '';
@@ -210,9 +211,7 @@
                         if (this._cacheGroups[property]) {
                             return this._cacheGroups[property][value] || 0;
                         }
-                        if (this._debug) {
-                            $window.console.time('timeTaken');
-                        }
+                        this._timerManager();
                         this._assertDimensionExists(property);
                         var groups = {};
                         var sums = this._dimensions[property].group().all();
@@ -223,9 +222,7 @@
                             }
                         }
                         this._cacheGroups[property] = groups;
-                        if (this._debug) {
-                            $window.console.timeEnd('timeTaken');
-                        }
+                        this._timerManager();
                         return groups[value] || 0;
                     };
                     Service.prototype.groupBy = function groupBy(property) {
@@ -263,7 +260,7 @@
                     Service.prototype.debugMode = function debugMode(state) {
                         this._debug = !!state;
                     };
-                    Service.prototype._getCollection = function getCollection(limit) {
+                    Service.prototype._collection = function getCollection(limit) {
                         var sortProperty = this._sortProperty || this._primaryKey,
                             sortOrder = this._isAscending ? 'bottom' : 'top';
                         if (typeof this._dimensions[sortProperty] === 'undefined') {
@@ -272,23 +269,19 @@
                         return this._dimensions[sortProperty][sortOrder](limit || Infinity);
                     };
                     Service.prototype._prepareChanges = function _prepareChanges() {
-                        if (this._debug) {
-                            $window.console.time('timeTaken');
-                        }
+                        this._timerManager();
                         this._cacheGroups = {};
                         this._broadcastChanges();
                     };
                     Service.prototype._applyChanges = function _applyChanges() {
                         this.length = 0;
-                        var collection = this._getCollection();
+                        var collection = this._collection(Infinity);
                         for (var key in collection) {
                             if (collection.hasOwnProperty(key)) {
                                 this.push(collection[key]);
                             }
                         }
-                        if (this._debug) {
-                            $window.console.timeEnd('timeTaken');
-                        }
+                        this._timerManager();
                     };
                     Service.prototype._broadcastChanges = function _broadcastChanges(useTimeout) {
                         var broadcast = function broadcast() {
@@ -314,6 +307,14 @@
                                 _throwException("Cannot overwrite an existing dimension: '" + key + "'");
                             }
                         }
+                    };
+                    Service.prototype._timerManager = function _timerManager() {
+                        if (!this._debug) {
+                            return;
+                        }
+                        var method = this._isTiming ? 'time' : 'timeEnd';
+                        this._isTiming = !this._isTiming;
+                        $window.console[method]('timeTaken');
                     };
                     Service.prototype._getProperties = function _getProperties(model) {
                         var properties = [];
