@@ -628,7 +628,7 @@
 
                 }
 
-                if (crossfilter._debug) {
+                if (this._debug) {
                     $window.console.time('timeTaken');
                 }
 
@@ -654,7 +654,7 @@
                 // method.
                 this._cacheGroups[property] = groups;
 
-                if (crossfilter._debug) {
+                if (this._debug) {
                     $window.console.timeEnd('timeTaken');
                 }
 
