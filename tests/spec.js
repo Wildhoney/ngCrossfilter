@@ -1,31 +1,26 @@
-describe('ngCrossfilter;', function() {
+describe('ngCrossfilter', function() {
 
     var $service, $filter, $rootScope;
 
     var $collection = [
+
         { city: 'London', country: 'UK', population: 8.3, climate: 4,
-            added: '2014-01-01',
-            twinCities: ['Beijing', 'Tokyo', 'Paris'] },
+            added: '2014-01-01', twinCities: ['Beijing', 'Tokyo', 'Paris'] },
 
         { city: 'Moscow', country: 'RU', population: 11.5, climate: 1,
-            added: '2014-05-23',
-            twinCities: ['Ankara', 'Manila', 'Tallinn'] },
+            added: '2014-05-23', twinCities: ['Ankara', 'Manila', 'Tallinn'] },
 
         { city: 'Singapore', country: 'SG', population: 5.3, climate: 8,
-            added: '2014-02-12',
-            twinCities: ['Batam', 'Johor Bahru'] },
+            added: '2014-02-12', twinCities: ['Batam', 'Johor Bahru'] },
 
         { city: 'Rio de Janeiro', country: 'BR', population: 6.3, climate: 9,
-            added: '2013-12-16',
-            twinCities: ['Maryland', 'Beijing'] },
+            added: '2013-12-16', twinCities: ['Maryland', 'Beijing'] },
 
         { city: 'Hong Kong', country: 'HK', population: 7.1, climate: 2,
-            added: '2001-11-04',
-            twinCities: [] },
+            added: '2001-11-04', twinCities: [] },
 
         { city: 'Manchester', country: 'UK', population: 2.5, climate: 18,
-            added: '2012-11-14',
-            twinCities: ['Los Angeles', 'Wuhan'] }
+            added: '2012-11-14', twinCities: ['Los Angeles', 'Wuhan'] }
 
     ];
 
@@ -33,11 +28,9 @@ describe('ngCrossfilter;', function() {
 
         module('ngCrossfilter');
 
-        inject(function($injector, Crossfilter, _$filter_) {
+        inject(function($injector, Crossfilter) {
 
-            $service = new Crossfilter($collection);
-            $filter  = _$filter_;
-
+            $service   = new Crossfilter($collection);
             $rootScope = $injector.get('$rootScope');
             spyOn($rootScope, '$broadcast');
 
@@ -45,7 +38,7 @@ describe('ngCrossfilter;', function() {
 
     });
 
-    describe('Service;', function() {
+    describe('Service', function() {
 
         it('Should be able to assume the primary key;', function() {
             expect($service._primaryKey).toEqual('city');
@@ -160,7 +153,7 @@ describe('ngCrossfilter;', function() {
             expect($service._debug).toEqual(false);
         });
 
-        it('Should be able to filter by the country name;', function() {
+        it('Should be able to filter by the country name and broadcast changes;', function() {
             expect($service.length).toEqual(6);
             $service.filterBy('country', 'UK');
             expect($service.length).toEqual(2);
@@ -334,7 +327,7 @@ describe('ngCrossfilter;', function() {
             expect(collection[4].value).toEqual(2);
         });
 
-        describe('Bundled Filters;', function() {
+        describe('Bundled Filters', function() {
 
             it('Should be able to use the fuzzy filter;', function() {
 
