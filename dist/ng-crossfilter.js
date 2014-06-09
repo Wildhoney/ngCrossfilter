@@ -68,10 +68,8 @@
                 },
                 bitwise: function bitwiseFilter(flag) {
                     return function bitwise(expected, actual) {
-                        if (flag === '!') {
-                            return !(expected & actual);
-                        }
-                        return (expected & actual);
+                        var result = (expected & actual);
+                        return (flag === '!') ? !result : result;
                     }
                 },
                 inArray: function inArrayFilter(method) {
