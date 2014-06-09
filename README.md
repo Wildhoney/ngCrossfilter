@@ -35,7 +35,7 @@ Once you've configured your Crossfilter collection, you can begin filtering and 
 <button ng-click="$ngc.filterBy('word', word)">Filter</button>
 ```
 
-After you've applied all of your filters, you need to add the `ngCrossfilter` filter to your `ng-repeat` directive.
+After you've applied all of your filters, you simply need to iterate over the array using the `ng-repeat` directive &ndash; since `ngCrossfilter` is a valid array &ndash; it does **not** modify any prototypes.
 
 ```html
 <li ng-repeat="word in words | limitTo: 100">
