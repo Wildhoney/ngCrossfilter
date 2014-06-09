@@ -270,11 +270,23 @@ describe('ngCrossfilter', function() {
         });
 
         it('Should be able to add a custom dimension and filter on it;', function() {
+
             $service.addDimension('countryCity', function(model) {
                 return model.country + ': ' + model.city;
             });
             $service.filterBy('countryCity', 'UK: London');
             expect($service.length).toEqual(1);
+
+            expect(function() {
+                $service.addDimension($service.PRIMARY_DIMENSION);
+            }).toThrow("ngCrossfilter: Cannot define dimension using special dimension: '__primaryKey'.");
+
+            expect($service._dimensions.twinCities).toBeDefined();
+            $service.deleteDimension('twinCities');
+            expect($service._dimensions.twinCities).toBeUndefined();
+            $service.addDimension('twinCities');
+            expect($service._dimensions.twinCities).toBeDefined();
+
         });
 
         it('Should be able to delete a dimension;', function() {

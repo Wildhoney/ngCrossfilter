@@ -582,8 +582,15 @@
              * @return {void}
              */
             Service.prototype.addDimension = function addDimension(name, setupFunction) {
+
+                // Assume a default setup method if none has been specified.
+                setupFunction = setupFunction || function dimensionSetup(model) {
+                    return model[name];
+                };
+
                 this._assertValidDimensionName(name);
                 this._dimensions[name] = this._crossfilter.dimension(setupFunction);
+
             };
 
             /**
