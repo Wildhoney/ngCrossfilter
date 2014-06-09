@@ -5,12 +5,10 @@
  *
  * @param $angular Angular.js      https://angularjs.org/                      [REQUIRED]
  * @param $crossfilter             https://github.com/square/crossfilter       [REQUIRED]
- * @param $array                   {window.Array}
- * @param $console                 {window.console}
  * @param $moment                  http://momentjs.com/
  * @param _                        http://underscorejs.org/
  */
-(function ngCrossfilterBootstrap($angular, $crossfilter, $array, $console, $moment, _) {
+(function ngCrossfilterBootstrap($angular, $crossfilter, $moment, _) {
 
     "use strict";
 
@@ -631,7 +629,7 @@
                 }
 
                 if (crossfilter._debug) {
-                    $console.time('timeTaken');
+                    $window.console.time('timeTaken');
                 }
 
                 this._assertDimensionExists(property);
@@ -657,7 +655,7 @@
                 this._cacheGroups[property] = groups;
 
                 if (crossfilter._debug) {
-                    $console.timeEnd('timeTaken');
+                    $window.console.timeEnd('timeTaken');
                 }
 
                 return groups[value] || 0;
@@ -778,7 +776,7 @@
             Service.prototype._prepareChanges = function _prepareChanges() {
 
                 if (this._debug) {
-                    $console.time('timeTaken');
+                    $window.console.time('timeTaken');
                 }
 
                 // Invalidate the groups cache.
@@ -814,7 +812,7 @@
                 }
 
                 if (this._debug) {
-                    $console.timeEnd('timeTaken');
+                    $window.console.timeEnd('timeTaken');
                 }
 
             };
@@ -917,8 +915,8 @@
              */
             Service.prototype._isArray = function _isArray(item) {
 
-                if (typeof $array.isArray === 'function') {
-                    return $array.isArray(item);
+                if (typeof $window.Array.isArray === 'function') {
+                    return $window.Array.isArray(item);
                 }
 
                 if (typeof _ !== 'undefined') {
@@ -955,4 +953,4 @@
 
         }]);
 
-})(window.angular, window.crossfilter, window.Array, window.console, window.moment, window._);
+})(window.angular, window.crossfilter, window.moment, window._);
