@@ -27,14 +27,14 @@
     if (typeof $angular === 'undefined') {
 
         // Add a check for Angular.
-        _throwException("Angular dependency is a requirement");
+        _throwException("Angular dependency is a requirement: https://angularjs.org/");
 
     }
 
     if (typeof $crossfilter === 'undefined') {
 
         // Add a check for Crossfilter.
-        _throwException("Crossfilter dependency is a requirement");
+        _throwException("Crossfilter dependency is a requirement: https://github.com/square/crossfilter");
 
     }
 
