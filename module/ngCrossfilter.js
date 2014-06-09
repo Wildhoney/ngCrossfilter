@@ -121,10 +121,10 @@
 
             /**
              * @property _dimensions
-             * @type {Array}
+             * @type {Object}
              * @private
              */
-            Service.prototype._dimensions = [];
+            Service.prototype._dimensions = {};
 
             /**
              * @property _primaryKey
@@ -230,7 +230,7 @@
                         var start   = (expected[0] === -Infinity) ? 0 : $moment(expected[0], format).unix(),
                             end     = (expected[1] === Infinity)  ? Infinity : $moment(expected[1], format).unix(),
                             current = $moment(actual, format).unix();
-                        
+
                         if (start < 0 || end < 0 || current < 0) {
 
                             // Ensure we're not dealing with overtly incorrect dates/times.
