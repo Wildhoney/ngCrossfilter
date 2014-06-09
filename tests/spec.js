@@ -399,6 +399,18 @@ describe('ngCrossfilter;', function() {
                 $service.unfilterBy('added');
 
                 expect($service.length).toEqual(6);
+                $service.filterBy('added', [-Infinity, '2012-07-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                expect($service.length).toEqual(1);
+
+                $service.unfilterBy('added');
+
+                expect($service.length).toEqual(6);
+                $service.filterBy('added', ['2013-01-01', Infinity], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                expect($service.length).toEqual(4);
+
+                $service.unfilterBy('added');
+
+                expect($service.length).toEqual(6);
                 $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
                 expect($service.length).toEqual(1);
 

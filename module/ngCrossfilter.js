@@ -227,10 +227,10 @@
                     return function dateTimeRange(expected, actual) {
 
                         // Convert each date/time into a Unix timestamp.
-                        var start   = $moment(expected[0], format).unix(),
-                            end     = $moment(expected[1], format).unix(),
+                        var start   = (expected[0] === -Infinity) ? 0 : $moment(expected[0], format).unix(),
+                            end     = (expected[1] === Infinity)  ? Infinity : $moment(expected[1], format).unix(),
                             current = $moment(actual, format).unix();
-
+                        
                         if (start < 0 || end < 0 || current < 0) {
 
                             // Ensure we're not dealing with overtly incorrect dates/times.
