@@ -1,4 +1,4 @@
-describe('ngCrossfilter', function() {
+describe('ngCrossfilter;', function() {
 
     var $service, $filter, $rootScope;
 
@@ -45,13 +45,13 @@ describe('ngCrossfilter', function() {
 
     });
 
-    describe('Service', function() {
+    describe('Service;', function() {
 
-        it('Should be able to assume the primary key;', function() {
+        it('Should be able to assume the primary key;;', function() {
             expect($service._primaryKey).toEqual('city');
         });
 
-        it('Should be able to change the primary key;', function() {
+        it('Should be able to change the primary key;;', function() {
 
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, 'country');
@@ -61,14 +61,14 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should not affect other Crossfilters', function() {
+        it('Should not affect other Crossfilters;', function() {
 
             inject(function(Crossfilter) {
 
                 var firstCrossfilter = new Crossfilter($collection),
                     secondCrossfilter = new Crossfilter($collection),
                     thirdCrossfilter = new Crossfilter($collection);
-                
+
                 secondCrossfilter.filterBy('country', 'BR');
                 expect(firstCrossfilter.length).toEqual(6);
                 expect(secondCrossfilter.length).toEqual(1);
@@ -78,12 +78,12 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should be reporting itself as a valid array', function() {
+        it('Should be reporting itself as a valid array;', function() {
             expect(Object.prototype.toString.call($service)).toEqual('[object Array]');
             expect(Array.isArray($service)).toBeTruthy();
         });
 
-        it('Should be able to validate the specified primary key;', function() {
+        it('Should be able to validate the specified primary key;;', function() {
             inject(function(Crossfilter) {
                 expect(function() {
                     $service = new Crossfilter($collection, 'id');
@@ -91,11 +91,11 @@ describe('ngCrossfilter', function() {
             });
         });
 
-        it('Should not be registering methods/properties on the prototype chain;', function() {
+        it('Should not be registering methods/properties on the prototype chain;;', function() {
             expect([].filterBy).toBeUndefined();
         });
 
-        it('Should be able to supply a list of properties for the dimensions;', function() {
+        it('Should be able to supply a list of properties for the dimensions;;', function() {
 
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, 'country', $service.STRATEGY_TRANSIENT, ['city', 'country']);
@@ -107,11 +107,11 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should be able to assume the default strategy;', function() {
+        it('Should be able to assume the default strategy;;', function() {
             expect($service._strategy).toEqual($service.STRATEGY_PERSISTENT);
         });
 
-        it('Should be able to change the strategy;', function() {
+        it('Should be able to change the strategy;;', function() {
 
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, null, $service.STRATEGY_TRANSIENT);
@@ -122,18 +122,18 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should be able to configure all of the dimensions;', function() {
+        it('Should be able to configure all of the dimensions;;', function() {
             expect($service._dimensions.city).toBeDefined();
             expect($service._dimensions.country).toBeDefined();
             expect($service._dimensions.population).toBeDefined();
         });
 
-        it('Should be able to initialise the collection;', function() {
+        it('Should be able to initialise the collection;;', function() {
             expect(typeof $service._crossfilter).toEqual('object');
             expect($service._crossfilter.dimension).toBeDefined();
         });
 
-        it('Should be able to determine when the collection is not an array;', function() {
+        it('Should be able to determine when the collection is not an array;;', function() {
             inject(function(Crossfilter) {
                 expect(function() {
                     $service = new Crossfilter('not an array');
@@ -141,7 +141,7 @@ describe('ngCrossfilter', function() {
             });
         });
 
-        it('Should be able to detect an invalid filtering strategy;', function() {
+        it('Should be able to detect an invalid filtering strategy;;', function() {
             inject(function(Crossfilter) {
                 expect(function() {
                     $service = new Crossfilter($collection, 'city', 'invalid strategy');
@@ -149,7 +149,7 @@ describe('ngCrossfilter', function() {
             });
         });
 
-        it('Should be able to enable the debug mode;', function() {
+        it('Should be able to enable the debug mode;;', function() {
             expect($service._debug).toBeFalsy();
             $service.debugMode(true);
             expect($service._debug).toEqual(true);
@@ -159,14 +159,14 @@ describe('ngCrossfilter', function() {
             expect($service._debug).toEqual(false);
         });
 
-        it('Should be able to filter by the country name;', function() {
+        it('Should be able to filter by the country name;;', function() {
             expect($service.length).toEqual(6);
             $service.filterBy('country', 'UK');
             expect($service.length).toEqual(2);
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
-        it('Should be able to detect when a non-function is passed;', function() {
+        it('Should be able to detect when a non-function is passed;;', function() {
             inject(function(Crossfilter) {
                 expect(function() {
                     $service = new Crossfilter($collection);
@@ -175,7 +175,7 @@ describe('ngCrossfilter', function() {
             });
         });
 
-        it('Should be able to remove the applied filter;', function() {
+        it('Should be able to remove the applied filter;;', function() {
             $service.filterBy('country', 'UK');
             expect($service.length).toEqual(2);
             $service.filterBy('city', 'London');
@@ -187,7 +187,7 @@ describe('ngCrossfilter', function() {
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
-        it('Should be able to remove all applied filters;', function() {
+        it('Should be able to remove all applied filters;;', function() {
             $service.filterBy('country', 'UK');
             $service.filterBy('city', 'London');
             expect($service.length).toEqual(1);
@@ -196,12 +196,12 @@ describe('ngCrossfilter', function() {
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
-        it('Should be able to apply a range filter;', function() {
+        it('Should be able to apply a range filter;;', function() {
             $service.filterBy('population', [7, 12]);
             expect($service.length).toEqual(3);
         });
 
-        it('Should be able to apply a custom filter;', function() {
+        it('Should be able to apply a custom filter;;', function() {
                 $service.filterBy('country', 'UK', function(expected, actual) {
                 return expected !== actual;
             });
@@ -209,7 +209,7 @@ describe('ngCrossfilter', function() {
             expect($rootScope.$broadcast).toHaveBeenCalledWith('crossfilter/updated');
         });
 
-        it('Should be able to apply filters in a transient fashion;', function() {
+        it('Should be able to apply filters in a transient fashion;;', function() {
 
             $service.filterBy('city', 'London');
             $service.filterBy('country', 'UK');
@@ -227,7 +227,7 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should be able to memorise the last applied filter;', function() {
+        it('Should be able to memorise the last applied filter;;', function() {
 
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection, null, $service.STRATEGY_TRANSIENT);
@@ -238,7 +238,7 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should be able to sort the collection;', function() {
+        it('Should be able to sort the collection;;', function() {
             $service.sortBy('country');
             expect($service[0].country).toEqual('BR');
             $service.sortBy('country', false);
@@ -249,7 +249,7 @@ describe('ngCrossfilter', function() {
             expect($service.last().country).toEqual('UK');
         });
 
-        it('Should be able to reverse the sort when sorting by same property;', function() {
+        it('Should be able to reverse the sort when sorting by same property;;', function() {
             $service.sortBy('country');
             expect($service[0].country).toEqual('BR');
             $service.sortBy('country');
@@ -258,14 +258,14 @@ describe('ngCrossfilter', function() {
             expect($service[0].country).toEqual('BR');
         });
 
-        it('Should be able to unsort the collection;', function() {
+        it('Should be able to unsort the collection;;', function() {
             $service.sortBy('population', false);
             expect($service[0].country).toEqual('RU');
             $service.unsortBy('population');
             expect($service[0].country).toEqual('HK');
         });
 
-        it('Should be able to unsort the collection and maintaining order;', function() {
+        it('Should be able to unsort the collection and maintaining order;;', function() {
             $service.sortBy('population', false);
             expect($service[0].country).toEqual('RU');
             $service.unsortBy('population', true);
@@ -275,7 +275,7 @@ describe('ngCrossfilter', function() {
             expect($service[0].country).toEqual('HK');
         });
 
-        it('Should be able to add a custom dimension and filter on it;', function() {
+        it('Should be able to add a custom dimension and filter on it;;', function() {
             $service.addDimension('countryCity', function(model) {
                 return model.country + ': ' + model.city;
             });
@@ -283,7 +283,7 @@ describe('ngCrossfilter', function() {
             expect($service.length).toEqual(1);
         });
 
-        it('Should be able to delete a dimension;', function() {
+        it('Should be able to delete a dimension;;', function() {
             expect($service._dimensions.city).toBeDefined();
             $service.deleteDimension('city');
             expect($service._dimensions.city).toBeUndefined();
@@ -292,7 +292,7 @@ describe('ngCrossfilter', function() {
             }).toThrow("ngCrossfilter: Unable to find dimension named 'city'.");
         });
 
-        it('Should be able to add a model and filter on it;', function() {
+        it('Should be able to add a model and filter on it;;', function() {
             var number = $service.addModel({ city: 'St. Petersburg', country: 'RU', population: 4.8 });
             expect(number).toEqual(1);
             expect($service.length).toEqual(7);
@@ -300,13 +300,13 @@ describe('ngCrossfilter', function() {
             expect($service.length).toEqual(2);
         });
 
-        it('Should be able to remove a model;', function() {
+        it('Should be able to remove a model;;', function() {
             var model = { city: 'Hong Kong', country: 'HK', population: 7.1 };
             $service.deleteModel(model);
             expect($service.length).toEqual(5);
         });
 
-        it('Should be able to validate the primary key when deleting a model;', function() {
+        it('Should be able to validate the primary key when deleting a model;;', function() {
             inject(function(Crossfilter) {
                 expect(function() {
                     $service = new Crossfilter($collection);
@@ -316,7 +316,7 @@ describe('ngCrossfilter', function() {
             });
         });
 
-        it('Should be able to count on any given property;', function() {
+        it('Should be able to count on any given property;;', function() {
             expect($service.countBy('country', 'UK')).toEqual(2);
             $service.filterBy('country', 'HK');
             expect($service.countBy('country', 'UK')).toEqual(2);
@@ -326,16 +326,16 @@ describe('ngCrossfilter', function() {
             expect($service.countBy('city', 'Moscow')).toEqual(0);
         });
 
-        it('Should be able to group by on any given property;', function() {
+        it('Should be able to group by on any given property;;', function() {
             expect($service.length).toEqual(6);
             var collection = $service.groupBy('country');
             expect(collection[3].value).toEqual(1);
             expect(collection[4].value).toEqual(2);
         });
 
-        describe('Bundled Filters', function() {
+        describe('Bundled Filters;', function() {
 
-            it('Should be able to use the fuzzy filter;', function() {
+            it('Should be able to use the fuzzy filter;;', function() {
 
                 expect($service.length).toEqual(6);
 
@@ -354,7 +354,7 @@ describe('ngCrossfilter', function() {
 
             });
 
-            it('Should be able to use the regexp filter;', function() {
+            it('Should be able to use the regexp filter;;', function() {
 
                 expect($service.length).toEqual(6);
 
@@ -375,7 +375,7 @@ describe('ngCrossfilter', function() {
 
             });
 
-            it('Should be able to use the bitwise filter;', function() {
+            it('Should be able to use the bitwise filter;;', function() {
 
                 expect($service.length).toEqual(6);
                 $service.filterBy('climate', 2, $service.filters.bitwise());
@@ -389,7 +389,7 @@ describe('ngCrossfilter', function() {
 
             });
 
-            it('Should be able to use the dateTime range filter;', function() {
+            it('Should be able to use the dateTime range filter;;', function() {
 
                 expect($service.length).toEqual(6);
                 $service.filterBy('added', ['2014-01-01', '2014-07-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
@@ -410,7 +410,7 @@ describe('ngCrossfilter', function() {
 
             });
 
-            it('Should be able to use the inArray filter;', function() {
+            it('Should be able to use the inArray filter;;', function() {
 
                 expect($service.length).toEqual(6);
 
