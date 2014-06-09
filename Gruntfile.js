@@ -110,7 +110,12 @@ module.exports = function(grunt) {
             files: ['dist/ng-crossfilter.js'],
             options: {
                 js: {
-                    preserveNewlines: false
+                    preserveNewlines: false,
+                    jslintHappy: true,
+                    keepArrayIndentation: false,
+                    keepFunctionIndentation: false,
+                    spaceBeforeConditional: true,
+                    spaceInParen: true
                 }
             }
         }
