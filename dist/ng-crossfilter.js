@@ -189,6 +189,9 @@
                         this._applyChanges();
                     };
                     Service.prototype.addDimension = function addDimension(name, setupFunction) {
+                        setupFunction = setupFunction || function dimensionSetup(model) {
+                            return model[name];
+                        };
                         this._assertValidDimensionName(name);
                         this._dimensions[name] = this._crossfilter.dimension(setupFunction);
                     };
