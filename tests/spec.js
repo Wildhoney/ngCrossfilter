@@ -255,17 +255,17 @@ describe('ngCrossfilter', function() {
         it('Should be able to unsort the collection;', function() {
             $service.sortBy('population', false);
             expect($service[0].country).toEqual('RU');
-            $service.unsortBy('population');
+            $service.unsortAll();
             expect($service[0].country).toEqual('HK');
         });
 
         it('Should be able to unsort the collection while maintaining order;', function() {
             $service.sortBy('population', false);
             expect($service[0].country).toEqual('RU');
-            $service.unsortBy('population', true);
+            $service.unsortAll(true);
             expect($service[0].country).toEqual('SG');
             $service.sortBy('population', false);
-            $service.unsortBy('population');
+            $service.unsortAll();
             expect($service[0].country).toEqual('HK');
         });
 

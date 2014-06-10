@@ -552,22 +552,13 @@
             };
 
             /**
-             * @method unsortBy
-             * @param property {String}
+             * @method unsortAll
              * @param maintainSortOrder {Boolean}
              * @return {void}
              */
-            Service.prototype.unsortBy = function unsortBy(property, maintainSortOrder) {
+            Service.prototype.unsortAll = function unsortAll(maintainSortOrder) {
 
-                this._assertDimensionExists(property);
                 this._prepareChanges();
-
-                if (this._sortProperty !== property) {
-
-                    // Ensure we're currently sorting by this property.
-                    _throwException("Currently not sorting by property '" + property + "'");
-
-                }
 
                 // Sort by the default property, which is the primary key.
                 this._sortProperty = this._primaryKey;

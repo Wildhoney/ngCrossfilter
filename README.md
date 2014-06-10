@@ -96,13 +96,13 @@ Sorting
 
  *Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.*
 
- Unsort by **word**:
+ Unsort all **word**:
 
  ```javascript
- $ngc.unsortBy('word')
+ $ngc.unsortAll()
  ```
 
- *Second argument prevents the reverting of the sort order to ascending.*
+ *First argument prevents the reverting of the sort order to ascending.*
 
 Counting
 -------------
