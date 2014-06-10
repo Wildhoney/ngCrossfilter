@@ -174,12 +174,8 @@
                 this._sortProperty = property;
                 this._applyChanges();
             };
-            Service.prototype.unsortBy = function unsortBy( property, maintainSortOrder ) {
-                this._assertDimensionExists( property );
+            Service.prototype.unsortAll = function unsortAll( maintainSortOrder ) {
                 this._prepareChanges();
-                if ( this._sortProperty !== property ) {
-                    _throwException( "Currently not sorting by property '" + property + "'" );
-                }
                 this._sortProperty = this._primaryKey;
                 if ( maintainSortOrder !== true ) {
                     this._isAscending = true;
