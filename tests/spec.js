@@ -243,6 +243,21 @@ describe('ngCrossfilter', function() {
             expect($service.last().country).toEqual('UK');
         });
 
+        it('Should be able to sort on multiple properties;', function() {
+
+//            $service.sortBy('country');
+//            $service.sortBy('population');
+
+//            var sortBy = crossfilter.quicksort.by(function(d) {
+//                var sort = d.country + '-' + (+d.population).toFixed(10);
+//                console.log(sort);
+//                return sort;
+//            });
+//
+//            var sorted = sortBy($service._collection(), 0, $service.length);
+
+        });
+
         it('Should be able to reverse the sort when sorting by same property;', function() {
             $service.sortBy('country');
             expect($service[0].country).toEqual('BR');
