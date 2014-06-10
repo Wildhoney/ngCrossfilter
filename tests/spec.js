@@ -1,6 +1,6 @@
 describe('ngCrossfilter', function() {
 
-    var $service, $filter, $rootScope;
+    var $service, $rootScope;
 
     var $collection = [
 
@@ -259,7 +259,7 @@ describe('ngCrossfilter', function() {
             expect($service[0].country).toEqual('HK');
         });
 
-        it('Should be able to unsort the collection and maintaining order;', function() {
+        it('Should be able to unsort the collection while maintaining order;', function() {
             $service.sortBy('population', false);
             expect($service[0].country).toEqual('RU');
             $service.unsortBy('population', true);
