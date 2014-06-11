@@ -45,7 +45,7 @@
                         return !!actual.match( regExp );
                     };
                 },
-                dateTimeRange: function dateTimeRangeFilter( format ) {
+                dateTimeRange: function dateTimeRangeFilter( format, comparatorFunction ) {
                     if ( typeof $moment === 'undefined' ) {
                         _throwException( "You need to install Moment.js to use dateTimeRange" );
                     }
@@ -55,6 +55,9 @@
                             current = $moment( actual, format ).unix();
                         if ( start < 0 || end < 0 || current < 0 ) {
                             _throwException( "Date/Time parsing appears to be using invalid format" );
+                        }
+                        if ( typeof comparatorFunction === 'function' ) {
+                            return comparatorFunction( current, start, end );
                         }
                         return ( current >= start && current <= end );
                     }
@@ -253,7 +256,7 @@
             Service.prototype.debugMode = function debugMode( state ) {
                 this._debug = !!state;
             };
-            Service.prototype._collection = function getCollection( limit ) {
+            Service.prototype._collection = function _collection( limit ) {
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder = this._isAscending ? 'bottom' : 'top';
                 if ( typeof this._dimensions[ sortProperty ] === 'undefined' ) {
