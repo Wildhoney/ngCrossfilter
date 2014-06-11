@@ -215,9 +215,10 @@
                 /**
                  * @method dateTimeRange
                  * @param format {String}
+                 * @param comparatorFunction {Function}
                  * @return {Function}
                  */
-                dateTimeRange: function dateTimeRangeFilter(format) {
+                dateTimeRange: function dateTimeRangeFilter(format, comparatorFunction) {
 
                     if (typeof $moment === 'undefined') {
 
@@ -243,6 +244,13 @@
 
                             // Ensure we're not dealing with overtly incorrect dates/times.
                             _throwException("Date/Time parsing appears to be using invalid format");
+
+                        }
+
+                        if (typeof comparatorFunction === 'function') {
+
+                            // Use the user specified comparator function if it has been defined.
+                            return comparatorFunction(current, start, end);
 
                         }
 
@@ -755,7 +763,7 @@
              * @return {Array|Service}
              * @private
              */
-            Service.prototype._collection = function getCollection(limit) {
+            Service.prototype._collection = function _collection(limit) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder    = this._isAscending ? 'bottom' : 'top';

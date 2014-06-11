@@ -186,7 +186,15 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
                         $service.filters.dateTimeRange('YYYY-MM-DD'));
  ```
 
- The first and only parameter of the `dateTimeRange` filter allows you to specify the exact format &ndash; [see Moment.js documentation](http://momentjs.com/docs/#/parsing/string-format/) &ndash; the default being **YYYY-MM-DD**.
+ The first parameter of the `dateTimeRange` filter allows you to specify the exact format &ndash; [see Moment.js documentation](http://momentjs.com/docs/#/parsing/string-format/) &ndash; the default being **YYYY-MM-DD**. With the second parameter you can pass a comparator function for custom range filtering.
+
+ ```javascript
+ $ngc.filterBy('added', [-Infinity, '2012-12-01'],
+                        $service.filters.dateTimeRange('YYYY-MM-DD'),
+                        function(current, start, end) {
+                            return (current > start);
+                        });
+ ```
 
  `dateTimeRange` also accepts `-Infinity`/`Infinity` ranges for where lows and highs are not applicable.
 
