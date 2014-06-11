@@ -94,7 +94,7 @@ Sorting
 
  *Second argument allows you to choose whether the sorting is by ascending &ndash; by not applying a value, the ascending will be inverted each time the same property is sorted on.*
 
- Unsort all **word**:
+ Unsort all:
 
  ```javascript
  $ngc.unsortAll()
