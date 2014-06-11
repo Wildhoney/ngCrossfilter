@@ -72,10 +72,8 @@ Filtering
 
  ```javascript
  $scope.fuzzyFilter = function fuzzyFilter(expected, actual) {
-
-     var regExp = new $RegExp(expected);
-     return !!actual.match(regExp, 'i');
-
+     var regExp = new RegExp(expected);
+     return actual.match(regExp, 'i');
  }
  ```
 
