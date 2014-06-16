@@ -224,6 +224,7 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
 <ul>
  <li><code>first</code>: First model in the collection;</li>
  <li><code>last</code>: Last model in the collection;</li>
+ <li><code>models</code>: Retrieve a slice of the collection;</li>
 </ul>
 
 **Dimensions**
