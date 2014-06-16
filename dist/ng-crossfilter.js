@@ -228,8 +228,8 @@
                 } ).all();
             };
             Service.prototype.models = function models( offset, length ) {
-                var slice = this._collection( length );
-                return slice.splice( offset );
+                var slice = this._collection( typeof length === 'number' ? length : Infinity );
+                return slice.splice( typeof offset === 'number' ? offset : Infinity );
             };
             Service.prototype.addModel = function addModel( model ) {
                 return this.addModels( [ model ] );
