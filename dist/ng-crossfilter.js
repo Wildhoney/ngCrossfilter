@@ -227,6 +227,10 @@
                     return property;
                 } ).all();
             };
+            Service.prototype.models = function models( offset, length ) {
+                var slice = this._collection( length );
+                return slice.splice( offset );
+            };
             Service.prototype.addModel = function addModel( model ) {
                 return this.addModels( [ model ] );
             };
