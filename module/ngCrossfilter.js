@@ -692,8 +692,8 @@
              * @return {Array}
              */
             Service.prototype.models = function models(offset, length) {
-                var slice = this._collection(length || Infinity);
-                return slice.splice(offset || Infinity);
+                var slice = this._collection(typeof length === 'number' ? length : Infinity);
+                return slice.splice(typeof offset === 'number' ? offset : Infinity);
             };
 
             /**
