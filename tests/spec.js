@@ -84,6 +84,21 @@ describe('ngCrossfilter', function() {
             });
         });
 
+        it('Should be able to get a slice of the collection;', function() {
+
+            var slice;
+
+            slice = $service.models(0, 2);
+            expect(slice.length).toEqual(2);
+            expect(slice[0].country).toEqual('HK');
+
+            slice = $service.models(1, 4);
+            expect(slice.length).toEqual(3);
+            expect(slice[0].country).toEqual('UK');
+
+
+        });
+
         it('Should not be registering methods/properties on the prototype chain;', function() {
             expect([]._crossfilter).toBeUndefined();
             expect([].filterBy).toBeUndefined();
