@@ -686,6 +686,17 @@
             };
 
             /**
+             * @method models
+             * @param offset {Number}
+             * @param length {Number}
+             * @return {Array}
+             */
+            Service.prototype.models = function models(offset, length) {
+                var slice = this._collection(length);
+                return slice.splice(offset);
+            };
+
+            /**
              * @method addModel
              * @param model {Object}
              * @return {Number}
