@@ -267,6 +267,9 @@
             Service.prototype.debugMode = function debugMode( state ) {
                 this._debug = !!state;
             };
+            Service.prototype.crossfilter = function crossfilter() {
+                return this._crossfilter;
+            };
             Service.prototype._collection = function _collection( limit ) {
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder = this._isAscending ? 'bottom' : 'top';
