@@ -790,6 +790,14 @@
             };
 
             /**
+             * @method crossfilter
+             * @return {crossfilter}
+             */
+            Service.prototype.crossfilter = function crossfilter() {
+                return this._crossfilter;
+            };
+
+            /**
              * @method _collection
              * @param limit {Number}
              * @return {Array|Service}

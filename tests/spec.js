@@ -138,8 +138,8 @@ describe('ngCrossfilter', function() {
         });
 
         it('Should be able to initialise the collection;', function() {
-            expect(typeof $service._crossfilter).toEqual('object');
-            expect($service._crossfilter.dimension).toBeDefined();
+            expect(typeof $service.crossfilter()).toEqual('object');
+            expect($service.crossfilter().dimension).toBeDefined();
         });
 
         it('Should be able to determine when the collection is not an array;', function() {
