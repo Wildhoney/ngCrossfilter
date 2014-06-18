@@ -247,6 +247,8 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
  <li><code>addModels</code>: Add models to the collection;</li>
  <li><code>deleteModel</code>: Delete a model from the collection;</li>
  <li><code>deleteModels</code>: Delete models from the collection;</li>
+ <li><code>restoreModel</code>: Restore a model from the garbage;</li>
+ <li><code>restoreModels</code>: Restore models from the garbage;</li>
 </ul>
 
 **Developer**
