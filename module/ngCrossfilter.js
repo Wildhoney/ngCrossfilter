@@ -307,7 +307,7 @@
                  * @return {Function}
                  */
                 inArray: function inArray(method) {
-                    return this._inArray(method);
+                    return this._inArray(method, false);
                 },
 
                 /**
@@ -750,22 +750,7 @@
              */
             SP.deleteModels = function deleteModel(models) {
 
-                var deleteKeys = [];
-
-                $angular.forEach(models, function forEach(model) {
-
-                    var primaryKey = model[this._primaryKey];
-
-                    if (typeof primaryKey === 'undefined') {
-
-                        // Ensure the primary key is valid.
-                        _throwException("Unable to find the primary key in model: '" + this._primaryKey + "'");
-
-                    }
-
-                    deleteKeys.push(primaryKey);
-
-                }.bind(this));
+                var deleteKeys = this._getKeys(models);
 
                 // Use the special primary key dimension to remove the model(s).
                 this._dimensions[this.PRIMARY_DIMENSION].filter(function filter(property) {
@@ -965,6 +950,35 @@
                 }
 
                 return properties;
+
+            };
+
+            /**
+             * @method _getKeys
+             * @param models
+             * @returns {Array}
+             * @private
+             */
+            SP._getKeys = function _getKeys(models) {
+
+                var keys = [];
+
+                $angular.forEach(models, function forEach(model) {
+
+                    var primaryKey = model[this._primaryKey];
+
+                    if (typeof primaryKey === 'undefined') {
+
+                        // Ensure the primary key is valid.
+                        _throwException("Unable to find the primary key in model: '" + this._primaryKey + "'");
+
+                    }
+
+                    keys.push(primaryKey);
+
+                }.bind(this));
+
+                return keys;
 
             };
 
