@@ -309,7 +309,17 @@
                  * @param method {String}
                  * @return {Function}
                  */
-                inArray: function inArrayFilter(method) {
+                inArray: function inArray(method) {
+                    return this._inArray(method);
+                },
+
+                /**
+                 * @method _inArray
+                 * @param method {String}
+                 * @return {Function}
+                 * @private
+                 */
+                _inArray: function inArrayFilter(method) {
 
                     var hasUnderscore = this.HAS_UNDERSCORE,
                         isArray       = this._isArray;
