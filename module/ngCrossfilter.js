@@ -314,12 +314,22 @@
                 },
 
                 /**
+                 * @method notInArray
+                 * @param method {String}
+                 * @return {Function}
+                 */
+                notInArray: function notInArray(method) {
+                    return this._inArray(method, true);
+                },
+
+                /**
                  * @method _inArray
                  * @param method {String}
+                 * @param invertInArray {Boolean}
                  * @return {Function}
                  * @private
                  */
-                _inArray: function inArrayFilter(method) {
+                _inArray: function inArrayFilter(method, invertInArray) {
 
                     var hasUnderscore = this.HAS_UNDERSCORE,
                         isArray       = this._isArray;
@@ -360,7 +370,8 @@
                          * @return {Boolean}
                          */
                         var everySome = function everySome(property) {
-                            return (actual.indexOf(property) !== -1);
+                            var result = (actual.indexOf(property) !== -1);
+                            return (invertInArray) ? !result : result;
                         };
 
                         // Use Underscore if available, otherwise native.

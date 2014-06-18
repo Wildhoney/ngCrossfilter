@@ -485,6 +485,16 @@ describe('ngCrossfilter', function() {
 
             });
 
+            it('Should be able to use the notInArray filter;', function() {
+
+                expect($service.length).toEqual(6);
+
+                $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], $service.filters.notInArray());
+                expect($service.length).toEqual(5);
+                $service.unfilterBy('twinCities');
+
+            });
+
         });
 
     });
