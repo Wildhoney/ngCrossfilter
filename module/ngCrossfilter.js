@@ -82,42 +82,39 @@
 
             };
 
-            /**
-             * @property prototype
-             * @type {Array}
-             */
-            Service.prototype = [];
+            // Store a reference to the prototype.
+            var SP = Service.prototype = [];
 
             /**
              * @constant STRATEGY_PERSISTENT
              * @type {String}
              */
-            Service.prototype.STRATEGY_PERSISTENT = 'persistent';
+            SP.STRATEGY_PERSISTENT = 'persistent';
 
             /**
              * @constant STRATEGY_TRANSIENT
              * @type {String}
              */
-            Service.prototype.STRATEGY_TRANSIENT = 'transient';
+            SP.STRATEGY_TRANSIENT = 'transient';
 
             /**
              * @constant PRIMARY_DIMENSION
              * @type {String}
              */
-            Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
+            SP.PRIMARY_DIMENSION = '__primaryKey';
 
             /**
              * @property _crossfilter
              * @type {crossfilter}
              * @private
              */
-            Service.prototype._crossfilter = {};
+            SP._crossfilter = {};
 
             /**
              * @property _cacheGroups
              * @type {Object}
              */
-            Service.prototype._cacheGroups = {};
+            SP._cacheGroups = {};
 
             /**
              * @property _isTiming
@@ -125,28 +122,28 @@
              * @default false
              * @private
              */
-            Service.prototype._isTiming = false;
+            SP._isTiming = false;
 
             /**
              * @property _dimensions
              * @type {Object}
              * @private
              */
-            Service.prototype._dimensions = {};
+            SP._dimensions = {};
 
             /**
              * @property _primaryKey
              * @type {String}
              * @private
              */
-            Service.prototype._primaryKey = '';
+            SP._primaryKey = '';
 
             /**
              * @property _sortProperty
              * @type {String}
              * @private
              */
-            Service.prototype._sortProperty = '';
+            SP._sortProperty = '';
 
             /**
              * @property _isAscending
@@ -154,21 +151,21 @@
              * @default true
              * @private
              */
-            Service.prototype._isAscending = true;
+            SP._isAscending = true;
 
             /**
              * @property _lastFilter
              * @type {String}
              * @private
              */
-            Service.prototype._lastFilter = '';
+            SP._lastFilter = '';
 
             /**
              * @property strategy
              * @type {String}
              * @private
              */
-            Service.prototype._strategy = '';
+            SP._strategy = '';
 
             /**
              * @property _debug
@@ -176,7 +173,7 @@
              * @default false
              * @private
              */
-            Service.prototype._debug = false;
+            SP._debug = false;
 
             /**
              * List of common filters bundled into ngCrossfilter.
@@ -184,7 +181,7 @@
              * @property filters
              * @type {Object}
              */
-            Service.prototype.filters = {
+            SP.filters = {
 
                 /**
                  * @constant HAS_UNDERSCORE
@@ -392,7 +389,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._initialise = function _initialise(collection, primaryKey, strategy, properties) {
+            SP._initialise = function _initialise(collection, primaryKey, strategy, properties) {
 
                 if (!this._isArray(collection)) {
 
@@ -465,7 +462,7 @@
              * @param customFilter {Function}
              * @return {void}
              */
-            Service.prototype.filterBy = function filterBy(property, expected, customFilter) {
+            SP.filterBy = function filterBy(property, expected, customFilter) {
 
                 this._assertDimensionExists(property);
 
@@ -513,7 +510,7 @@
              * @param property {String}
              * @return {void}
              */
-            Service.prototype.unfilterBy = function unfilterBy(property) {
+            SP.unfilterBy = function unfilterBy(property) {
 
                 this._assertDimensionExists(property);
                 this._prepareChanges();
@@ -526,7 +523,7 @@
              * @method unfilterAll
              * @return {void}
              */
-            Service.prototype.unfilterAll = function unfilterAll() {
+            SP.unfilterAll = function unfilterAll() {
 
                 this._prepareChanges();
 
@@ -550,7 +547,7 @@
              * @param isAscending {Boolean}
              * @return {void}
              */
-            Service.prototype.sortBy = function sortBy(property, isAscending) {
+            SP.sortBy = function sortBy(property, isAscending) {
 
                 this._assertDimensionExists(property);
                 this._prepareChanges();
@@ -585,7 +582,7 @@
              * @param maintainSortOrder {Boolean}
              * @return {void}
              */
-            Service.prototype.unsortAll = function unsortAll(maintainSortOrder) {
+            SP.unsortAll = function unsortAll(maintainSortOrder) {
 
                 this._prepareChanges();
 
@@ -609,7 +606,7 @@
              * @param setupFunction {Function}
              * @return {void}
              */
-            Service.prototype.addDimension = function addDimension(name, setupFunction) {
+            SP.addDimension = function addDimension(name, setupFunction) {
 
                 // Assume a default setup method if none has been specified.
                 setupFunction = setupFunction || function dimensionSetup(model) {
@@ -626,7 +623,7 @@
              * @param name {String}
              * @return {void}
              */
-            Service.prototype.deleteDimension = function deleteDimension(name) {
+            SP.deleteDimension = function deleteDimension(name) {
                 this._assertDimensionExists(name);
                 this._dimensions[name].dispose();
                 delete this._dimensions[name];
@@ -636,7 +633,7 @@
              * @method first
              * @return {Object}
              */
-            Service.prototype.first = function first() {
+            SP.first = function first() {
                 return this[0];
             };
 
@@ -644,7 +641,7 @@
              * @method last
              * @return {Object}
              */
-            Service.prototype.last = function last() {
+            SP.last = function last() {
                 return this[this.length - 1];
             };
 
@@ -654,7 +651,7 @@
              * @param value {String}
              * @return {Number}
              */
-            Service.prototype.countBy = function countBy(property, value) {
+            SP.countBy = function countBy(property, value) {
 
                 if (this._cacheGroups[property]) {
 
@@ -696,7 +693,7 @@
              * @param property {String}
              * @return {Array}
              */
-            Service.prototype.groupBy = function groupBy(property) {
+            SP.groupBy = function groupBy(property) {
 
                 this._assertDimensionExists(property);
 
@@ -712,7 +709,7 @@
              * @param length {Number}
              * @return {Array}
              */
-            Service.prototype.models = function models(offset, length) {
+            SP.models = function models(offset, length) {
                 var slice = this._collection(typeof length === 'number' ? length : Infinity);
                 return slice.splice(typeof offset === 'number' ? offset : Infinity);
             };
@@ -722,7 +719,7 @@
              * @param model {Object}
              * @return {Number}
              */
-            Service.prototype.addModel = function addModel(model) {
+            SP.addModel = function addModel(model) {
                 return this.addModels([model]);
             };
 
@@ -731,7 +728,7 @@
              * @param models {Array}
              * @return {Number}
              */
-            Service.prototype.addModels = function addModels(models) {
+            SP.addModels = function addModels(models) {
                 this._crossfilter.add(models);
                 this._applyChanges();
                 return models.length;
@@ -742,7 +739,7 @@
              * @param model {Object}
              * @return {Number}
              */
-            Service.prototype.deleteModel = function deleteModel(model) {
+            SP.deleteModel = function deleteModel(model) {
                 return this.deleteModels([model]);
             };
 
@@ -751,7 +748,7 @@
              * @param models {Array}
              * @return {Number}
              */
-            Service.prototype.deleteModels = function deleteModel(models) {
+            SP.deleteModels = function deleteModel(models) {
 
                 var deleteKeys = [];
 
@@ -785,7 +782,7 @@
              * @param state {Boolean}
              * @return {void}
              */
-            Service.prototype.debugMode = function debugMode(state) {
+            SP.debugMode = function debugMode(state) {
                 this._debug = !!state;
             };
 
@@ -793,7 +790,7 @@
              * @method crossfilter
              * @return {crossfilter}
              */
-            Service.prototype.crossfilter = function crossfilter() {
+            SP.crossfilter = function crossfilter() {
                 return this._crossfilter;
             };
 
@@ -803,7 +800,7 @@
              * @return {Array|Service}
              * @private
              */
-            Service.prototype._collection = function _collection(limit) {
+            SP._collection = function _collection(limit) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder    = this._isAscending ? 'bottom' : 'top';
@@ -821,7 +818,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._prepareChanges = function _prepareChanges() {
+            SP._prepareChanges = function _prepareChanges() {
 
                 this._timerManager();
 
@@ -841,7 +838,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._applyChanges = function _applyChanges() {
+            SP._applyChanges = function _applyChanges() {
 
                 // Use the nifty way of emptying an array.
                 this.length = 0;
@@ -867,7 +864,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._broadcastChanges = function _broadcastChanges(useTimeout) {
+            SP._broadcastChanges = function _broadcastChanges(useTimeout) {
 
                 /**
                  * @method broadcast
@@ -895,7 +892,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._assertDimensionExists = function _assertDimensionExists(property) {
+            SP._assertDimensionExists = function _assertDimensionExists(property) {
 
                 if (typeof this._dimensions[property] === 'undefined') {
 
@@ -912,7 +909,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._assertValidDimensionName = function _assertValidDimensionName(name) {
+            SP._assertValidDimensionName = function _assertValidDimensionName(name) {
 
                 // Ensure it doesn't use the special primary dimension.
                 if (name === this.PRIMARY_DIMENSION) {
@@ -935,7 +932,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._timerManager = function _timerManager() {
+            SP._timerManager = function _timerManager() {
 
                 if (!this._debug) {
                     return;
@@ -955,7 +952,7 @@
              * @return {Array}
              * @private
              */
-            Service.prototype._getProperties = function _getProperties(model) {
+            SP._getProperties = function _getProperties(model) {
 
                 var properties = [];
 
@@ -976,7 +973,7 @@
              * @return {Boolean}
              * @private
              */
-            Service.prototype._isArray = function _isArray(item) {
+            SP._isArray = function _isArray(item) {
 
                 if (typeof $window.Array.isArray === 'function') {
                     return $window.Array.isArray(item);
@@ -996,7 +993,7 @@
              * @return {void}
              * @private
              */
-            Service.prototype._resetAll = function _resetAll() {
+            SP._resetAll = function _resetAll() {
 
                 this._crossfilter = {};
                 this._cacheGroups = {};
@@ -1008,7 +1005,7 @@
              * @method toString
              * @return {String}
              */
-            Service.prototype.toString = function toString() {
+            SP.toString = function toString() {
                 return '[object Array]';
             };
 
