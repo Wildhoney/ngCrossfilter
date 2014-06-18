@@ -76,7 +76,13 @@
                         return ( flag === '!' ) ? !result : result;
                     }
                 },
-                inArray: function inArrayFilter( method ) {
+                inArray: function inArray( method ) {
+                    return this._inArray( method );
+                },
+                notInArray: function notInArray( method ) {
+                    return this._inArray( method, true );
+                },
+                _inArray: function inArrayFilter( method, invertInArray ) {
                     var hasUnderscore = this.HAS_UNDERSCORE,
                         isArray = this._isArray;
                     return function inArray( expected, actual ) {
@@ -94,7 +100,8 @@
                             _throwException( "Browser does not support `every` and/or `some` methods" );
                         }
                         var everySome = function everySome( property ) {
-                            return ( actual.indexOf( property ) !== -1 );
+                            var result = ( actual.indexOf( property ) !== -1 );
+                            return ( invertInArray ) ? !result : result;
                         };
                         return hasUnderscore ? _[ method ]( expected, everySome ) : expected[ method ]( everySome );
                     }
