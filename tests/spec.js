@@ -329,8 +329,28 @@ describe('ngCrossfilter', function() {
             $service.deleteModel(firstModel);
             expect($service.length).toEqual(5);
 
-            $service.deleteModel(secondModel);
+            $service.deleteModels([secondModel]);
             expect($service.length).toEqual(4);
+
+        });
+
+        it('Should be able to restore a model;', function() {
+
+            var firstModel =  { city: 'Hong Kong', country: 'HK', population: 7.1 },
+                secondModel = { city: 'Rio de Janeiro', country: 'BR', population: 6.3 };
+
+            $service.deleteModel(firstModel);
+            expect($service.length).toEqual(5);
+            $service.restoreModel(firstModel);
+            expect($service.length).toEqual(6);
+
+            $service.deleteModel(secondModel);
+            expect($service.length).toEqual(5);
+
+            $service.deleteModel(firstModel);
+            expect($service.length).toEqual(4);
+            $service.restoreModels([secondModel]);
+            expect($service.length).toEqual(5);
 
         });
 

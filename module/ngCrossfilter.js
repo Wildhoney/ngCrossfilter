@@ -49,7 +49,7 @@
      */
     ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', '$window',
 
-        /*jshint maxstatements: 50 */
+        /*jshint maxstatements: 55 */
         function CrossfilterService($rootScope, $timeout, $window) {
 
             /**
@@ -764,14 +764,36 @@
                     this._deletedKeys.push(currentKeys[index]);
                 }
 
-                var deleteKeys = currentKeys.concat(this._deletedKeys);
+                this._finaliseDeleteRestore();
+                return currentKeys.length;
 
-                // Use the special primary key dimension to remove the model(s).
-                this._dimensions[this.PRIMARY_DIMENSION].filter(function filter(property) {
-                    return (deleteKeys.indexOf(property) === -1);
-                });
+            };
 
-                this._applyChanges();
+            /**
+             * @property restoreModel
+             * @param model {Object}
+             * @return {Number}
+             */
+            SP.restoreModel = function restoreModel(model) {
+                return this.restoreModels([model]);
+            };
+
+            /**
+             * @property restoreModels
+             * @param models {Array}
+             * @return {Number}
+             */
+            SP.restoreModels = function deleteModel(models) {
+
+                var currentKeys = this._getKeys(models);
+
+                // Store each deleted key.
+                for (var index = 0; index <= currentKeys.length; index++) {
+                    var modelIndex = this._deletedKeys.indexOf(currentKeys[index]);
+                    this._deletedKeys.splice(modelIndex, 1);
+                }
+
+                this._finaliseDeleteRestore();
                 return currentKeys.length;
 
             };
@@ -809,6 +831,23 @@
                 }
 
                 return this._dimensions[sortProperty][sortOrder](limit || Infinity);
+
+            };
+
+            /**
+             * @method _finaliseDeleteRestore
+             * @return {Number}
+             */
+            SP._finaliseDeleteRestore = function _finaliseDeleteRestore() {
+
+                var keys = this._deletedKeys;
+
+                // Use the special primary key dimension to remove the model(s).
+                this._dimensions[this.PRIMARY_DIMENSION].filter(function filter(property) {
+                    return (keys.indexOf(property) === -1);
+                });
+
+                this._applyChanges();
 
             };
 
