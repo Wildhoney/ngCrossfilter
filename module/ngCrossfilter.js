@@ -168,6 +168,13 @@
             SP._strategy = '';
 
             /**
+             * @property _deletedKeys
+             * @type {Array}
+             * @private
+             */
+            SP._deletedKeys = [];
+
+            /**
              * @property _debug
              * @type {Boolean}
              * @default false
@@ -750,7 +757,14 @@
              */
             SP.deleteModels = function deleteModel(models) {
 
-                var deleteKeys = this._getKeys(models);
+                var currentKeys = this._getKeys(models);
+
+                // Store each deleted key.
+                for (var index = 0; index <= currentKeys.length; index++) {
+                    this._deletedKeys.push(currentKeys[index]);
+                }
+
+                var deleteKeys = currentKeys.concat(this._deletedKeys);
 
                 // Use the special primary key dimension to remove the model(s).
                 this._dimensions[this.PRIMARY_DIMENSION].filter(function filter(property) {
@@ -758,7 +772,7 @@
                 });
 
                 this._applyChanges();
-                return deleteKeys.length;
+                return currentKeys.length;
 
             };
 

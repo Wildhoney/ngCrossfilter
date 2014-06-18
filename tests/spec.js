@@ -322,9 +322,16 @@ describe('ngCrossfilter', function() {
         });
 
         it('Should be able to remove a model;', function() {
-            var model = { city: 'Hong Kong', country: 'HK', population: 7.1 };
-            $service.deleteModel(model);
+
+            var firstModel =  { city: 'Hong Kong', country: 'HK', population: 7.1 },
+                secondModel = { city: 'Rio de Janeiro', country: 'BR', population: 6.3 };
+
+            $service.deleteModel(firstModel);
             expect($service.length).toEqual(5);
+
+            $service.deleteModel(secondModel);
+            expect($service.length).toEqual(4);
+
         });
 
         it('Should be able to validate the primary key when deleting a model;', function() {
