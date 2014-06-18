@@ -23,21 +23,21 @@
                 masquerade.__proto__ = this;
                 return masquerade;
             };
-            Service.prototype = [];
-            Service.prototype.STRATEGY_PERSISTENT = 'persistent';
-            Service.prototype.STRATEGY_TRANSIENT = 'transient';
-            Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
-            Service.prototype._crossfilter = {};
-            Service.prototype._cacheGroups = {};
-            Service.prototype._isTiming = false;
-            Service.prototype._dimensions = {};
-            Service.prototype._primaryKey = '';
-            Service.prototype._sortProperty = '';
-            Service.prototype._isAscending = true;
-            Service.prototype._lastFilter = '';
-            Service.prototype._strategy = '';
-            Service.prototype._debug = false;
-            Service.prototype.filters = {
+            var SP = Service.prototype = [];
+            SP.STRATEGY_PERSISTENT = 'persistent';
+            SP.STRATEGY_TRANSIENT = 'transient';
+            SP.PRIMARY_DIMENSION = '__primaryKey';
+            SP._crossfilter = {};
+            SP._cacheGroups = {};
+            SP._isTiming = false;
+            SP._dimensions = {};
+            SP._primaryKey = '';
+            SP._sortProperty = '';
+            SP._isAscending = true;
+            SP._lastFilter = '';
+            SP._strategy = '';
+            SP._debug = false;
+            SP.filters = {
                 HAS_UNDERSCORE: false,
                 fuzzy: function fuzzyFilter( flags ) {
                     return function fuzzy( expected, actual ) {
@@ -107,7 +107,7 @@
                     }
                 }
             };
-            Service.prototype._initialise = function _initialise( collection, primaryKey, strategy, properties ) {
+            SP._initialise = function _initialise( collection, primaryKey, strategy, properties ) {
                 if ( !this._isArray( collection ) ) {
                     _throwException( "Collection must be an array" );
                 }
@@ -133,7 +133,7 @@
                 createDimension( this.PRIMARY_DIMENSION, this._primaryKey );
                 this._broadcastChanges( true );
             };
-            Service.prototype.filterBy = function filterBy( property, expected, customFilter ) {
+            SP.filterBy = function filterBy( property, expected, customFilter ) {
                 this._assertDimensionExists( property );
                 if ( typeof customFilter !== 'undefined' && typeof customFilter !== 'function' ) {
                     throw _throwException( "Custom filter method must be a function" );
@@ -153,13 +153,13 @@
                 this._dimensions[ property ].filter( expected );
                 this._applyChanges();
             };
-            Service.prototype.unfilterBy = function unfilterBy( property ) {
+            SP.unfilterBy = function unfilterBy( property ) {
                 this._assertDimensionExists( property );
                 this._prepareChanges();
                 this._dimensions[ property ].filterAll();
                 this._applyChanges();
             };
-            Service.prototype.unfilterAll = function unfilterAll() {
+            SP.unfilterAll = function unfilterAll() {
                 this._prepareChanges();
                 for ( var key in this._dimensions ) {
                     if ( this._dimensions.hasOwnProperty( key ) ) {
@@ -168,7 +168,7 @@
                 }
                 this._applyChanges();
             };
-            Service.prototype.sortBy = function sortBy( property, isAscending ) {
+            SP.sortBy = function sortBy( property, isAscending ) {
                 this._assertDimensionExists( property );
                 this._prepareChanges();
                 if ( typeof isAscending === 'boolean' ) {
@@ -184,7 +184,7 @@
                 this._sortProperty = property;
                 this._applyChanges();
             };
-            Service.prototype.unsortAll = function unsortAll( maintainSortOrder ) {
+            SP.unsortAll = function unsortAll( maintainSortOrder ) {
                 this._prepareChanges();
                 this._sortProperty = this._primaryKey;
                 if ( maintainSortOrder !== true ) {
@@ -192,25 +192,25 @@
                 }
                 this._applyChanges();
             };
-            Service.prototype.addDimension = function addDimension( name, setupFunction ) {
+            SP.addDimension = function addDimension( name, setupFunction ) {
                 setupFunction = setupFunction || function dimensionSetup( model ) {
                     return model[ name ];
                 };
                 this._assertValidDimensionName( name );
                 this._dimensions[ name ] = this._crossfilter.dimension( setupFunction );
             };
-            Service.prototype.deleteDimension = function deleteDimension( name ) {
+            SP.deleteDimension = function deleteDimension( name ) {
                 this._assertDimensionExists( name );
                 this._dimensions[ name ].dispose();
                 delete this._dimensions[ name ];
             };
-            Service.prototype.first = function first() {
+            SP.first = function first() {
                 return this[ 0 ];
             };
-            Service.prototype.last = function last() {
+            SP.last = function last() {
                 return this[ this.length - 1 ];
             };
-            Service.prototype.countBy = function countBy( property, value ) {
+            SP.countBy = function countBy( property, value ) {
                 if ( this._cacheGroups[ property ] ) {
                     return this._cacheGroups[ property ][ value ] || 0;
                 }
@@ -228,28 +228,28 @@
                 this._timerManager();
                 return groups[ value ] || 0;
             };
-            Service.prototype.groupBy = function groupBy( property ) {
+            SP.groupBy = function groupBy( property ) {
                 this._assertDimensionExists( property );
                 return this._dimensions[ property ].group( function group( property ) {
                     return property;
                 } ).all();
             };
-            Service.prototype.models = function models( offset, length ) {
+            SP.models = function models( offset, length ) {
                 var slice = this._collection( typeof length === 'number' ? length : Infinity );
                 return slice.splice( typeof offset === 'number' ? offset : Infinity );
             };
-            Service.prototype.addModel = function addModel( model ) {
+            SP.addModel = function addModel( model ) {
                 return this.addModels( [ model ] );
             };
-            Service.prototype.addModels = function addModels( models ) {
+            SP.addModels = function addModels( models ) {
                 this._crossfilter.add( models );
                 this._applyChanges();
                 return models.length;
             };
-            Service.prototype.deleteModel = function deleteModel( model ) {
+            SP.deleteModel = function deleteModel( model ) {
                 return this.deleteModels( [ model ] );
             };
-            Service.prototype.deleteModels = function deleteModel( models ) {
+            SP.deleteModels = function deleteModel( models ) {
                 var deleteKeys = [];
                 $angular.forEach( models, function forEach( model ) {
                     var primaryKey = model[ this._primaryKey ];
@@ -264,13 +264,13 @@
                 this._applyChanges();
                 return deleteKeys.length;
             };
-            Service.prototype.debugMode = function debugMode( state ) {
+            SP.debugMode = function debugMode( state ) {
                 this._debug = !!state;
             };
-            Service.prototype.crossfilter = function crossfilter() {
+            SP.crossfilter = function crossfilter() {
                 return this._crossfilter;
             };
-            Service.prototype._collection = function _collection( limit ) {
+            SP._collection = function _collection( limit ) {
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder = this._isAscending ? 'bottom' : 'top';
                 if ( typeof this._dimensions[ sortProperty ] === 'undefined' ) {
@@ -278,12 +278,12 @@
                 }
                 return this._dimensions[ sortProperty ][ sortOrder ]( limit || Infinity );
             };
-            Service.prototype._prepareChanges = function _prepareChanges() {
+            SP._prepareChanges = function _prepareChanges() {
                 this._timerManager();
                 this._cacheGroups = {};
                 this._broadcastChanges();
             };
-            Service.prototype._applyChanges = function _applyChanges() {
+            SP._applyChanges = function _applyChanges() {
                 this.length = 0;
                 var collection = this._collection( Infinity );
                 for ( var key in collection ) {
@@ -293,7 +293,7 @@
                 }
                 this._timerManager();
             };
-            Service.prototype._broadcastChanges = function _broadcastChanges( useTimeout ) {
+            SP._broadcastChanges = function _broadcastChanges( useTimeout ) {
                 var broadcast = function broadcast() {
                     $rootScope.$broadcast( 'crossfilter/updated' );
                 };
@@ -303,12 +303,12 @@
                 }
                 broadcast();
             };
-            Service.prototype._assertDimensionExists = function _assertDimensionExists( property ) {
+            SP._assertDimensionExists = function _assertDimensionExists( property ) {
                 if ( typeof this._dimensions[ property ] === 'undefined' ) {
                     _throwException( "Unable to find dimension named '" + property + "'" );
                 }
             };
-            Service.prototype._assertValidDimensionName = function _assertValidDimensionName( name ) {
+            SP._assertValidDimensionName = function _assertValidDimensionName( name ) {
                 if ( name === this.PRIMARY_DIMENSION ) {
                     _throwException( "Cannot define dimension using special dimension: '" + this.PRIMARY_DIMENSION + "'" )
                 }
@@ -318,7 +318,7 @@
                     }
                 }
             };
-            Service.prototype._timerManager = function _timerManager() {
+            SP._timerManager = function _timerManager() {
                 if ( !this._debug ) {
                     return;
                 }
@@ -326,7 +326,7 @@
                 this._isTiming = !this._isTiming;
                 $window.console[ method ]( 'timeTaken' );
             };
-            Service.prototype._getProperties = function _getProperties( model ) {
+            SP._getProperties = function _getProperties( model ) {
                 var properties = [];
                 for ( var property in model ) {
                     if ( model.hasOwnProperty( property ) ) {
@@ -335,7 +335,7 @@
                 }
                 return properties;
             };
-            Service.prototype._isArray = function _isArray( item ) {
+            SP._isArray = function _isArray( item ) {
                 if ( typeof $window.Array.isArray === 'function' ) {
                     return $window.Array.isArray( item );
                 }
@@ -344,12 +344,12 @@
                 }
                 return ( typeof item === '[object Array]' );
             };
-            Service.prototype._resetAll = function _resetAll() {
+            SP._resetAll = function _resetAll() {
                 this._crossfilter = {};
                 this._cacheGroups = {};
                 this._dimensions = {};
             };
-            Service.prototype.toString = function toString() {
+            SP.toString = function toString() {
                 return '[object Array]';
             };
             return Service;
