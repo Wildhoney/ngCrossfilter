@@ -36,6 +36,7 @@
             SP._isAscending = true;
             SP._lastFilter = '';
             SP._strategy = '';
+            SP._deletedKeys = [];
             SP._debug = false;
             SP.filters = {
                 HAS_UNDERSCORE: false,
@@ -77,7 +78,7 @@
                     }
                 },
                 inArray: function inArray( method ) {
-                    return this._inArray( method );
+                    return this._inArray( method, false );
                 },
                 notInArray: function notInArray( method ) {
                     return this._inArray( method, true );
@@ -250,19 +251,24 @@
                 return this.deleteModels( [ model ] );
             };
             SP.deleteModels = function deleteModel( models ) {
-                var deleteKeys = [];
-                $angular.forEach( models, function forEach( model ) {
-                    var primaryKey = model[ this._primaryKey ];
-                    if ( typeof primaryKey === 'undefined' ) {
-                        _throwException( "Unable to find the primary key in model: '" + this._primaryKey + "'" );
-                    }
-                    deleteKeys.push( primaryKey );
-                }.bind( this ) );
-                this._dimensions[ this.PRIMARY_DIMENSION ].filter( function filter( property ) {
-                    return ( deleteKeys.indexOf( property ) === -1 );
-                } );
-                this._applyChanges();
-                return deleteKeys.length;
+                var currentKeys = this._getKeys( models );
+                for ( var index = 0; index <= currentKeys.length; index++ ) {
+                    this._deletedKeys.push( currentKeys[ index ] );
+                }
+                this._finaliseDeleteRestore();
+                return currentKeys.length;
+            };
+            SP.restoreModel = function restoreModel( model ) {
+                return this.restoreModels( [ model ] );
+            };
+            SP.restoreModels = function deleteModel( models ) {
+                var currentKeys = this._getKeys( models );
+                for ( var index = 0; index <= currentKeys.length; index++ ) {
+                    var modelIndex = this._deletedKeys.indexOf( currentKeys[ index ] );
+                    this._deletedKeys.splice( modelIndex, 1 );
+                }
+                this._finaliseDeleteRestore();
+                return currentKeys.length;
             };
             SP.debugMode = function debugMode( state ) {
                 this._debug = !!state;
@@ -277,6 +283,13 @@
                     return this;
                 }
                 return this._dimensions[ sortProperty ][ sortOrder ]( limit || Infinity );
+            };
+            SP._finaliseDeleteRestore = function _finaliseDeleteRestore() {
+                var keys = this._deletedKeys;
+                this._dimensions[ this.PRIMARY_DIMENSION ].filter( function filter( property ) {
+                    return ( keys.indexOf( property ) === -1 );
+                } );
+                this._applyChanges();
             };
             SP._prepareChanges = function _prepareChanges() {
                 this._timerManager();
@@ -334,6 +347,17 @@
                     }
                 }
                 return properties;
+            };
+            SP._getKeys = function _getKeys( models ) {
+                var keys = [];
+                $angular.forEach( models, function forEach( model ) {
+                    var primaryKey = model[ this._primaryKey ];
+                    if ( typeof primaryKey === 'undefined' ) {
+                        _throwException( "Unable to find the primary key in model: '" + this._primaryKey + "'" );
+                    }
+                    keys.push( primaryKey );
+                }.bind( this ) );
+                return keys;
             };
             SP._isArray = function _isArray( item ) {
                 if ( typeof $window.Array.isArray === 'function' ) {
