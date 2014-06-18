@@ -175,6 +175,8 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  $ngc.filterBy('twinCities', ['Beijing', 'Tokyo'], $ngc.filters.inArray('some'));
  ```
 
+ To invert the `inArray` filter, use the `notInArray` filter with the same parameters.
+
  **DateTime Filter**
 
  Allows you to select a date/time range irrespective of the format of the time and/or date &ndash; [Moment.js](http://momentjs.com/) is a requirement to use this filter.
