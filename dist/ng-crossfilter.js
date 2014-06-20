@@ -116,7 +116,7 @@
                 if ( [ this.STRATEGY_PERSISTENT, this.STRATEGY_TRANSIENT ].indexOf( strategy ) === -1 ) {
                     _throwException( "Strategy must be either '" + this.STRATEGY_PERSISTENT + "' or '" + this.STRATEGY_TRANSIENT + "'" );
                 }
-                if ( ( primaryKey ) && !( primaryKey in collection[ 0 ] ) ) {
+                if ( collection.length && ( primaryKey ) && !( primaryKey in collection[ 0 ] ) ) {
                     _throwException( "Primary key '" + primaryKey + "' is not in the collection" );
                 }
                 properties = properties || this._getProperties( collection[ 0 ] );
