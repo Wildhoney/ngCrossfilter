@@ -116,23 +116,26 @@
                 if ( [ this.STRATEGY_PERSISTENT, this.STRATEGY_TRANSIENT ].indexOf( strategy ) === -1 ) {
                     _throwException( "Strategy must be either '" + this.STRATEGY_PERSISTENT + "' or '" + this.STRATEGY_TRANSIENT + "'" );
                 }
-                if ( collection.length && ( primaryKey ) && !( primaryKey in collection[ 0 ] ) ) {
+                if ( collection.length && ( ( primaryKey ) && !( primaryKey in collection[ 0 ] ) ) ) {
                     _throwException( "Primary key '" + primaryKey + "' is not in the collection" );
                 }
                 properties = properties || this._getProperties( collection[ 0 ] );
                 this._crossfilter = $crossfilter( collection );
                 this._strategy = strategy;
-                this._primaryKey = primaryKey || properties[ 0 ];
-                var createDimension = function createDimension( name, property ) {
-                    this._dimensions[ name ] = this._crossfilter.dimension( function ( model ) {
-                        return model[ property || name ];
-                    } );
-                }.bind( this );
+                this._primaryKey = ( primaryKey || properties[ 0 ] ) || '';
                 $angular.forEach( properties, function ( property ) {
-                    createDimension( property );
+                    this.addDimension( property, null, true );
                 }.bind( this ) );
-                createDimension( this.PRIMARY_DIMENSION, this._primaryKey );
+                if ( this._primaryKey ) {
+                    this.primaryKey( this._primaryKey );
+                }
                 this._broadcastChanges( true );
+            };
+            SP.primaryKey = function primaryKey( property ) {
+                this._primaryKey = property;
+                this.addDimension( this.PRIMARY_DIMENSION, function ( model ) {
+                    return model[ property ];
+                }.bind( this ), true );
             };
             SP.filterBy = function filterBy( property, expected, customFilter ) {
                 this._assertDimensionExists( property );
@@ -193,11 +196,13 @@
                 }
                 this._applyChanges();
             };
-            SP.addDimension = function addDimension( name, setupFunction ) {
+            SP.addDimension = function addDimension( name, setupFunction, ignoreAssertion ) {
                 setupFunction = setupFunction || function dimensionSetup( model ) {
                     return model[ name ];
                 };
-                this._assertValidDimensionName( name );
+                if ( !ignoreAssertion ) {
+                    this._assertValidDimensionName( name );
+                }
                 this._dimensions[ name ] = this._crossfilter.dimension( setupFunction );
             };
             SP.deleteDimension = function deleteDimension( name ) {
@@ -371,6 +376,7 @@
             SP._resetAll = function _resetAll() {
                 this._crossfilter = {};
                 this._cacheGroups = {};
+                this._deletedKeys = [];
                 this._dimensions = {};
             };
             SP.toString = function toString() {
