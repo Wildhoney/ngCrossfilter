@@ -417,7 +417,7 @@
 
                 }
 
-                if ((primaryKey) && !(primaryKey in collection[0])) {
+                if (collection.length && (primaryKey) && !(primaryKey in collection[0])) {
 
                     // Ensure the specified primary key is in the collection.
                     _throwException("Primary key '" + primaryKey + "' is not in the collection");

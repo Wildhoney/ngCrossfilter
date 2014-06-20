@@ -71,6 +71,27 @@ describe('ngCrossfilter', function() {
 
         });
 
+        it('Should be able to initialise with empty collection;', function() {
+
+            inject(function(Crossfilter) {
+
+                var crossfilter = new Crossfilter([], 'name');
+                crossfilter.addDimension('name');
+                expect(crossfilter._dimensions.name).toBeTruthy();
+
+                crossfilter.addModel({ name: 'Kipper' });
+                expect(crossfilter.length).toEqual(1);
+
+                crossfilter.deleteModel({ name: 'Kipper' });
+                expect(crossfilter.length).toEqual(0);
+
+                crossfilter.restoreModel({ name: 'Kipper' });
+                expect(crossfilter.length).toEqual(1);
+
+            });
+
+        });
+
         it('Should be reporting itself as a valid array;', function() {
             expect(Object.prototype.toString.call($service)).toEqual('[object Array]');
             expect(Array.isArray($service)).toBeTruthy();
