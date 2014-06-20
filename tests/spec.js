@@ -71,11 +71,34 @@ describe('ngCrossfilter', function() {
 
         });
 
-        it('Should be able to initialise with empty collection;', function() {
+        it('Should be able to initialise with an empty collection;', function() {
 
             inject(function(Crossfilter) {
 
                 var crossfilter = new Crossfilter([], 'name');
+                crossfilter.addDimension('name');
+                expect(crossfilter._dimensions.name).toBeTruthy();
+
+                crossfilter.addModel({ name: 'Kipper' });
+                expect(crossfilter.length).toEqual(1);
+
+                crossfilter.deleteModel({ name: 'Kipper' });
+                expect(crossfilter.length).toEqual(0);
+
+                crossfilter.restoreModel({ name: 'Kipper' });
+                expect(crossfilter.length).toEqual(1);
+
+            });
+
+        });
+
+        it('Should be able to define the primary key later;', function() {
+
+            inject(function(Crossfilter) {
+
+                var crossfilter = new Crossfilter([]);
+                crossfilter.primaryKey('name');
+
                 crossfilter.addDimension('name');
                 expect(crossfilter._dimensions.name).toBeTruthy();
 
@@ -342,7 +365,7 @@ describe('ngCrossfilter', function() {
             expect($service.length).toEqual(2);
         });
 
-        it('Should be able to remove a model;', function() {
+        it('Should be able to delete a model;', function() {
 
             var firstModel =  { city: 'Hong Kong', country: 'HK', population: 7.1 },
                 secondModel = { city: 'Rio de Janeiro', country: 'BR', population: 6.3 };

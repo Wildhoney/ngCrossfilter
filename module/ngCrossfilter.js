@@ -417,7 +417,7 @@
 
                 }
 
-                if (collection.length && (primaryKey) && !(primaryKey in collection[0])) {
+                if (collection.length && ((primaryKey) && !(primaryKey in collection[0]))) {
 
                     // Ensure the specified primary key is in the collection.
                     _throwException("Primary key '" + primaryKey + "' is not in the collection");
@@ -431,34 +431,40 @@
                 // it from the properties.
                 this._crossfilter = $crossfilter(collection);
                 this._strategy    = strategy;
-                this._primaryKey  = primaryKey || properties[0];
-
-                /**
-                 * @method createDimension
-                 * @param name {String}
-                 * @param property {String}
-                 * @return {void}
-                 */
-                var createDimension = function createDimension(name, property) {
-
-                    this._dimensions[name] = this._crossfilter.dimension(function(model) {
-                        return model[property || name];
-                    });
-
-                }.bind(this);
+                this._primaryKey  = (primaryKey || properties[0]) || '';
 
                 $angular.forEach(properties, function(property) {
 
                     // Iterate over each property to create its related dimension.
-                    createDimension(property);
+                    this.addDimension(property, null, true);
 
                 }.bind(this));
 
-                // Add a special dimension for removing models.
-                createDimension(this.PRIMARY_DIMENSION, this._primaryKey);
+                if (this._primaryKey) {
+
+                    // Define the primary key.
+                    this.primaryKey(this._primaryKey);
+
+                }
 
                 // Broadcast the changes to the masses!
                 this._broadcastChanges(true);
+
+            };
+
+            /**
+             * @method primaryKey
+             * @param property {String}
+             * @return {void}
+             */
+            SP.primaryKey = function primaryKey(property) {
+
+                this._primaryKey = property;
+
+                // Add a special dimension for removing models.
+                this.addDimension(this.PRIMARY_DIMENSION, function(model) {
+                    return model[property];
+                }.bind(this), true);
 
             };
 
@@ -611,16 +617,20 @@
              * @method addDimension
              * @param name {String}
              * @param setupFunction {Function}
+             * @param ignoreAssertion {Boolean}
              * @return {void}
              */
-            SP.addDimension = function addDimension(name, setupFunction) {
+            SP.addDimension = function addDimension(name, setupFunction, ignoreAssertion) {
 
                 // Assume a default setup method if none has been specified.
                 setupFunction = setupFunction || function dimensionSetup(model) {
                     return model[name];
                 };
 
-                this._assertValidDimensionName(name);
+                if (!ignoreAssertion) {
+                    this._assertValidDimensionName(name);
+                }
+
                 this._dimensions[name] = this._crossfilter.dimension(setupFunction);
 
             };
@@ -1064,6 +1074,7 @@
 
                 this._crossfilter = {};
                 this._cacheGroups = {};
+                this._deletedKeys = [];
                 this._dimensions  = {};
 
             };
