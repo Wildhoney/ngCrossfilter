@@ -31,7 +31,6 @@
     "grunt-jsbeautifier": "^0.2.7",
     "grunt-lib-phantomjs": "^0.6.0",
     "grunt-stripcomments": "^0.3.0",
-    "install": "^0.1.7",
     "npm": "^1.4.13"
   },
   "directories": {
