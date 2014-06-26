@@ -130,8 +130,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-stripcomments');
     grunt.loadNpmTasks('grunt-jsbeautifier');
 
-    grunt.registerTask('build', ['copy', 'uglify', 'compress', 'comments', 'jsbeautifier']);
+    grunt.registerTask('build', ['copy', 'uglify', 'compress', 'jsbeautifier']);
     grunt.registerTask('test', ['jasmine', 'jshint']);
-    grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify', 'comments', 'jsbeautifier']);
+    grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify', 'jsbeautifier']);
 
 };
