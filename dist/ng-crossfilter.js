@@ -206,6 +206,12 @@
 
                 }
 
+                if ( primaryKey && properties && ( properties.indexOf( primaryKey ) === -1 ) ) {
+
+                    _throwException( "Primary key '" + primaryKey + "' as one of the dimensions" );
+
+                }
+
                 if ( collection.length && ( ( primaryKey ) && !( primaryKey in collection[ 0 ] ) ) ) {
 
                     _throwException( "Primary key '" + primaryKey + "' is not in the collection" );
