@@ -128,6 +128,14 @@ describe('ngCrossfilter', function() {
             });
         });
 
+        it('Should be able to detect when primary key is not one of the dimensions;', function() {
+            inject(function(Crossfilter) {
+                expect(function() {
+                    $service = new Crossfilter($collection, 'id', 'transient', ['word']);
+                }).toThrow("ngCrossfilter: Primary key 'id' as one of the dimensions.");
+            });
+        });
+
         it('Should be able to get a slice of the collection;', function() {
 
             var slice;

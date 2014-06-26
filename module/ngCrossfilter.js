@@ -417,6 +417,13 @@
 
                 }
 
+                if (primaryKey && properties && (properties.indexOf(primaryKey) === -1)) {
+
+                    // Ensure the primary key has been defined as a dimension.
+                    _throwException("Primary key '" + primaryKey + "' as one of the dimensions");
+
+                }
+
                 if (collection.length && ((primaryKey) && !(primaryKey in collection[0]))) {
 
                     // Ensure the specified primary key is in the collection.
