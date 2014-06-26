@@ -110,7 +110,7 @@ module.exports = function(grunt) {
             files: ['dist/ng-crossfilter.js'],
             options: {
                 js: {
-                    preserveNewlines: false,
+                    preserveNewlines: true,
                     jslintHappy: true,
                     keepArrayIndentation: false,
                     keepFunctionIndentation: false,
@@ -130,8 +130,8 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-stripcomments');
     grunt.loadNpmTasks('grunt-jsbeautifier');
 
-    grunt.registerTask('build', ['copy', 'uglify', 'compress', 'jsbeautifier']);
+    grunt.registerTask('build', ['copy', 'uglify', 'compress', 'comments', 'jsbeautifier']);
     grunt.registerTask('test', ['jasmine', 'jshint']);
-    grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify', 'jsbeautifier']);
+    grunt.registerTask('default', ['jshint', 'jasmine', 'compress', 'copy', 'uglify', 'comments', 'jsbeautifier']);
 
 };
