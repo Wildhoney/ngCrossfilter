@@ -734,7 +734,7 @@
              * @return {Array}
              */
             Service.prototype.models = function models(offset, length) {
-                var slice = this._collection(typeof length === 'number' ? length : Infinity);
+                var slice = this.collection(typeof length === 'number' ? length : Infinity);
                 return slice.splice(typeof offset === 'number' ? offset : Infinity);
             };
 
@@ -833,12 +833,11 @@
             };
 
             /**
-             * @method _collection
+             * @method collection
              * @param limit {Number}
              * @return {Array|Service}
-             * @private
              */
-            Service.prototype._collection = function _collection(limit) {
+            Service.prototype.collection = function collection(limit) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder    = this._isAscending ? 'bottom' : 'top';
@@ -898,7 +897,7 @@
                 // Use the nifty way of emptying an array.
                 this.length = 0;
 
-                var collection = this._collection(Infinity);
+                var collection = this.collection(Infinity);
 
                 // Apply all of the models to the collection.
                 for (var key in collection) {
