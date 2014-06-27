@@ -423,7 +423,7 @@
             };
 
             Service.prototype.models = function models( offset, length ) {
-                var slice = this._collection( typeof length === 'number' ? length : Infinity );
+                var slice = this.collection( typeof length === 'number' ? length : Infinity );
                 return slice.splice( typeof offset === 'number' ? offset : Infinity );
             };
 
@@ -480,7 +480,7 @@
                 return this._crossfilter;
             };
 
-            Service.prototype._collection = function _collection( limit ) {
+            Service.prototype.collection = function collection( limit ) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
                     sortOrder = this._isAscending ? 'bottom' : 'top';
@@ -519,7 +519,7 @@
 
                 this.length = 0;
 
-                var collection = this._collection( Infinity );
+                var collection = this.collection( Infinity );
 
                 for ( var key in collection ) {
 
