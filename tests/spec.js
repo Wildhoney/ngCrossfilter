@@ -136,6 +136,36 @@ describe('ngCrossfilter', function() {
             });
         });
 
+        it('Should be able to define the primary key when unset;', function() {
+
+            inject(function(Crossfilter) {
+
+                $service = new Crossfilter();
+                expect($service._primaryKey).toEqual('');
+                $service.addModel($collection[0]);
+                expect($service._primaryKey).toEqual('city');
+
+                expect(function() {
+                    $service.filterBy('city', 'Non-existent');
+                }).toThrow("ngCrossfilter: Unable to find dimension named 'city'.");
+
+                $service.addDimension('city');
+                $service.filterBy('city', 'Non-existent');
+                expect($service.length).toEqual(0);
+
+                $service.unfilterBy('city');
+                expect($service.length).toEqual(1);
+
+                $service.filterBy('city', 'London');
+                expect($service.length).toEqual(1);
+
+                $service.deleteModel($collection[0]);
+                expect($service.length).toEqual(0);
+
+            });
+
+        });
+
         it('Should be able to get a slice of the collection;', function() {
 
             var slice;

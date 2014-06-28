@@ -59,10 +59,13 @@
              */
             var Service = function ngCrossfilterService(collection, primaryKey, strategy, properties) {
 
+                collection = collection || [];
+
                 // Determine if we can utilise Underscore.js for badly supported functionality,
                 // also create an alias for the `_isArray` method.
-                this.filters.HAS_UNDERSCORE = (typeof _ !== 'undefined');
-                this.filters._isArray = this._isArray;
+                this.HAS_UNDERSCORE         = (typeof _ !== 'undefined');
+                this.filters.HAS_UNDERSCORE = this.HAS_UNDERSCORE;
+                this.filters._isArray       = this._isArray;
 
                 // Reset all of the arrays and objects.
                 this._resetAll();
@@ -102,6 +105,12 @@
              * @type {String}
              */
             Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
+
+            /**
+             * @constant HAS_UNDERSCORE
+             * @type {Boolean}
+             */
+            Service.prototype.HAS_UNDERSCORE = false;
 
             /**
              * @property _crossfilter
@@ -753,9 +762,22 @@
              * @return {Number}
              */
             Service.prototype.addModels = function addModels(models) {
+
+                if (!this._primaryKey) {
+
+                    // Determine whether to use Underscore or attempt to use the browser
+                    // native method.
+                    var keys = this.HAS_UNDERSCORE ? _.keys : Object.keys;
+
+                    // Define the primary key if one hasn't been defined yet.
+                    this.primaryKey(keys(models[0])[0]);
+
+                }
+
                 this._crossfilter.add(models);
                 this._applyChanges();
                 return models.length;
+
             };
 
             /**
