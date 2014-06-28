@@ -26,7 +26,10 @@
 
             var Service = function ngCrossfilterService( collection, primaryKey, strategy, properties ) {
 
-                this.filters.HAS_UNDERSCORE = ( typeof _ !== 'undefined' );
+                collection = collection || [];
+
+                this.HAS_UNDERSCORE = ( typeof _ !== 'undefined' );
+                this.filters.HAS_UNDERSCORE = this.HAS_UNDERSCORE;
                 this.filters._isArray = this._isArray;
 
                 this._resetAll();
@@ -49,6 +52,8 @@
             Service.prototype.STRATEGY_TRANSIENT = 'transient';
 
             Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
+
+            Service.prototype.HAS_UNDERSCORE = false;
 
             Service.prototype._crossfilter = {};
 
@@ -432,9 +437,19 @@
             };
 
             Service.prototype.addModels = function addModels( models ) {
+
+                if ( !this._primaryKey ) {
+
+                    var keys = this.HAS_UNDERSCORE ? _.keys : Object.keys;
+
+                    this.primaryKey( keys( models[ 0 ] )[ 0 ] );
+
+                }
+
                 this._crossfilter.add( models );
                 this._applyChanges();
                 return models.length;
+
             };
 
             Service.prototype.deleteModel = function deleteModel( model ) {
