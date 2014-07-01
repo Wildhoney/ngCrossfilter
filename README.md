@@ -38,7 +38,7 @@ Once you've configured your Crossfilter collection, you can begin filtering and 
 After you've applied all of your filters, you simply need to iterate over the array using the `ng-repeat` directive &ndash; since `ngCrossfilter` is a valid array &ndash; it does **not** modify any prototypes.
 
 ```html
-<li ng-repeat="model in $ngc | limitTo: 100">
+<li ng-repeat="model in $ngc.collection() | limitTo: 100">
 ```
 
 Filtering

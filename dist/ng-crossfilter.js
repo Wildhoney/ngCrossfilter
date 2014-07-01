@@ -38,11 +38,6 @@
 
                 this._applyChanges();
 
-                var masquerade = [];
-                masquerade.length = collection.length;
-                masquerade.__proto__ = this;
-                return masquerade;
-
             };
 
             Service.prototype = [];
@@ -379,11 +374,11 @@
             };
 
             Service.prototype.first = function first() {
-                return this[ 0 ];
+                return this.collection()[ 0 ];
             };
 
             Service.prototype.last = function last() {
-                return this[ this.length - 1 ];
+                return this.collection()[ this.collection().length - 1 ];
             };
 
             Service.prototype.countBy = function countBy( property, value ) {
@@ -531,21 +526,7 @@
             };
 
             Service.prototype._applyChanges = function _applyChanges() {
-
-                this.length = 0;
-
-                var collection = this.collection( Infinity );
-
-                for ( var key in collection ) {
-
-                    if ( collection.hasOwnProperty( key ) ) {
-                        this.push( collection[ key ] );
-                    }
-
-                }
-
                 this._timerManager();
-
             };
 
             Service.prototype._broadcastChanges = function _broadcastChanges( useTimeout ) {

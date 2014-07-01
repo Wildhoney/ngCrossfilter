@@ -73,7 +73,7 @@
                     <a ng-click="word = ''; words.unfilterAll()">clear all filters</a>.
                 </td>
             </tr>
-            <tr ng-repeat="word in words | limitTo: pageNumber | limitTo: -50">
+            <tr ng-repeat="word in words.collection() | limitTo: pageNumber | limitTo: -50">
                 <td>{{word.id}}</td>
                 <td>{{word.word}}</td>
                 <td>{{word.word.length}}</td>
