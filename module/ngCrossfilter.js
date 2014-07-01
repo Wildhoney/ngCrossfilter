@@ -76,6 +76,13 @@
                 // Construct the initial array of items.
                 this._applyChanges();
 
+                // Following is a dirty hack to ensure the object masquerades as an array at all times!
+                var masquerade       = [];
+                masquerade.length    = collection.length;
+                /*jshint proto: true */
+                masquerade.__proto__ = this;
+                return masquerade;
+
             };
 
             // Store a reference to the prototype.
@@ -660,7 +667,7 @@
              * @return {Object}
              */
             Service.prototype.first = function first() {
-                return this.collection()[0];
+                return this[0];
             };
 
             /**
@@ -668,7 +675,7 @@
              * @return {Object}
              */
             Service.prototype.last = function last() {
-                return this.collection()[this.collection().length - 1];
+                return this[this.length - 1];
             };
 
             /**
@@ -792,7 +799,7 @@
                 var currentKeys = this._getKeys(models);
 
                 // Store each deleted key.
-                for (var index = 0; index <= currentKeys.length; index++) {
+                for (var index = 0; index < currentKeys.length; index++) {
                     this._deletedKeys.push(currentKeys[index]);
                 }
 
@@ -820,7 +827,7 @@
                 var currentKeys = this._getKeys(models);
 
                 // Store each deleted key.
-                for (var index = 0; index <= currentKeys.length; index++) {
+                for (var index = 0; index < currentKeys.length; index++) {
                     var modelIndex = this._deletedKeys.indexOf(currentKeys[index]);
                     this._deletedKeys.splice(modelIndex, 1);
                 }
@@ -900,12 +907,31 @@
             };
 
             /**
+             * Responsible for emptying the array, and then reapplying use the current filters
+             * and their states.
+             *
              * @method _applyChanges
              * @return {void}
              * @private
              */
             Service.prototype._applyChanges = function _applyChanges() {
+
+                // Use the nifty way of emptying an array.
+                this.length = 0;
+
+                var collection = this.collection(Infinity);
+
+                // Apply all of the models to the collection.
+                for (var key in collection) {
+
+                    if (collection.hasOwnProperty(key)) {
+                        this.push(collection[key]);
+                    }
+
+                }
+
                 this._timerManager();
+
             };
 
             /**
