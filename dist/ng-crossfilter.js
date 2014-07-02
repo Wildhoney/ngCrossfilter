@@ -1,191 +1,384 @@
-( function ngCrossfilterBootstrap( $angular, $crossfilter, $moment, _ ) {
+/**
+ * @module ngCrossfilter
+ * @author Adam Timberlake
+ * @link https://github.com/Wildhoney/ngCrossfilter
+ *
+ * @param $angular Angular.js      https://angularjs.org/                      (Required)
+ * @param $crossfilter             https://github.com/square/crossfilter       (Required)
+ * @param $moment                  http://momentjs.com/
+ * @param _                        http://underscorejs.org/
+ */
+(function ngCrossfilterBootstrap($angular, $crossfilter, $moment, _) {
 
     "use strict";
 
-    var _throwException = function _throwException( message ) {
+    /**
+     * @method _throwException
+     * @param message {String}
+     * @return {void}
+     * @private
+     */
+    var _throwException = function _throwException(message) {
         throw "ngCrossfilter: " + message + ".";
     };
 
-    if ( typeof $angular === 'undefined' ) {
+    if (typeof $angular === 'undefined') {
 
-        _throwException( "ngCrossfilter Requires Angular.js" );
-
-    }
-
-    if ( typeof $crossfilter === 'undefined' ) {
-
-        _throwException( "ngCrossfilter Requires Crossfilter" );
+        // Add a check for Angular.
+        _throwException("ngCrossfilter Requires Angular.js");
 
     }
 
-    var ngCrossfilter = $angular.module( 'ngCrossfilter', [] );
+    if (typeof $crossfilter === 'undefined') {
 
-    ngCrossfilter.service( 'Crossfilter', [ '$rootScope', '$timeout', '$window',
+        // Add a check for Crossfilter.
+        _throwException("ngCrossfilter Requires Crossfilter");
 
-        function CrossfilterService( $rootScope, $timeout, $window ) {
+    }
 
-            var Service = function ngCrossfilterService( collection, primaryKey, strategy, properties ) {
+    /**
+     * @module ngCrossfilter
+     * @author Adam Timberlake
+     * @link https://github.com/Wildhoney/ngCrossfilter
+     */
+    var ngCrossfilter = $angular.module('ngCrossfilter', []);
+
+    /**
+     * @module ngCrossfilter
+     * @submodule CrossfilterService
+     */
+    ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', '$window',
+
+        /*jshint maxstatements: 55 */
+        function CrossfilterService($rootScope, $timeout, $window) {
+
+            /**
+             * @module ngCrossfilter
+             * @submodule ngCrossfilterService
+             * @constructor
+             */
+            var Service = function ngCrossfilterService(collection, primaryKey, strategy, properties) {
 
                 collection = collection || [];
 
-                this.HAS_UNDERSCORE = ( typeof _ !== 'undefined' );
+                // Determine if we can utilise Underscore.js for badly supported functionality,
+                // also create an alias for the `_isArray` method.
+                this.HAS_UNDERSCORE         = (typeof _ !== 'undefined');
                 this.filters.HAS_UNDERSCORE = this.HAS_UNDERSCORE;
-                this.filters._isArray = this._isArray;
+                this.filters._isArray       = this._isArray;
 
+                // Reset all of the arrays and objects.
                 this._resetAll();
 
-                this._initialise( collection, primaryKey, strategy, properties );
-
-                this._applyChanges();
-
-                var masquerade = [];
-                masquerade.length = collection.length;
-                masquerade.__proto__ = this;
-                return masquerade;
+                // Initialise the Crossfilter with the array of models.
+                this._initialise(collection, primaryKey, strategy, properties);
 
             };
 
+            // Store a reference to the prototype.
             Service.prototype = [];
 
+            /**
+             * @constant STRATEGY_PERSISTENT
+             * @type {String}
+             */
             Service.prototype.STRATEGY_PERSISTENT = 'persistent';
 
+            /**
+             * @constant STRATEGY_TRANSIENT
+             * @type {String}
+             */
             Service.prototype.STRATEGY_TRANSIENT = 'transient';
 
+            /**
+             * @constant PRIMARY_DIMENSION
+             * @type {String}
+             */
             Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
 
+            /**
+             * @constant HAS_UNDERSCORE
+             * @type {Boolean}
+             */
             Service.prototype.HAS_UNDERSCORE = false;
 
+            /**
+             * @property _crossfilter
+             * @type {crossfilter}
+             * @private
+             */
             Service.prototype._crossfilter = {};
 
+            /**
+             * @property _cacheGroups
+             * @type {Object}
+             */
             Service.prototype._cacheGroups = {};
 
+            /**
+             * @property _isTiming
+             * @type {Boolean}
+             * @default false
+             * @private
+             */
             Service.prototype._isTiming = false;
 
+            /**
+             * @property _dimensions
+             * @type {Object}
+             * @private
+             */
             Service.prototype._dimensions = {};
 
+            /**
+             * @property _primaryKey
+             * @type {String}
+             * @private
+             */
             Service.prototype._primaryKey = '';
 
+            /**
+             * @property _sortProperty
+             * @type {String}
+             * @private
+             */
             Service.prototype._sortProperty = '';
 
+            /**
+             * @property _isAscending
+             * @type {Boolean}
+             * @default true
+             * @private
+             */
             Service.prototype._isAscending = true;
 
+            /**
+             * @property _lastFilter
+             * @type {String}
+             * @private
+             */
             Service.prototype._lastFilter = '';
 
+            /**
+             * @property strategy
+             * @type {String}
+             * @private
+             */
             Service.prototype._strategy = '';
 
+            /**
+             * @property _deletedKeys
+             * @type {Array}
+             * @private
+             */
             Service.prototype._deletedKeys = [];
 
+            /**
+             * @property _debug
+             * @type {Boolean}
+             * @default false
+             * @private
+             */
             Service.prototype._debug = false;
 
+            /**
+             * List of common filters bundled into ngCrossfilter.
+             *
+             * @property filters
+             * @type {Object}
+             */
             Service.prototype.filters = {
 
+                /**
+                 * @constant HAS_UNDERSCORE
+                 * @type {Boolean}
+                 */
                 HAS_UNDERSCORE: false,
 
-                fuzzy: function fuzzyFilter( flags ) {
+                /**
+                 * @method fuzzy
+                 * @param flags {String}
+                 * @return {Function}
+                 */
+                fuzzy: function fuzzyFilter(flags) {
 
-                    return function fuzzy( expected, actual ) {
-                        var regExp = new $window.RegExp( expected, flags );
-                        return !!actual.match( regExp );
+                    /**
+                     * @method fuzzy
+                     * @param expected {String}
+                     * @param actual {String}
+                     * @return {Boolean}
+                     */
+                    return function fuzzy(expected, actual) {
+                        var regExp = new $window.RegExp(expected, flags);
+                        return !!actual.match(regExp);
                     };
 
                 },
 
-                dateTimeRange: function dateTimeRangeFilter( format, comparatorFunction ) {
+                /**
+                 * @method dateTimeRange
+                 * @param format {String}
+                 * @param comparatorFunction {Function}
+                 * @return {Function}
+                 */
+                dateTimeRange: function dateTimeRangeFilter(format, comparatorFunction) {
 
-                    if ( typeof $moment === 'undefined' ) {
+                    if (typeof $moment === 'undefined') {
 
-                        _throwException( "You need to install Moment.js to use dateTimeRange" );
+                        // Ensure we have the Moment.js library installed.
+                        _throwException("You need to install Moment.js to use dateTimeRange");
 
                     }
 
-                    return function dateTimeRange( expected, actual ) {
+                    /**
+                     * @method fuzzy
+                     * @param expected {String}
+                     * @param actual {String}
+                     * @return {Boolean}
+                     */
+                    return function dateTimeRange(expected, actual) {
 
-                        var start = ( expected[ 0 ] === -Infinity ) ? 0 : $moment( expected[ 0 ], format ).unix(),
-                            end = ( expected[ 1 ] === Infinity ) ? Infinity : $moment( expected[ 1 ], format ).unix(),
-                            current = $moment( actual, format ).unix();
+                        // Convert each date/time into a Unix timestamp.
+                        var start   = (expected[0] === -Infinity) ? 0 : $moment(expected[0], format).unix(),
+                            end     = (expected[1] === Infinity)  ? Infinity : $moment(expected[1], format).unix(),
+                            current = $moment(actual, format).unix();
 
-                        if ( start < 0 || end < 0 || current < 0 ) {
+                        if (start < 0 || end < 0 || current < 0) {
 
-                            _throwException( "Date/Time parsing appears to be using invalid format" );
+                            // Ensure we're not dealing with overtly incorrect dates/times.
+                            _throwException("Date/Time parsing appears to be using invalid format");
 
                         }
 
-                        if ( typeof comparatorFunction === 'function' ) {
+                        if (typeof comparatorFunction === 'function') {
 
-                            return comparatorFunction( current, start, end );
+                            // Use the user specified comparator function if it has been defined.
+                            return comparatorFunction(current, start, end);
 
                         }
 
-                        return ( current >= start && current <= end );
+                        return (current >= start && current <= end);
 
                     }
 
                 },
 
+                /**
+                 * @method regexp
+                 * @return {Function}
+                 */
                 regexp: function regexpFilter() {
 
-                    return function regexp( expected, actual ) {
+                    /**
+                     * @method regexp
+                     * @param expected {String}
+                     * @param actual {String}
+                     * @return {Boolean}
+                     */
+                    return function regexp(expected, actual) {
 
-                        if ( !( expected instanceof $window.RegExp ) ) {
-                            _throwException( "Expression must be an instance of RegExp" );
+                        if (!(expected instanceof $window.RegExp)) {
+                            _throwException("Expression must be an instance of RegExp");
                         }
 
-                        return !!actual.match( expected );
+                        return !!actual.match(expected);
 
                     }
 
                 },
 
-                bitwise: function bitwiseFilter( flag ) {
+                /**
+                 * @method bitwise
+                 * @param flag {String}
+                 * @return {Function}
+                 */
+                bitwise: function bitwiseFilter(flag) {
 
-                    return function bitwise( expected, actual ) {
-                        var result = ( expected & actual );
-                        return ( flag === '!' ) ? !result : result;
+                    /**
+                     * @method bitwise
+                     * @param expected {Number}
+                     * @param actual {Number}
+                     * @return {Boolean}
+                     */
+                    return function bitwise(expected, actual) {
+                        var result = (expected & actual);
+                        return (flag === '!') ? !result : result;
                     }
 
                 },
 
-                inArray: function inArray( method ) {
-                    return this._inArray( method, false );
+                /**
+                 * @method inArray
+                 * @param method {String}
+                 * @return {Function}
+                 */
+                inArray: function inArray(method) {
+                    return this._inArray(method, false);
                 },
 
-                notInArray: function notInArray( method ) {
-                    return this._inArray( method, true );
+                /**
+                 * @method notInArray
+                 * @param method {String}
+                 * @return {Function}
+                 */
+                notInArray: function notInArray(method) {
+                    return this._inArray(method, true);
                 },
 
-                _inArray: function inArrayFilter( method, invertInArray ) {
+                /**
+                 * @method _inArray
+                 * @param method {String}
+                 * @param invertInArray {Boolean}
+                 * @return {Function}
+                 * @private
+                 */
+                _inArray: function inArrayFilter(method, invertInArray) {
 
                     var hasUnderscore = this.HAS_UNDERSCORE,
-                        isArray = this._isArray;
+                        isArray       = this._isArray;
 
-                    return function inArray( expected, actual ) {
+                    /**
+                     * @method inArray
+                     * @param expected {String|Number|Array}
+                     * @param actual {Array}
+                     * @return {Boolean}
+                     */
+                    return function inArray(expected, actual) {
 
-                        if ( !isArray( actual ) ) {
-                            _throwException( "Using inArray filter on a non-array like property" );
+                        if (!isArray(actual)) {
+                            _throwException("Using inArray filter on a non-array like property");
                         }
 
-                        if ( !isArray( expected ) ) {
+                        if (!isArray(expected)) {
 
-                            expected = [ expected ];
+                            // Convert the expected into an array if it isn't already.
+                            expected = [expected];
 
                         }
 
+                        // Assign a default if none specified.
                         method = method || 'every';
 
-                        if ( method && [ 'every', 'some' ].indexOf( method ) === -1 ) {
-                            _throwException( "You must pass either 'every' or 'some'" );
+                        if (method && ['every', 'some'].indexOf(method) === -1) {
+                            _throwException("You must pass either 'every' or 'some'");
                         }
 
-                        if ( !hasUnderscore && ( typeof [].every !== 'function' || typeof [].some !== 'function' ) ) {
-                            _throwException( "Browser does not support `every` and/or `some` methods" );
+                        if (!hasUnderscore && (typeof [].every !== 'function' || typeof [].some !== 'function')) {
+                            _throwException("Browser does not support `every` and/or `some` methods");
                         }
 
-                        var everySome = function everySome( property ) {
-                            var result = ( actual.indexOf( property ) !== -1 );
-                            return ( invertInArray ) ? !result : result;
+                        /**
+                         * @method everySome
+                         * @param property {String|Number|Boolean}
+                         * @return {Boolean}
+                         */
+                        var everySome = function everySome(property) {
+                            var result = (actual.indexOf(property) !== -1);
+                            return (invertInArray) ? !result : result;
                         };
 
-                        return hasUnderscore ? _[ method ]( expected, everySome ) : expected[ method ]( everySome );
+                        // Use Underscore if available, otherwise native.
+                        return hasUnderscore ? _[method](expected, everySome) : expected[method](everySome);
 
                     }
 
@@ -193,275 +386,403 @@
 
             };
 
-            Service.prototype._initialise = function _initialise( collection, primaryKey, strategy, properties ) {
+            /**
+             * @method _initialise
+             * @param collection {Array}
+             * @param primaryKey {String}
+             * @param strategy {String} Either "persistent" or "transient"
+             * @param properties {Array} List of properties for the dimensions
+             * @return {void}
+             * @private
+             */
+            Service.prototype._initialise = function _initialise(collection, primaryKey, strategy, properties) {
 
-                if ( !this._isArray( collection ) ) {
+                if (!this._isArray(collection)) {
 
-                    _throwException( "Collection must be an array" );
+                    // Determine if the collection is a valid array.
+                    _throwException("Collection must be an array");
 
                 }
 
+                // Assume a default strategy if one hasn't been defined.
                 strategy = strategy || this.STRATEGY_PERSISTENT;
 
-                if ( [ this.STRATEGY_PERSISTENT, this.STRATEGY_TRANSIENT ].indexOf( strategy ) === -1 ) {
+                if ([this.STRATEGY_PERSISTENT, this.STRATEGY_TRANSIENT].indexOf(strategy) === -1) {
 
-                    _throwException( "Strategy must be either '" +
+                    // Determine if the strategy has been defined as either persistent or transient.
+                    _throwException("Strategy must be either '" +
                         this.STRATEGY_PERSISTENT + "' or '" +
-                        this.STRATEGY_TRANSIENT + "'" );
+                        this.STRATEGY_TRANSIENT + "'");
 
                 }
 
-                if ( primaryKey && properties && ( properties.indexOf( primaryKey ) === -1 ) ) {
+                if (primaryKey && properties && (properties.indexOf(primaryKey) === -1)) {
 
-                    _throwException( "Primary key '" + primaryKey + "' as one of the dimensions" );
-
-                }
-
-                if ( collection.length && ( ( primaryKey ) && !( primaryKey in collection[ 0 ] ) ) ) {
-
-                    _throwException( "Primary key '" + primaryKey + "' is not in the collection" );
+                    // Ensure the primary key has been defined as a dimension.
+                    _throwException("Primary key '" + primaryKey + "' as one of the dimensions");
 
                 }
 
-                properties = properties || this._getProperties( collection[ 0 ] );
+                if (collection.length && ((primaryKey) && !(primaryKey in collection[0]))) {
 
-                this._crossfilter = $crossfilter( collection );
-                this._strategy = strategy;
-                this._primaryKey = ( primaryKey || properties[ 0 ] ) || '';
-
-                $angular.forEach( properties, function ( property ) {
-
-                    this.addDimension( property, null, true );
-
-                }.bind( this ) );
-
-                if ( this._primaryKey ) {
-
-                    this.primaryKey( this._primaryKey );
+                    // Ensure the specified primary key is in the collection.
+                    _throwException("Primary key '" + primaryKey + "' is not in the collection");
 
                 }
 
-                this._broadcastChanges( true );
+                // Discover the unique properties in the collection.
+                properties = properties || this._getProperties(collection[0]);
+
+                // Initialise the Crossfilter collection, and either use the defined primary key, or infer
+                // it from the properties.
+                this._crossfilter = $crossfilter(collection);
+                this._strategy    = strategy;
+                this._primaryKey  = (primaryKey || properties[0]) || '';
+
+                $angular.forEach(properties, function(property) {
+
+                    // Iterate over each property to create its related dimension.
+                    this.addDimension(property, null, true);
+
+                }.bind(this));
+
+                if (this._primaryKey) {
+
+                    // Define the primary key.
+                    this.primaryKey(this._primaryKey);
+
+                }
 
             };
 
-            Service.prototype.primaryKey = function primaryKey( property ) {
+            /**
+             * @method primaryKey
+             * @param property {String}
+             * @return {void}
+             */
+            Service.prototype.primaryKey = function primaryKey(property) {
 
                 this._primaryKey = property;
 
-                this.addDimension( this.PRIMARY_DIMENSION, function ( model ) {
-                    return model[ property ];
-                }.bind( this ), true );
+                // Add a special dimension for removing models.
+                this.addDimension(this.PRIMARY_DIMENSION, function(model) {
+                    return model[property];
+                }.bind(this), true);
 
             };
 
-            Service.prototype.filterBy = function filterBy( property, expected, customFilter ) {
+            /**
+             * @method filterBy
+             * @param property {String}
+             * @param expected {String}
+             * @param customFilter {Function}
+             * @return {void}
+             */
+            Service.prototype.filterBy = function filterBy(property, expected, customFilter) {
 
-                this._assertDimensionExists( property );
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
 
-                if ( typeof customFilter !== 'undefined' && typeof customFilter !== 'function' ) {
+                this._assertDimensionExists(property);
 
-                    throw _throwException( "Custom filter method must be a function" );
+                if (typeof customFilter !== 'undefined' && typeof customFilter !== 'function') {
+
+                    // Ensure the third argument is a function, if it has been defined.
+                    throw _throwException("Custom filter method must be a function");
 
                 }
 
-                this._prepareChanges();
+                if (this._lastFilter && this._strategy === this.STRATEGY_TRANSIENT) {
 
-                if ( this._lastFilter && this._strategy === this.STRATEGY_TRANSIENT ) {
-
-                    this.unfilterBy( this._lastFilter );
+                    // Clear the previous filter if we're using the transient strategy.
+                    this.unfilterBy(this._lastFilter);
 
                 }
 
+                // Store the last filter property to allowing filtering transiently.
                 this._lastFilter = property;
 
-                if ( typeof customFilter === 'function' ) {
+                if (typeof customFilter === 'function') {
 
-                    this._dimensions[ property ].filterFunction( function customFilterFunction( actual ) {
-                        return customFilter( expected, actual );
-                    } );
+                    // Filter using the developer's custom function if it's been defined.
+                    this._dimensions[property].filterFunction(function customFilterFunction(actual) {
+                        return customFilter(expected, actual);
+                    });
 
-                    this._applyChanges();
                     return;
 
                 }
 
-                this._dimensions[ property ].filter( expected );
-
-                this._applyChanges();
-
-            };
-
-            Service.prototype.unfilterBy = function unfilterBy( property ) {
-
-                this._assertDimensionExists( property );
-                this._prepareChanges();
-                this._dimensions[ property ].filterAll();
-                this._applyChanges();
+                // Let's filter by the desired filter!
+                this._dimensions[property].filter(expected);
 
             };
 
+            /**
+             * @method unfilterBy
+             * @param property {String}
+             * @return {void}
+             */
+            Service.prototype.unfilterBy = function unfilterBy(property) {
+
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
+
+                this._assertDimensionExists(property);
+                this._dimensions[property].filterAll();
+
+            };
+
+            /**
+             * @method unfilterAll
+             * @return {void}
+             */
             Service.prototype.unfilterAll = function unfilterAll() {
 
-                this._prepareChanges();
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
 
-                for ( var key in this._dimensions ) {
+                // Clear all of the dimensions that we have.
+                for (var key in this._dimensions) {
 
-                    if ( this._dimensions.hasOwnProperty( key ) ) {
-                        this._dimensions[ key ].filterAll();
+                    // Usual suspect!
+                    if (this._dimensions.hasOwnProperty(key)) {
+                        this._dimensions[key].filterAll();
                     }
 
                 }
 
-                this._applyChanges();
-
             };
 
-            Service.prototype.sortBy = function sortBy( property, isAscending ) {
+            /**
+             * @method sortBy
+             * @param property {String}
+             * @param isAscending {Boolean}
+             * @return {void}
+             */
+            Service.prototype.sortBy = function sortBy(property, isAscending) {
 
-                this._assertDimensionExists( property );
-                this._prepareChanges();
+                this._assertDimensionExists(property);
 
-                if ( typeof isAscending === 'boolean' ) {
+                if (typeof isAscending === 'boolean') {
 
-                    this._isAscending = isAscending;
+                    // Use the sorting specified by the developer.
+                    this._isAscending  = isAscending;
                     this._sortProperty = property;
-                    this._applyChanges();
                     return;
 
                 }
 
+                // Use the primary key if the current sort property hasn't been set yet.
                 var currentSortProperty = this._sortProperty || this._primaryKey;
 
-                if ( currentSortProperty === property ) {
+                // Determine if we should invert what we currently have if we're using the same property
+                // as previously.
+                if (currentSortProperty === property) {
                     this._isAscending = !this._isAscending;
                 }
 
+                // Otherwise we'll simply update the sort property.
                 this._sortProperty = property;
-                this._applyChanges();
 
             };
 
-            Service.prototype.unsortAll = function unsortAll( maintainSortOrder ) {
+            /**
+             * @method unsortAll
+             * @param maintainSortOrder {Boolean}
+             * @return {void}
+             */
+            Service.prototype.unsortAll = function unsortAll(maintainSortOrder) {
 
-                this._prepareChanges();
-
+                // Sort by the default property, which is the primary key.
                 this._sortProperty = this._primaryKey;
 
-                if ( maintainSortOrder !== true ) {
+                if (maintainSortOrder !== true) {
 
+                    // Reset the sort order unless otherwise instructed.
                     this._isAscending = true;
 
                 }
 
-                this._applyChanges();
-
             };
 
-            Service.prototype.addDimension = function addDimension( name, setupFunction, ignoreAssertion ) {
+            /**
+             * @method addDimension
+             * @param name {String}
+             * @param setupFunction {Function}
+             * @param ignoreAssertion {Boolean}
+             * @return {void}
+             */
+            Service.prototype.addDimension = function addDimension(name, setupFunction, ignoreAssertion) {
 
-                setupFunction = setupFunction || function dimensionSetup( model ) {
-                    return model[ name ];
+                // Assume a default setup method if none has been specified.
+                setupFunction = setupFunction || function dimensionSetup(model) {
+                    return model[name];
                 };
 
-                if ( !ignoreAssertion ) {
-                    this._assertValidDimensionName( name );
+                if (!ignoreAssertion) {
+                    this._assertValidDimensionName(name);
                 }
 
-                this._dimensions[ name ] = this._crossfilter.dimension( setupFunction );
+                this._dimensions[name] = this._crossfilter.dimension(setupFunction);
 
             };
 
-            Service.prototype.deleteDimension = function deleteDimension( name ) {
-                this._assertDimensionExists( name );
-                this._dimensions[ name ].dispose();
-                delete this._dimensions[ name ];
+            /**
+             * @method deleteDimension
+             * @param name {String}
+             * @return {void}
+             */
+            Service.prototype.deleteDimension = function deleteDimension(name) {
+                this._assertDimensionExists(name);
+                this._dimensions[name].dispose();
+                delete this._dimensions[name];
             };
 
+            /**
+             * @method first
+             * @return {Object}
+             */
             Service.prototype.first = function first() {
-                return this[ 0 ];
+                return this.collection()[0];
             };
 
+            /**
+             * @method last
+             * @return {Object}
+             */
             Service.prototype.last = function last() {
-                return this[ this.length - 1 ];
+                return this.collection()[this.collection().length - 1];
             };
 
-            Service.prototype.countBy = function countBy( property, value ) {
+            /**
+             * @method countBy
+             * @param property {String}
+             * @param value {String}
+             * @return {Number}
+             */
+            Service.prototype.countBy = function countBy(property, value) {
 
-                if ( this._cacheGroups[ property ] ) {
+                if (this._cacheGroups[property]) {
 
-                    return this._cacheGroups[ property ][ value ] || 0;
+                    // Firstly we need to attempt to return the cached version.
+                    return this._cacheGroups[property][value] || 0;
 
                 }
 
                 this._timerManager();
-                this._assertDimensionExists( property );
+                this._assertDimensionExists(property);
 
                 var groups = {};
 
-                var sums = this._dimensions[ property ].group().all();
+                // Use reduce method to return the count for the dimension.
+                var sums = this._dimensions[property].group().all();
 
-                for ( var key in sums ) {
+                // Iterate over each sum model to package it nicely.
+                for (var key in sums) {
 
-                    if ( sums.hasOwnProperty( key ) ) {
-                        var model = sums[ key ];
-                        groups[ model.key ] = model.value;
+                    // Usual suspect!
+                    if (sums.hasOwnProperty(key)) {
+                        var model = sums[key];
+                        groups[model.key] = model.value;
                     }
 
                 }
 
-                this._cacheGroups[ property ] = groups;
+                // Store the cache for the next time, until it's invalidated.
+                this._cacheGroups[property] = groups;
                 this._timerManager();
 
-                return groups[ value ] || 0;
+                return groups[value] || 0;
 
             };
 
-            Service.prototype.groupBy = function groupBy( property ) {
+            /**
+             * @method groupBy
+             * @param property {String}
+             * @return {Array}
+             */
+            Service.prototype.groupBy = function groupBy(property) {
 
-                this._assertDimensionExists( property );
+                this._assertDimensionExists(property);
 
-                return this._dimensions[ property ].group( function group( property ) {
+                return this._dimensions[property].group(function group(property) {
                     return property;
-                } ).all();
+                }).all();
 
             };
 
-            Service.prototype.models = function models( offset, length ) {
-                var slice = this.collection( typeof length === 'number' ? length : Infinity );
-                return slice.splice( typeof offset === 'number' ? offset : Infinity );
+            /**
+             * @method models
+             * @param offset {Number}
+             * @param length {Number}
+             * @return {Array}
+             */
+            Service.prototype.models = function models(offset, length) {
+                var slice = this.collection(typeof length === 'number' ? length : Infinity);
+                return slice.splice(typeof offset === 'number' ? offset : Infinity);
             };
 
-            Service.prototype.addModel = function addModel( model ) {
-                return this.addModels( [ model ] );
+            /**
+             * @method addModel
+             * @param model {Object}
+             * @return {Number}
+             */
+            Service.prototype.addModel = function addModel(model) {
+                return this.addModels([model]);
             };
 
-            Service.prototype.addModels = function addModels( models ) {
+            /**
+             * @method addModels
+             * @param models {Array}
+             * @return {Number}
+             */
+            Service.prototype.addModels = function addModels(models) {
 
-                if ( !this._primaryKey ) {
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
 
+                if (!this._primaryKey) {
+
+                    // Determine whether to use Underscore or attempt to use the browser
+                    // native method.
                     var keys = this.HAS_UNDERSCORE ? _.keys : Object.keys;
 
-                    this.primaryKey( keys( models[ 0 ] )[ 0 ] );
+                    // Define the primary key if one hasn't been defined yet.
+                    this.primaryKey(keys(models[0])[0]);
 
                 }
 
-                this._crossfilter.add( models );
-                this._applyChanges();
+                this._crossfilter.add(models);
                 return models.length;
 
             };
 
-            Service.prototype.deleteModel = function deleteModel( model ) {
-                return this.deleteModels( [ model ] );
+            /**
+             * @property deleteModel
+             * @param model {Object}
+             * @return {Number}
+             */
+            Service.prototype.deleteModel = function deleteModel(model) {
+
+                return this.deleteModels([model]);
             };
 
-            Service.prototype.deleteModels = function deleteModel( models ) {
+            /**
+             * @property deleteModels
+             * @param models {Array}
+             * @return {Number}
+             */
+            Service.prototype.deleteModels = function deleteModel(models) {
 
-                var currentKeys = this._getKeys( models );
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
 
-                for ( var index = 0; index < currentKeys.length; index++ ) {
-                    this._deletedKeys.push( currentKeys[ index ] );
+                var currentKeys = this._getKeys(models);
+
+                // Store each deleted key.
+                for (var index = 0; index < currentKeys.length; index++) {
+                    this._deletedKeys.push(currentKeys[index]);
                 }
 
                 this._finaliseDeleteRestore();
@@ -469,17 +790,28 @@
 
             };
 
-            Service.prototype.restoreModel = function restoreModel( model ) {
-                return this.restoreModels( [ model ] );
+            /**
+             * @property restoreModel
+             * @param model {Object}
+             * @return {Number}
+             */
+            Service.prototype.restoreModel = function restoreModel(model) {
+                return this.restoreModels([model]);
             };
 
-            Service.prototype.restoreModels = function deleteModel( models ) {
+            /**
+             * @property restoreModels
+             * @param models {Array}
+             * @return {Number}
+             */
+            Service.prototype.restoreModels = function deleteModel(models) {
 
-                var currentKeys = this._getKeys( models );
+                var currentKeys = this._getKeys(models);
 
-                for ( var index = 0; index < currentKeys.length; index++ ) {
-                    var modelIndex = this._deletedKeys.indexOf( currentKeys[ index ] );
-                    this._deletedKeys.splice( modelIndex, 1 );
+                // Store each deleted key.
+                for (var index = 0; index < currentKeys.length; index++) {
+                    var modelIndex = this._deletedKeys.indexOf(currentKeys[index]);
+                    this._deletedKeys.splice(modelIndex, 1);
                 }
 
                 this._finaliseDeleteRestore();
@@ -487,130 +819,130 @@
 
             };
 
-            Service.prototype.debugMode = function debugMode( state ) {
+            /**
+             * @method debugMode
+             * @param state {Boolean}
+             * @return {void}
+             */
+            Service.prototype.debugMode = function debugMode(state) {
                 this._debug = !!state;
             };
 
+            /**
+             * @method crossfilter
+             * @return {crossfilter}
+             */
             Service.prototype.crossfilter = function crossfilter() {
                 return this._crossfilter;
             };
 
-            Service.prototype.collection = function collection( limit ) {
+            /**
+             * @method collection
+             * @param limit {Number}
+             * @return {Array|Service}
+             */
+            Service.prototype.collection = function collection(limit) {
 
                 var sortProperty = this._sortProperty || this._primaryKey,
-                    sortOrder = this._isAscending ? 'bottom' : 'top';
+                    sortOrder    = this._isAscending ? 'bottom' : 'top';
 
-                if ( typeof this._dimensions[ sortProperty ] === 'undefined' ) {
+                if (typeof this._dimensions[sortProperty] === 'undefined') {
                     return this;
                 }
 
-                return this._dimensions[ sortProperty ][ sortOrder ]( limit || Infinity );
+                return this._dimensions[sortProperty][sortOrder](limit || Infinity);
 
             };
 
+            /**
+             * @method _finaliseDeleteRestore
+             * @return {Number}
+             */
             Service.prototype._finaliseDeleteRestore = function _finaliseDeleteRestore() {
 
                 var keys = this._deletedKeys;
 
-                this._dimensions[ this.PRIMARY_DIMENSION ].filter( function filter( property ) {
-                    return ( keys.indexOf( property ) === -1 );
-                } );
-
-                this._applyChanges();
-
-            };
-
-            Service.prototype._prepareChanges = function _prepareChanges() {
-
-                this._timerManager();
-
-                this._cacheGroups = {};
-
-                this._broadcastChanges();
+                // Use the special primary key dimension to remove the model(s).
+                this._dimensions[this.PRIMARY_DIMENSION].filter(function filter(property) {
+                    return (keys.indexOf(property) === -1);
+                });
 
             };
 
-            Service.prototype._applyChanges = function _applyChanges() {
+            /**
+             * @method _assertDimensionExists
+             * @param property {String}
+             * @return {void}
+             * @private
+             */
+            Service.prototype._assertDimensionExists = function _assertDimensionExists(property) {
 
-                this.length = 0;
+                if (typeof this._dimensions[property] === 'undefined') {
 
-                var collection = this.collection( Infinity );
-
-                for ( var key in collection ) {
-
-                    if ( collection.hasOwnProperty( key ) ) {
-                        this.push( collection[ key ] );
-                    }
-
-                }
-
-                this._timerManager();
-
-            };
-
-            Service.prototype._broadcastChanges = function _broadcastChanges( useTimeout ) {
-
-                var broadcast = function broadcast() {
-
-                    $rootScope.$broadcast( 'crossfilter/updated' );
-
-                };
-
-                if ( useTimeout ) {
-                    $timeout( broadcast, 1 );
-                    return;
-                }
-
-                broadcast();
-
-            };
-
-            Service.prototype._assertDimensionExists = function _assertDimensionExists( property ) {
-
-                if ( typeof this._dimensions[ property ] === 'undefined' ) {
-
-                    _throwException( "Unable to find dimension named '" + property + "'" );
+                    // Ensure we can find the dimension.
+                    _throwException("Unable to find dimension named '" + property + "'");
 
                 }
 
             };
 
-            Service.prototype._assertValidDimensionName = function _assertValidDimensionName( name ) {
+            /**
+             * @method _assertValidDimensionName
+             * @param name {String}
+             * @return {void}
+             * @private
+             */
+            Service.prototype._assertValidDimensionName = function _assertValidDimensionName(name) {
 
-                if ( name === this.PRIMARY_DIMENSION ) {
-                    _throwException( "Cannot define dimension using special dimension: '" + this.PRIMARY_DIMENSION + "'" )
+                // Ensure it doesn't use the special primary dimension.
+                if (name === this.PRIMARY_DIMENSION) {
+                    _throwException("Cannot define dimension using special dimension: '" + this.PRIMARY_DIMENSION + "'")
                 }
 
-                for ( var key in this._dimensions ) {
+                // Ensure it's a unique dimension name.
+                for (var key in this._dimensions) {
 
-                    if ( key === name ) {
-                        _throwException( "Cannot overwrite an existing dimension: '" + key + "'" );
+                    if (key === name) {
+                        _throwException("Cannot overwrite an existing dimension: '" + key + "'");
                     }
 
                 }
 
             };
 
+            /**
+             * @method _timerManager
+             * @return {void}
+             * @private
+             */
             Service.prototype._timerManager = function _timerManager() {
 
-                if ( !this._debug ) {
+                if (!this._debug) {
                     return;
                 }
 
+                // Determine whether we're beginning the timing, or ending it. We'll then invert the
+                // `_isTiming` boolean, and calculate the duration.
                 var method = this._isTiming ? 'time' : 'timeEnd';
                 this._isTiming = !this._isTiming;
-                $window.console[ method ]( 'timeTaken' );
+                $window.console[method]('timeTaken');
 
             };
 
-            Service.prototype._getProperties = function _getProperties( model ) {
+            /**
+             * @method _getProperties
+             * @param model {Object}
+             * @return {Array}
+             * @private
+             */
+            Service.prototype._getProperties = function _getProperties(model) {
 
                 var properties = [];
 
-                for ( var property in model ) {
+                for (var property in model) {
 
-                    if ( model.hasOwnProperty( property ) ) {
-                        properties.push( property );
+                    if (model.hasOwnProperty(property)) {
+                        properties.push(property);
                     }
 
                 }
@@ -619,58 +951,79 @@
 
             };
 
-            Service.prototype._getKeys = function _getKeys( models ) {
+            /**
+             * @method _getKeys
+             * @param models
+             * @returns {Array}
+             * @private
+             */
+            Service.prototype._getKeys = function _getKeys(models) {
 
                 var keys = [];
 
-                $angular.forEach( models, function forEach( model ) {
+                $angular.forEach(models, function forEach(model) {
 
-                    var primaryKey = model[ this._primaryKey ];
+                    var primaryKey = model[this._primaryKey];
 
-                    if ( typeof primaryKey === 'undefined' ) {
+                    if (typeof primaryKey === 'undefined') {
 
-                        _throwException( "Unable to find the primary key in model: '" + this._primaryKey + "'" );
+                        // Ensure the primary key is valid.
+                        _throwException("Unable to find the primary key in model: '" + this._primaryKey + "'");
 
                     }
 
-                    keys.push( primaryKey );
+                    keys.push(primaryKey);
 
-                }.bind( this ) );
+                }.bind(this));
 
                 return keys;
 
             };
 
-            Service.prototype._isArray = function _isArray( item ) {
+            /**
+             * @method _isArray
+             * @return {Boolean}
+             * @private
+             */
+            Service.prototype._isArray = function _isArray(item) {
 
-                if ( typeof $window.Array.isArray === 'function' ) {
-                    return $window.Array.isArray( item );
+                if (typeof $window.Array.isArray === 'function') {
+                    return $window.Array.isArray(item);
                 }
 
-                if ( typeof _ !== 'undefined' ) {
-                    return _.isArray( item );
+                if (typeof _ !== 'undefined') {
+                    return _.isArray(item);
                 }
 
-                return ( typeof item === '[object Array]' );
+                /* jshint -W122 */
+                return (typeof item === '[object Array]');
 
             };
 
+            /**
+             * @method _resetAll
+             * @return {void}
+             * @private
+             */
             Service.prototype._resetAll = function _resetAll() {
 
                 this._crossfilter = {};
                 this._cacheGroups = {};
                 this._deletedKeys = [];
-                this._dimensions = {};
+                this._dimensions  = {};
 
             };
 
+            /**
+             * @method toString
+             * @return {String}
+             */
             Service.prototype.toString = function toString() {
                 return '[object Array]';
             };
 
             return Service;
 
-        }
-    ] );
+        }]);
 
-} )( window.angular, window.crossfilter, window.moment, window._ );
+})(window.angular, window.crossfilter, window.moment, window._);

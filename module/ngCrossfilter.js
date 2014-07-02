@@ -73,16 +73,6 @@
                 // Initialise the Crossfilter with the array of models.
                 this._initialise(collection, primaryKey, strategy, properties);
 
-                // Construct the initial array of items.
-                this._applyChanges();
-
-                // Following is a dirty hack to ensure the object masquerades as an array at all times!
-                var masquerade       = [];
-                masquerade.length    = collection.length;
-                /*jshint proto: true */
-                masquerade.__proto__ = this;
-                return masquerade;
-
             };
 
             // Store a reference to the prototype.
@@ -463,9 +453,6 @@
 
                 }
 
-                // Broadcast the changes to the masses!
-                this._broadcastChanges(true);
-
             };
 
             /**
@@ -493,6 +480,9 @@
              */
             Service.prototype.filterBy = function filterBy(property, expected, customFilter) {
 
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
+
                 this._assertDimensionExists(property);
 
                 if (typeof customFilter !== 'undefined' && typeof customFilter !== 'function') {
@@ -501,8 +491,6 @@
                     throw _throwException("Custom filter method must be a function");
 
                 }
-
-                this._prepareChanges();
 
                 if (this._lastFilter && this._strategy === this.STRATEGY_TRANSIENT) {
 
@@ -521,16 +509,12 @@
                         return customFilter(expected, actual);
                     });
 
-                    this._applyChanges();
                     return;
 
                 }
 
                 // Let's filter by the desired filter!
                 this._dimensions[property].filter(expected);
-
-                // Voila!
-                this._applyChanges();
 
             };
 
@@ -541,10 +525,11 @@
              */
             Service.prototype.unfilterBy = function unfilterBy(property) {
 
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
+
                 this._assertDimensionExists(property);
-                this._prepareChanges();
                 this._dimensions[property].filterAll();
-                this._applyChanges();
 
             };
 
@@ -554,7 +539,8 @@
              */
             Service.prototype.unfilterAll = function unfilterAll() {
 
-                this._prepareChanges();
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
 
                 // Clear all of the dimensions that we have.
                 for (var key in this._dimensions) {
@@ -565,8 +551,6 @@
                     }
 
                 }
-
-                this._applyChanges();
 
             };
 
@@ -579,14 +563,12 @@
             Service.prototype.sortBy = function sortBy(property, isAscending) {
 
                 this._assertDimensionExists(property);
-                this._prepareChanges();
 
                 if (typeof isAscending === 'boolean') {
 
                     // Use the sorting specified by the developer.
                     this._isAscending  = isAscending;
                     this._sortProperty = property;
-                    this._applyChanges();
                     return;
 
                 }
@@ -602,7 +584,6 @@
 
                 // Otherwise we'll simply update the sort property.
                 this._sortProperty = property;
-                this._applyChanges();
 
             };
 
@@ -613,8 +594,6 @@
              */
             Service.prototype.unsortAll = function unsortAll(maintainSortOrder) {
 
-                this._prepareChanges();
-
                 // Sort by the default property, which is the primary key.
                 this._sortProperty = this._primaryKey;
 
@@ -624,8 +603,6 @@
                     this._isAscending = true;
 
                 }
-
-                this._applyChanges();
 
             };
 
@@ -667,7 +644,7 @@
              * @return {Object}
              */
             Service.prototype.first = function first() {
-                return this[0];
+                return this.collection()[0];
             };
 
             /**
@@ -675,7 +652,7 @@
              * @return {Object}
              */
             Service.prototype.last = function last() {
-                return this[this.length - 1];
+                return this.collection()[this.collection().length - 1];
             };
 
             /**
@@ -712,8 +689,7 @@
 
                 }
 
-                // Store the cache for the next time, until it's invalidated by the `_prepareChanges`
-                // method.
+                // Store the cache for the next time, until it's invalidated.
                 this._cacheGroups[property] = groups;
                 this._timerManager();
 
@@ -763,6 +739,9 @@
              */
             Service.prototype.addModels = function addModels(models) {
 
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
+
                 if (!this._primaryKey) {
 
                     // Determine whether to use Underscore or attempt to use the browser
@@ -775,7 +754,6 @@
                 }
 
                 this._crossfilter.add(models);
-                this._applyChanges();
                 return models.length;
 
             };
@@ -786,6 +764,7 @@
              * @return {Number}
              */
             Service.prototype.deleteModel = function deleteModel(model) {
+
                 return this.deleteModels([model]);
             };
 
@@ -795,6 +774,9 @@
              * @return {Number}
              */
             Service.prototype.deleteModels = function deleteModel(models) {
+
+                // Invalidate the groups cache.
+                this._cacheGroups = {};
 
                 var currentKeys = this._getKeys(models);
 
@@ -884,81 +866,6 @@
                 this._dimensions[this.PRIMARY_DIMENSION].filter(function filter(property) {
                     return (keys.indexOf(property) === -1);
                 });
-
-                this._applyChanges();
-
-            };
-
-            /**
-             * @method _prepareChanges
-             * @return {void}
-             * @private
-             */
-            Service.prototype._prepareChanges = function _prepareChanges() {
-
-                this._timerManager();
-
-                // Invalidate the groups cache.
-                this._cacheGroups = {};
-
-                // Broadcast the changes to the masses!
-                this._broadcastChanges();
-
-            };
-
-            /**
-             * Responsible for emptying the array, and then reapplying use the current filters
-             * and their states.
-             *
-             * @method _applyChanges
-             * @return {void}
-             * @private
-             */
-            Service.prototype._applyChanges = function _applyChanges() {
-
-                // Use the nifty way of emptying an array.
-                this.length = 0;
-
-                var collection = this.collection(Infinity);
-
-                // Apply all of the models to the collection.
-                for (var key in collection) {
-
-                    if (collection.hasOwnProperty(key)) {
-                        this.push(collection[key]);
-                    }
-
-                }
-
-                this._timerManager();
-
-            };
-
-            /**
-             * @method _broadcastChanges
-             * @param useTimeout {Boolean}
-             * @return {void}
-             * @private
-             */
-            Service.prototype._broadcastChanges = function _broadcastChanges(useTimeout) {
-
-                /**
-                 * @method broadcast
-                 * @return {void}
-                 */
-                var broadcast = function broadcast() {
-
-                    // Broadcast that the Crossfilter has been updated!
-                    $rootScope.$broadcast('crossfilter/updated');
-
-                };
-
-                if (useTimeout) {
-                    $timeout(broadcast, 1);
-                    return;
-                }
-
-                broadcast();
 
             };
 
