@@ -67,7 +67,7 @@
             <tr ng-show="loading">
                 <td colspan="3">Loading Words&hellip;</td>
             </tr>
-            <tr ng-show="!loading && words.length == 0">
+            <tr ng-show="!loading && words.collection().length == 0">
                 <td colspan="3">
                     Oops! Everything disappeared &ndash;
                     <a ng-click="word = ''; words.unfilterAll()">clear all filters</a>.
