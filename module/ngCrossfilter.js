@@ -534,7 +534,7 @@
             };
 
             /**
-             * @method unfilterAll
+             * @method §unfilterAll
              * @return {void}
              */
             Service.prototype.unfilterAll = function unfilterAll() {
@@ -782,7 +782,16 @@
 
                 // Store each deleted key.
                 for (var index = 0; index < currentKeys.length; index++) {
+
+                    if (index === this.PRIMARY_DIMENSION) {
+
+                        // Ignore the primary dimension.
+                        continue;
+                        
+                    }
+
                     this._deletedKeys.push(currentKeys[index]);
+
                 }
 
                 this._finaliseDeleteRestore();
