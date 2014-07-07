@@ -670,7 +670,6 @@
 
                 }
 
-                this._timerManager();
                 this._assertDimensionExists(property);
 
                 var groups = {};
@@ -691,7 +690,6 @@
 
                 // Store the cache for the next time, until it's invalidated.
                 this._cacheGroups[property] = groups;
-                this._timerManager();
 
                 return groups[value] || 0;
 
@@ -787,7 +785,7 @@
 
                         // Ignore the primary dimension.
                         continue;
-                        
+
                     }
 
                     this._deletedKeys.push(currentKeys[index]);
@@ -916,25 +914,6 @@
                     }
 
                 }
-
-            };
-
-            /**
-             * @method _timerManager
-             * @return {void}
-             * @private
-             */
-            Service.prototype._timerManager = function _timerManager() {
-
-                if (!this._debug) {
-                    return;
-                }
-
-                // Determine whether we're beginning the timing, or ending it. We'll then invert the
-                // `_isTiming` boolean, and calculate the duration.
-                var method = this._isTiming ? 'time' : 'timeEnd';
-                this._isTiming = !this._isTiming;
-                $window.console[method]('timeTaken');
 
             };
 
