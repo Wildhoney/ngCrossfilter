@@ -217,6 +217,21 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  $ngc.filterBy('climate', 2, $service.filters.bitwise('!'));
  ```
 
+Update Model
+-------------
+
+With Crossfilter updating a model requires removing it from the collection and then re-adding it. If you use this with one of your own primary keys then the PK will be added to the delete list, and therefore re-adding a model with the **same** PK will still be deleted. Therefore to make Crossfilter work with new models, you need to update the PK first &ndash; you can do this yourself, or you can use the convenient `updateModel` that `ngCrossfilter` provides &ndash; but you will be delegating the PK to `ngCrossfilter`.
+
+In order to use `updateModel` you **must** define your primary key as `$id`.
+
+```javascript
+var $ngc = new Crossfilter(collection, '$id');
+// ...
+$ngc.updateModel(personModel, { name: 'Adam' });
+```
+
+With the `$id` PK in place, the `updateModel` will do all of the manual labour for you! You needn't worry about updating the PK yourself.
+
 Other Methods
 -------------
 
@@ -250,6 +265,7 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
  <li><code>deleteModels</code>: Delete models from the collection;</li>
  <li><code>restoreModel</code>: Restore a model from the garbage;</li>
  <li><code>restoreModels</code>: Restore models from the garbage;</li>
+ <li><code>updateModel</code>: Update a model &ndash; see [update model](#update-model);</li>
 </ul>
 
 **Developer**
