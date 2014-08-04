@@ -97,6 +97,12 @@
             Service.prototype.PRIMARY_DIMENSION = '__primaryKey';
 
             /**
+             * @constant PRIMARY_SPECIAL
+             * @type {String}
+             */
+            Service.prototype.PRIMARY_SPECIAL = '$id';
+
+            /**
              * @constant HAS_UNDERSCORE
              * @type {Boolean}
              */
@@ -116,12 +122,11 @@
             Service.prototype._cacheGroups = {};
 
             /**
-             * @property _isTiming
-             * @type {Boolean}
-             * @default false
+             * @property _specialId
+             * @type {Number}
              * @private
              */
-            Service.prototype._isTiming = false;
+            Service.prototype._specialId = 1;
 
             /**
              * @property _dimensions
@@ -423,10 +428,26 @@
 
                 }
 
-                if (collection.length && ((primaryKey) && !(primaryKey in collection[0]))) {
+                if (collection[0]) {
 
-                    // Ensure the specified primary key is in the collection.
-                    _throwException("Primary key '" + primaryKey + "' is not in the collection");
+                    // Determine if the primary key is missing from the model.
+                    var missingProperty = !(primaryKey in collection[0]);
+
+                    if (collection.length && (primaryKey && missingProperty && primaryKey !== this.PRIMARY_SPECIAL)) {
+
+                        // Ensure the specified primary key is in the collection.
+                        _throwException("Primary key '" + primaryKey + "' is not in the collection");
+
+                    }
+
+                }
+
+                if (primaryKey === this.PRIMARY_SPECIAL) {
+
+                    // If we're using the special primary key then it needs to be injected into each model.
+                    $angular.forEach(collection, function forEach(model) {
+                        model[this.PRIMARY_SPECIAL] = ++this._specialId;
+                    }.bind(this));
 
                 }
 
@@ -751,8 +772,50 @@
 
                 }
 
+                if (this._primaryKey === this.PRIMARY_SPECIAL) {
+
+                    // We need to add the special property into the model if we're using the special PK.
+                    $angular.forEach(models, function forEach(model) {
+                        model[this.PRIMARY_SPECIAL] = ++this._specialId;
+                    }.bind(this));
+
+                }
+
                 this._crossfilter.add(models);
                 return models.length;
+
+            };
+
+            /**
+             * @method updateModel
+             * @return {void}
+             */
+            Service.prototype.updateModel = function updateModel(model, properties) {
+
+                if (!model.hasOwnProperty(this.PRIMARY_SPECIAL)) {
+
+                    // Method only works with the special dimension "$id".
+                    _throwException("`updateModel` only works when PK is defined as `" + this.PRIMARY_SPECIAL + "`");
+                }
+
+                // Remove the model for it to be re-added.
+                this.deleteModel(model);
+
+                // Create a new model based on the existing model and the desired update.
+                for (var property in properties) {
+
+                    if (properties.hasOwnProperty(property)) {
+
+                        // Update model!
+                        model[property] = properties[property];
+
+                    }
+
+                }
+
+                // ...And now we can add the model to the Crossfilter collection after updating its special ID.
+                model[this.PRIMARY_SPECIAL] = ++this._specialId;
+                this.addModel(model);
 
             };
 

@@ -71,6 +71,51 @@ describe('ngCrossfilter', function() {
 
         });
 
+        it('Should be able to use the special ID "$id"', function() {
+
+            inject(function($rootScope, Crossfilter) {
+
+                $rootScope.$apply(function() {
+
+                    var crossfilter = new Crossfilter($collection, '$id');
+                    expect(crossfilter._primaryKey).toEqual('$id');
+                    expect(crossfilter.collection(Infinity)[0].$id).toBeDefined();
+
+                    crossfilter.addModel({ city: 'Nottingham' });
+                    crossfilter.filterBy('city', 'Nottingham');
+                    expect(crossfilter.collection()[0].$id).toBeDefined();
+
+                });
+
+            });
+
+        });
+
+        it('Should be able to update a model using the special ID "$id"', function() {
+
+            inject(function($rootScope, Crossfilter) {
+
+                $rootScope.$apply(function() {
+
+                    var crossfilter = new Crossfilter($collection, '$id');
+                    expect(crossfilter._primaryKey).toEqual('$id');
+                    expect(crossfilter.collection(Infinity)[0].$id).toBeDefined();
+
+                    crossfilter.addModel({ city: 'Nottingham' });
+                    crossfilter.filterBy('city', 'Nottingham');
+                    var model = crossfilter.collection()[0];
+                    expect(crossfilter.collection().length).toEqual(1);
+                    crossfilter.updateModel(model, { city: 'Norwich' });
+                    expect(crossfilter.collection().length).toEqual(0);
+                    crossfilter.filterBy('city', 'Norwich');
+                    expect(crossfilter.collection().length).toEqual(1);
+
+                });
+
+            });
+
+        });
+
         it('Should be able to initialise with an empty collection;', function() {
 
             inject(function($rootScope, Crossfilter) {
