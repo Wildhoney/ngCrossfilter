@@ -351,7 +351,10 @@
                     return function inArray(expected, actual) {
 
                         if (!isArray(actual)) {
-                            _throwException("Using inArray filter on a non-array like property");
+
+                            // Convert the expected into an array if it isn't already.
+                            actual = [actual];
+
                         }
 
                         if (!isArray(expected)) {
