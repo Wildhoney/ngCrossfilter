@@ -633,10 +633,6 @@ describe('ngCrossfilter', function() {
                 $service.unfilterBy('twinCities');
 
                 expect(function() {
-                    $service.filterBy('city', 'Tokyo', $service.filters.inArray());
-                }).toThrow("ngCrossfilter: Using inArray filter on a non-array like property.");
-
-                expect(function() {
                     $service.filterBy('twinCities', 'Tokyo', $service.filters.inArray('pfft!'));
                 }).toThrow("ngCrossfilter: You must pass either 'every' or 'some'.");
 
