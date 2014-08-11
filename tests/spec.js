@@ -193,11 +193,6 @@ describe('ngCrossfilter', function() {
                 $service.addModel($collection[0]);
                 expect($service._primaryKey).toEqual('city');
 
-                expect(function() {
-                    $service.filterBy('city', 'Non-existent');
-                }).toThrow("ngCrossfilter: Unable to find dimension named 'city'.");
-
-                $service.addDimension('city');
                 $service.filterBy('city', 'Non-existent');
                 expect($service.collection().length).toEqual(0);
 
