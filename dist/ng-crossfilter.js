@@ -463,12 +463,8 @@
                 this._strategy    = strategy;
                 this._primaryKey  = (primaryKey || properties[0]) || '';
 
-                $angular.forEach(properties, function(property) {
-
-                    // Iterate over each property to create its related dimension.
-                    this.addDimension(property, null, true);
-
-                }.bind(this));
+                // Define the dimensions from the properties.
+                this._defineDimensions(properties);
 
                 if (this._primaryKey) {
 
@@ -479,6 +475,22 @@
 
             };
 
+            /**
+             * @method _defineDimensions
+             * @param properties {Array}
+             * @return {void}
+             * @private
+             */
+            Service.prototype._defineDimensions = function _defineDimensions(properties) {
+
+                $angular.forEach(properties, function(property) {
+
+                    // Iterate over each property to create its related dimension.
+                    this.addDimension(property, null, true);
+
+                }.bind(this));
+
+            };
             /**
              * @method primaryKey
              * @param property {String}
@@ -558,7 +570,7 @@
             };
 
             /**
-             * @method §unfilterAll
+             * @method unfilterAll
              * @return {void}
              */
             Service.prototype.unfilterAll = function unfilterAll() {
@@ -772,6 +784,25 @@
 
                     // Define the primary key if one hasn't been defined yet.
                     this.primaryKey(keys(models[0])[0]);
+
+                    // Determine if the developer has defined any dimensions yet.
+                    var definedDimensions = true;
+
+                    for (var dimension in this._dimensions) {
+
+                        if (this._dimensions.hasOwnProperty(dimension)) {
+                            definedDimensions = false;
+                        }
+
+                    }
+
+                    if (!definedDimensions) {
+
+                        // Define the dimensions using the model we're adding if the developer hasn't yet
+                        // defined any dimensions.
+                        this._defineDimensions(this._getProperties(models[0]));
+
+                    }
 
                 }
 
