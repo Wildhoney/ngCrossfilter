@@ -946,7 +946,7 @@
              */
             Service.prototype.collection = function collection(limit) {
 
-                var sortProperty = this._sortProperty || this._primaryKey,
+                var sortProperty = this._sortProperty || this.PRIMARY_DIMENSION,
                     sortOrder    = this._isAscending ? 'bottom' : 'top';
 
                 if (typeof this._dimensions[sortProperty] === 'undefined') {
