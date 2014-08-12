@@ -539,6 +539,7 @@
                         return customFilter(expected, actual);
                     });
 
+                    this.broadcastEvent();
                     return;
 
                 }
