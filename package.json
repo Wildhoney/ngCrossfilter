@@ -30,8 +30,7 @@
     "grunt-contrib-uglify": "^0.2.7",
     "grunt-jsbeautifier": "^0.2.7",
     "grunt-lib-phantomjs": "^0.6.0",
-    "grunt-stripcomments": "^0.3.0",
-    "npm": "^1.4.13"
+    "grunt-stripcomments": "^0.3.0"
   },
   "directories": {
     "example": "example",
