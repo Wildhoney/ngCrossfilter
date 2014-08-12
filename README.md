@@ -23,12 +23,6 @@ $scope.$ngc = new Crossfilter(response.data, 'id', 'persistent', ['name', 'age']
 
 `ngCrossfilter`'s constructor accepts four parameters &ndash; with only the first being mandatory. With the second parameter you can change the primary key &ndash; which will otherwise default to the first property in the first model; the third parameter allows you to change the <a href="#custom-filtering">filtering strategy</a> &ndash; either `persistent` or `transient`, whereas the fourth parameter allows you to specify which properties to create dimensions with.
 
-For timing information and other useful information for development, you can enable debug mode.
-
-```javascript
-$ngc.debugMode(true);
-```
-
 Once you've configured your Crossfilter collection, you can begin filtering and sorting. From within your view you should reference your collection &ndash; in our case, `$ngc`.
 
 ```html
@@ -266,11 +260,6 @@ For the entire list of features for `ngCrossfilter` it is advised to refer to th
  <li><code>restoreModel</code>: Restore a model from the garbage;</li>
  <li><code>restoreModels</code>: Restore models from the garbage;</li>
  <li><code>updateModel</code>: Update a model &ndash; see [update model](#update-model);</li>
-</ul>
-
-**Developer**
-<ul>
- <li><code>debugMode</code>: Enable/disable debugging mode;</li>
 </ul>
 
 Contributions
