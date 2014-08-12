@@ -179,14 +179,6 @@
             Service.prototype._deletedKeys = [];
 
             /**
-             * @property _debug
-             * @type {Boolean}
-             * @default false
-             * @private
-             */
-            Service.prototype._debug = false;
-
-            /**
              * List of common filters bundled into ngCrossfilter.
              *
              * @property filters
@@ -473,6 +465,8 @@
 
                 }
 
+                this.broadcastEvent();
+
             };
 
             /**
@@ -551,6 +545,7 @@
 
                 // Let's filter by the desired filter!
                 this._dimensions[property].filter(expected);
+                this.broadcastEvent();
 
             };
 
@@ -566,6 +561,7 @@
 
                 this._assertDimensionExists(property);
                 this._dimensions[property].filterAll();
+                this.broadcastEvent();
 
             };
 
@@ -587,6 +583,8 @@
                     }
 
                 }
+
+                this.broadcastEvent();
 
             };
 
@@ -620,6 +618,7 @@
 
                 // Otherwise we'll simply update the sort property.
                 this._sortProperty = property;
+                this.broadcastEvent();
 
             };
 
@@ -639,6 +638,8 @@
                     this._isAscending = true;
 
                 }
+
+                this.broadcastEvent();
 
             };
 
@@ -816,6 +817,7 @@
                 }
 
                 this._crossfilter.add(models);
+                this.broadcastEvent();
                 return models.length;
 
             };
@@ -850,6 +852,7 @@
                 // ...And now we can add the model to the Crossfilter collection after updating its special ID.
                 model[this.PRIMARY_SPECIAL] = ++this._specialId;
                 this.addModel(model);
+                this.broadcastEvent();
 
             };
 
@@ -889,6 +892,7 @@
                 }
 
                 this._finaliseDeleteRestore();
+                this.broadcastEvent();
                 return currentKeys.length;
 
             };
@@ -918,17 +922,17 @@
                 }
 
                 this._finaliseDeleteRestore();
+                this.broadcastEvent();
                 return currentKeys.length;
 
             };
 
             /**
-             * @method debugMode
-             * @param state {Boolean}
+             * @method broadcastEvent
              * @return {void}
              */
-            Service.prototype.debugMode = function debugMode(state) {
-                this._debug = !!state;
+            Service.prototype.broadcastEvent = function broadcastEvent() {
+                $rootScope.$broadcast('crossfilter/updated', this.collection());
             };
 
             /**

@@ -283,16 +283,6 @@ describe('ngCrossfilter', function() {
             });
         });
 
-        it('Should be able to enable the debug mode;', function() {
-            expect($service._debug).toBeFalsy();
-            $service.debugMode(true);
-            expect($service._debug).toEqual(true);
-            $service.debugMode('yes');
-            expect($service._debug).toEqual(true);
-            $service.debugMode(0);
-            expect($service._debug).toEqual(false);
-        });
-
         it('Should be able to filter by the country name and broadcast changes;', function() {
             expect($service.collection().length).toEqual(6);
             $service.filterBy('country', 'UK');
