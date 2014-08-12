@@ -859,7 +859,6 @@
              * @return {Number}
              */
             Service.prototype.deleteModel = function deleteModel(model) {
-
                 return this.deleteModels([model]);
             };
 
