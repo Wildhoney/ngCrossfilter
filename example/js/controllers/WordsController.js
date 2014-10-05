@@ -1,4 +1,4 @@
-(function($window, $RegExp) {
+(function($window, $angular) {
 
     /**
      * @controller WordsController
@@ -44,7 +44,11 @@
 
         // When the Crossfilter collection has been updated.
         $scope.$on('crossfilter/updated', function crossfilterUpdated() {
-            $scope.countGrouped = $scope.words.groupBy('wordCount');
+
+            if ($angular.isDefined($scope.words.groupBy)) {
+                $scope.countGrouped = $scope.words.groupBy('wordCount');
+            }
+
         });
 
         /**
@@ -55,9 +59,11 @@
         $scope.toggleCountFilter = function toggleCountFilter(count) {
 
             if ($scope.currentCountFilter == count) {
+
                 $scope.currentCountFilter = null;
                 $scope.words.unfilterBy('wordCount');
                 return;
+
             }
 
             $scope.currentCountFilter = count;
@@ -73,7 +79,8 @@
             $scope.words.addDimension('wordCount', function wordCount(model) {
                 return model.word.length;
             });
-            $scope.words.debugMode(true);
+
+            $scope.countGrouped = $scope.words.groupBy('wordCount');
             $scope.loading = false;
 
         });
@@ -85,11 +92,13 @@
          * @return {void}
          */
         $scope.applyWordFilter = function applyWordFilter(word, customFilter) {
+
             $scope.pageNumber = 50;
             $scope.words.filterBy('word', word, customFilter);
             $scope.word = word;
+
         };
 
     });
 
-})(window, window.RegExp);
+})(window, window.angular);

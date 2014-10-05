@@ -38,7 +38,7 @@
 
         <ul>
             <li class="word-count">
-                Displaying {{words.length | number: 0}}
+                Displaying {{words.collection().length | number: 0}}
                 <ng-pluralize count="words.length" when="{'1': 'word.', 'other': 'words.'}"></ng-pluralize>
             </li>
             <li>First Word: {{words.first().word}}</li>
@@ -65,7 +65,7 @@
                 <th><span class="glyphicon glyphicon-filter"></span></th>
             </tr>
             <tr ng-show="loading">
-                <td colspan="3">Loading Words&hellip;</td>
+                <td colspan="3">Downloading 100,000 words &ndash; 3.3mb may take a little while&hellip;</td>
             </tr>
             <tr ng-show="!loading && words.collection().length == 0">
                 <td colspan="3">
