@@ -10,6 +10,8 @@ script:
   - grunt test
 deploy:
   provider: heroku
+  all_branches: true
+  skip_cleanup: true
   api_key:
     secure: UD75YEqM9yqCmdoZfZ+P/Vs/t56pKUoUtdXaNXPHuIeooRHUpR9hRIwCJe6iFxZuXS+fzJhU7SKNJxAo9mr/7zKik38PI9Umhr3iwVDYWNuAnc8/AHRuRhw2KmNSnMZi4xcUzyCZbhM2T7ymgQqKJ5OhSKe/zURYhmxbqgadnoc=
   app: ng-crossfilter
