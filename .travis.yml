@@ -6,8 +6,8 @@ node_js:
 script:
   - npm install
   - bower install
-  - gulp test
-  - gulp build
+  - grunt test
+  - grunt build
 
 deploy:
   provider: heroku
