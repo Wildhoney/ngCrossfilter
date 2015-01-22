@@ -12,7 +12,6 @@
 
     <!-- Styles! -->
     <link rel="stylesheet" type="text/css" href="css/default.css" />
-    <link rel="stylesheet" type="text/css" href="js/vendor/bootstrap/dist/css/bootstrap.css" />
 
     <!-- Application! -->
     <script type="text/javascript" src="js/Default.js"></script>
@@ -23,28 +22,36 @@
 
     <section class="sidebar">
 
-        <input type="text" ng-model="word" class="search" placeholder="Filter by word..." />
+        <h1>ngCrossfilter</h1>
+
+        <input type="text" ng-model="word" class="search" placeholder="Filter words, e.g: water, agua, voda." />
 
         <div class="btn-group">
-            <button type="button" class="btn btn-xs btn-default"
+            <button type="button" class="filter"
                     ng-click="words.filterBy('word', word, words.filters.fuzzy())">
                 Filter
             </button>
-            <button type="button" class="btn btn-xs btn-default"
+            <button type="button" class="clear"
                     ng-click="word = ''; words.unfilterBy('word', word)">
                 Clear
             </button>
         </div>
 
         <ul>
-            <li class="word-count">
-                Displaying {{words.collection().length | number: 0}}
-                <ng-pluralize count="words.length" when="{'1': 'word.', 'other': 'words.'}"></ng-pluralize>
+            <li class="statistic">
+                <label>Words:</label>
+                {{words.collection().length | number: 0}}
             </li>
-            <li>First Word: {{words.first().word}}</li>
-            <li>Last Word: {{words.last().word}}</li>
-            <li><h3>Word Count</h3></li>
-            <li>
+            <li class="statistic">
+                <label>First:</label>
+                {{words.first().word}}
+            </li>
+            <li class="statistic">
+                <label>Last:</label>
+                {{words.last().word}}
+            </li>
+            <li class="word-count-title">Filter by length:</li>
+            <li class="count-boxes">
                 <div class="count" ng-repeat="count in countGrouped"
                                    ng-class="{ 'is-none': count.value == 0, active: currentCountFilter == count.key }"
                                    ng-click="toggleCountFilter(count.key)">
@@ -59,10 +66,9 @@
 
         <table>
             <tr>
-                <th ng-click="words.sortBy('id')">ID</th>
+                <th style="width: 12%;" ng-click="words.sortBy('id')">ID</th>
+                <th style="width: 12%;" ng-click="words.sortBy('wordCount')">Length</th>
                 <th ng-click="words.sortBy('word')">Word</th>
-                <th ng-click="words.sortBy('wordCount')">Length</th>
-                <th><span class="glyphicon glyphicon-filter"></span></th>
             </tr>
             <tr ng-show="loading">
                 <td colspan="3">Downloading 100,000 words &ndash; 3.3mb may take a little while&hellip;</td>
@@ -73,14 +79,14 @@
                     <a ng-click="word = ''; words.unfilterAll()">clear all filters</a>.
                 </td>
             </tr>
-            <tr ng-repeat="word in words.collection() | limitTo: pageNumber | limitTo: -50">
-                <td>{{word.id}}</td>
-                <td>{{word.word}}</td>
-                <td>{{word.word.length}}</td>
+            <tr class="word" ng-repeat="word in words.collection() | limitTo: pageNumber | limitTo: -50">
+                <td style="width: 12%;">{{word.id}}</td>
+                <td style="width: 12%;">{{word.word.length}}</td>
                 <td>
                     <button class="btn btn-xs btn-default" ng-click="applyWordFilter(word.word)">
-                        Filter by word
+                        Only
                     </button>
+                    {{word.word}}
                 </td>
             </tr>
             <tr>

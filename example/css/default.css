@@ -5,121 +5,236 @@
     font-family: Arial, Tahoma, Helvetica, sans-serif;
 }
 
+a {
+    color: #00b3ee;
+}
+
+/* Sidebar */
+
 section.sidebar {
+    background-color: white;
+    overflow: hidden;
     position: fixed;
-    background-color: rgba(0, 0, 0, .1);
-    width: 20%;
+    width: 300px;
     height: 100%;
+}
+
+section.sidebar:after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset -5px 0 5px -5px rgba(0, 0, 0, .15);
+}
+
+section.sidebar h1 {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background-color: #dd4b39;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, .15);
+    font-weight: normal;
+    font-size: 18px;
+    color: white;
+    padding: 0 15px;
 }
 
 section.sidebar input.search {
     width: 100%;
-    height: 40px;
-    outline: none;
-    padding: 0 12px;
-    font-size: 12px;
     border: 0;
+    height: 45px;
+    line-height: 45px;
+    color: black;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    padding: 0 15px;
+    outline: none;
 }
 
-section.sidebar div.btn-group {
-    right: 10px;
-    top: 9px;
-    position: absolute;
+section.sidebar input.search::-webkit-input-placeholder {
+    color: rgba(0, 0, 0, .25);
+    font-style: italic;
+    font-weight: normal;
 }
 
-section.sidebar h3 {
-    font-size: 14px;
-}
-
-section.sidebar div.count {
-    background-color: rgba(0, 0, 0, .1);
+section.sidebar button.filter,
+section.sidebar button.clear {
+    display: inline-block;
+    width: 50%;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 6px;
+    border: 0;
+    font-weight: normal;
+    background-color: white;
+    outline: none;
     cursor: pointer;
-    border-radius: 30px;
+    transition: background-color .25s;
+    color: black;
+}
+
+section.sidebar button:active {
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, .1);
+}
+
+section.sidebar button:hover {
+    background-color: rgba(0, 0, 0, .0025);
+}
+
+section.sidebar button.filter {
+    border-right: 1px solid rgba(0, 0, 0, .075);
     float: left;
-    width: 28px;
-    height: 28px;
-    line-height: 28px;
-    margin: 0 8px 8px 0;
-    text-align: center;
 }
 
-section.sidebar div.count.is-none {
-    background-color: indianred;
-}
-
-section.sidebar div.count.active {
-    background-color: dodgerblue;
+section.sidebar button.clear {
+    color: rgba(0, 0, 0, .25);
 }
 
 section.sidebar ul {
-    clear: both;
-    width: 100%;
-    overflow: hidden;
-}
-
-section.sidebar ul li {
-    padding: 0 12px;
-    height: 32px;
-    font-size: 11px;
-    line-height: 32px;
     list-style-type: none;
+    overflow: hidden;
+    border-top: 1px solid rgba(0, 0, 0, .1);
 }
 
-section.sidebar ul li:nth-of-type(2) {
-    margin-top: 5px;
+section.sidebar ul li.statistic {
+    font-size: 11px;
+    color: rgba(0, 0, 0, .5);
+    height: 32px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 12px;
+    line-height: 32px;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
 }
 
-section.sidebar ul li.word-count {
-    background-color: rgba(0, 0, 0, .25);
+section.sidebar ul li.statistic label {
+    color: rgba(0, 0, 0, .25);
+    display: inline-block;
+    margin-right: 10px;
+    padding: 0 12px;
+    width: 60px;
+    border-right: 1px solid rgba(0, 0, 0, .05);
+    background: linear-gradient(to bottom, rgba(0, 0, 0, .025) 0%, rgba(0, 0, 0, .075) 100%);
+}
+
+section.sidebar ul li.word-count-title {
+    text-transform: uppercase;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 12px;
+    font-size: 9px;
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    color: rgba(0, 0, 0, .3);
+}
+
+section.sidebar ul li.count-boxes {
+    margin-left: -1px;
+}
+
+section.sidebar ul li.count-boxes div.count {
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+    float: left;
+    cursor: pointer;
+    overflow: hidden;
+    font-size: 9px;
+    transition: all .25s;
+    color: rgba(0, 0, 0, .35);
+    border-bottom: 1px solid rgba(0, 0, 0, .1);
+    border-left: 1px solid rgba(0, 0, 0, .1);
+}
+
+section.sidebar ul li.count-boxes div.count.active {
+    color: black;
+}
+
+section.sidebar ul li.count-boxes div.count.is-none {
     color: white;
+    pointer-events: none;
 }
+
+section.sidebar ul li.count-boxes div.count:active {
+    box-shadow: inset 0 0 2px rgba(0, 0, 0, .15);
+}
+
+section.sidebar ul li.count-boxes div.count:last-of-type {
+    border-right: 1px solid rgba(0, 0, 0, .1);
+    width: 31px;
+}
+
+/* Words */
 
 section.words {
-    margin-left: 20%;
-    width: 80%;
+    position: absolute;
+    left: 300px;
+    width: calc(100% - 300px);
 }
 
 section.words table {
+    border-collapse: collapse;
     width: 100%;
+    text-align: left;
 }
 
 section.words table tr th {
-    background-color: lightslategrey;
-    height: 40px;
-    padding: 0 12px;
-    font-size: 12px;
-    font-weight: normal;
-    color: white;
+    padding: 0 20px;
+    background-color: rgba(0, 0, 0, .1);
+    height: 60px;
+    color: rgba(0, 0, 0, .75);
     cursor: pointer;
+    font-weight: normal;
+    font-size: 11px;
+    border-right: 1px solid rgba(0, 0, 0, .025);
+}
+
+section.words table tr th:last-of-type {
+    border-right: 0;
 }
 
 section.words table tr td {
+    padding: 0 20px;
+    font-size: 11px;
     height: 32px;
     line-height: 32px;
-    font-size: 12px;
-    padding: 0 12px;
-}
-
-section.words table tr:nth-of-type(odd) td {
-    background-color: rgba(0, 0, 0, .05);
-}
-
-section.words table tr td a {
-    cursor: pointer;
-}
-
-section.words table tr td:first-of-type {
-    width: 120px;
-}
-
-section.words table tr td:nth-of-type(2) {
-    width: 250px;
+    border-bottom: 1px solid rgba(0, 0, 0, .025);
 }
 
 section.words table tr td.etc {
-    background-color: rgba(0, 0, 0, .025);
-    font-weight: bold;
-    padding-left: 25px;
-    height: 80px;
-    line-height: 80px;
+    background-color: rgba(0, 0, 0, .25);
+    height: auto;
+    line-height: initial;
+    padding: 10px;
+}
+
+section.words table tr td.etc button {
+    height: 32px;
+    background-color: white;
+    border: 0;
+    float: left;
+    padding: 0 20px;
+    outline: none;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+section.words table tr td.etc button:last-of-type {
+    margin-left: 10px;
+}
+
+section.words table tr.word td button {
+    color: black;
+    background-color: white;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, .1);
+    padding: 2px 5px;
+    border-radius: 2px;
+    color: rgba(0, 0, 0, .5);
+    font-size: 10px;
+    margin-right: 8px;
+    outline: none;
 }
