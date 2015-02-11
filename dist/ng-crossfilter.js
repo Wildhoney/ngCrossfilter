@@ -179,6 +179,13 @@
             Service.prototype._deletedKeys = [];
 
             /**
+             * @property _identifier
+             * @type {String}
+             * @private
+             */
+            Service.prototype._identifier = '';
+
+            /**
              * List of common filters bundled into ngCrossfilter.
              *
              * @property filters
@@ -933,7 +940,7 @@
              * @return {void}
              */
             Service.prototype.broadcastEvent = function broadcastEvent() {
-                $rootScope.$broadcast('crossfilter/updated', this.collection());
+                $rootScope.$broadcast('crossfilter/updated', this.collection(), this._identifier);
             };
 
             /**
@@ -960,6 +967,15 @@
 
                 return this._dimensions[sortProperty][sortOrder](limit || Infinity);
 
+            };
+
+            /**
+             * @method identifyAs
+             * @param identifier {String}
+             * @return {void}
+             */
+            Service.prototype.identifyAs = function identifyAs(identifier) {
+                this._identifier = identifier;
             };
 
             /**
