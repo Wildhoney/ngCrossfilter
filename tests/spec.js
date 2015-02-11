@@ -496,6 +496,19 @@ describe('ngCrossfilter', function() {
             expect(collection[4].value).toEqual(2);
         });
 
+        it('Should be able to broadcast its collection and identifier upon updates;', function() {
+            inject(function(Crossfilter) {
+                $service = new Crossfilter($collection);
+                expect($rootScope.$broadcast)
+                    .toHaveBeenCalledWith('crossfilter/updated', $service.collection(), '');
+
+                $service.identifyAs('myCrossfilter');
+                $service.sortBy('country');
+                expect($rootScope.$broadcast)
+                    .toHaveBeenCalledWith('crossfilter/updated', $service.collection(), 'myCrossfilter');
+            });
+        });
+
         describe('Bundled Filters', function() {
 
             it('Should be able to use the fuzzy filter;', function() {
