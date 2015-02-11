@@ -114,14 +114,20 @@ Update Subscription
 
 Sometimes it is preferable to subscribe to the update of the Crossfilter, and to apply any modifications of your data at that point rather than relying on Angular's dirty-checking.
 
-In these cases you can listen to the `crossfilter/updated` event.
+In these cases you can listen to the `crossfilter/updated` event, which passes along the collection and the identifier of the Crossfilter.
 
 ```javascript
-$scope.$on('crossfilter/updated', function() {
+$scope.$on('crossfilter/updated', function(event, collection, identifier) {
 
     // Voila!
 
 });
+```
+
+The identifier is empty by default, but can be set at any point.
+
+```javascript
+$ngc.identifyAs('myCrossfilter');
 ```
 
 Bundled Filters
