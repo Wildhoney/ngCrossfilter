@@ -49,7 +49,7 @@
      */
     ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', '$window',
 
-        /*jshint maxstatements: 55 */
+        /*jshint maxstatements: 60 */
         function CrossfilterService($rootScope, $timeout, $window) {
 
             /**
@@ -184,6 +184,14 @@
              * @private
              */
             Service.prototype._identifier = '';
+
+            /**
+             * @property _isBroadcastEventEnabled
+             * @type {Boolean}
+             * @default true
+             * @private
+             */
+            Service.prototype._isBroadcastEventEnabled = true;
 
             /**
              * List of common filters bundled into ngCrossfilter.
@@ -878,7 +886,7 @@
              * @param models {Array}
              * @return {Number}
              */
-            Service.prototype.deleteModels = function deleteModel(models) {
+            Service.prototype.deleteModels = function deleteModels(models) {
 
                 // Invalidate the groups cache.
                 this._cacheGroups = {};
@@ -919,7 +927,7 @@
              * @param models {Array}
              * @return {Number}
              */
-            Service.prototype.restoreModels = function deleteModel(models) {
+            Service.prototype.restoreModels = function restoreModels(models) {
 
                 var currentKeys = this._getKeys(models);
 
@@ -937,10 +945,29 @@
 
             /**
              * @method broadcastEvent
+             * @param force {Boolean}
              * @return {void}
              */
-            Service.prototype.broadcastEvent = function broadcastEvent() {
-                $rootScope.$broadcast('crossfilter/updated', this.collection(), this._identifier);
+            Service.prototype.broadcastEvent = function broadcastEvent(force) {
+                if (this._isBroadcastEventEnabled || force === true) {
+                    $rootScope.$broadcast('crossfilter/updated', this.collection(), this._identifier);
+                }
+            };
+
+            /**
+             * @method enableBroadcastEvent
+             * @return {void}
+             */
+            Service.prototype.enableBroadcastEvent = function enableBroadcastEvent() {
+                this._isBroadcastEventEnabled = true;
+            };
+
+            /**
+             * @method disableBroadcastEvent
+             * @return {void}
+             */
+            Service.prototype.disableBroadcastEvent = function disableBroadcastEvent() {
+                this._isBroadcastEventEnabled = false;
             };
 
             /**
