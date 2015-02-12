@@ -130,6 +130,23 @@ The identifier is empty by default, but can be set at any point.
 $ngc.identifyAs('myCrossfilter');
 ```
 
+It is possible to disable and re-enable the broadcasting of the `crossfilter/updated` event. For example, the following would broadcast a single event.
+
+```javascript
+$ngc.disableBroadcastEvent();
+$ngc.sortBy('population');
+$ngc.unfilterBy('city');
+
+$ngc.enableBroadcastEvent();
+$ngc.filterBy('climate', [5, 10]);
+```
+
+If you need full control over when the event is triggered, you may disable the event as described above and broadcast it yourself.
+
+```javascript
+$service.broadcastEvent(true);
+```
+
 Bundled Filters
 -------------
 

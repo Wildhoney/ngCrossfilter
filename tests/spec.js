@@ -509,6 +509,35 @@ describe('ngCrossfilter', function() {
             });
         });
 
+        it('Should be able to toggle the broadcasting of the updated event;', function() {
+            inject(function(Crossfilter) {
+                $service = new Crossfilter($collection);
+                expect($rootScope.$broadcast.calls.count()).toEqual(1);
+
+                $service.disableBroadcastEvent();
+                $service.sortBy('population');
+                expect($rootScope.$broadcast.calls.count()).toEqual(1);
+
+                $service.enableBroadcastEvent();
+                $service.filterBy('climate', [5, 10]);
+                expect($rootScope.$broadcast.calls.count()).toEqual(2);
+            });
+        });
+
+        it('Should be able to force the broadcasting of the updated event;', function() {
+            inject(function(Crossfilter) {
+                $service = new Crossfilter($collection);
+                expect($rootScope.$broadcast.calls.count()).toEqual(1);
+
+                $service.disableBroadcastEvent();
+                $service.broadcastEvent();
+                expect($rootScope.$broadcast.calls.count()).toEqual(1);
+
+                $service.broadcastEvent(true);
+                expect($rootScope.$broadcast.calls.count()).toEqual(2);
+            });
+        });
+
         describe('Bundled Filters', function() {
 
             it('Should be able to use the fuzzy filter;', function() {
