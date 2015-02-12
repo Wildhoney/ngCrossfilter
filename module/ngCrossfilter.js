@@ -886,7 +886,7 @@
              * @param models {Array}
              * @return {Number}
              */
-            Service.prototype.deleteModels = function deleteModel(models) {
+            Service.prototype.deleteModels = function deleteModels(models) {
 
                 // Invalidate the groups cache.
                 this._cacheGroups = {};
@@ -927,7 +927,7 @@
              * @param models {Array}
              * @return {Number}
              */
-            Service.prototype.restoreModels = function deleteModel(models) {
+            Service.prototype.restoreModels = function restoreModels(models) {
 
                 var currentKeys = this._getKeys(models);
 
