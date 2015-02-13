@@ -144,7 +144,7 @@ $ngc.filterBy('climate', [5, 10]);
 If you need full control over when the event is triggered, you may disable the event as described above and broadcast it yourself.
 
 ```javascript
-$service.broadcastEvent(true);
+$ngc.broadcastEvent(true);
 ```
 
 Bundled Filters
@@ -200,14 +200,14 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  ```javascript
  $ngc.filterBy('added', ['2012-01-01', '2012-12-01'],
-                        $service.filters.dateTimeRange('YYYY-MM-DD'));
+                        $ngc.filters.dateTimeRange('YYYY-MM-DD'));
  ```
 
  The first parameter of the `dateTimeRange` filter allows you to specify the exact format &ndash; [see Moment.js documentation](http://momentjs.com/docs/#/parsing/string-format/) &ndash; the default being **YYYY-MM-DD**. With the second parameter you can pass a comparator function for custom range filtering.
 
  ```javascript
  $ngc.filterBy('added', ['2012-01-01', '2012-12-01'],
-                        $service.filters.dateTimeRange('YYYY-MM-DD'),
+                        $ngc.filters.dateTimeRange('YYYY-MM-DD'),
                         function(current, start, end) {
                             return (current > start);
                         });
@@ -217,7 +217,7 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
 
  ```javascript
  $ngc.filterBy('added', [-Infinity, '2012-12-01'],
-                        $service.filters.dateTimeRange('YYYY-MM-DD'));
+                        $ngc.filters.dateTimeRange('YYYY-MM-DD'));
  ```
 
  **Bitwise Filter**
@@ -225,13 +225,13 @@ As there are common filtering techniques that Crossfilter doesn't implement, `ng
  Simple filter using the bitwise `&` operator against the collection.
 
  ```javascript
- $ngc.filterBy('climate', 2, $service.filters.bitwise());
+ $ngc.filterBy('climate', 2, $ngc.filters.bitwise());
  ```
 
  You can invert the filtering by passing an exclamation mark as the first argument to the `bitwise` method.
 
  ```javascript
- $ngc.filterBy('climate', 2, $service.filters.bitwise('!'));
+ $ngc.filterBy('climate', 2, $ngc.filters.bitwise('!'));
  ```
 
 Update Model
