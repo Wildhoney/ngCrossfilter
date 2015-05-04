@@ -1,27 +1,27 @@
 {
-  "name": "ng-crossfilter",
-  "version": "2.4.2",
-  "homepage": "https://github.com/Wildhoney/ngCrossfilter",
-  "authors": [
+	"name": "ng-crossfilter",
+	"version": "2.4.2-lodash2",
+	"homepage": "https://github.com/Wildhoney/ngCrossfilter",
+	"authors": [
     "Adam Timberlake <adam.timberlake@gmail.com>"
   ],
-  "description": "Usual Angular.js style filtering and sorting with a twist of Crossfilter for improved performance.",
-  "main": "dist/ng-crossfilter.js",
-  "license": "MIT",
-  "ignore": [
+	"description": "Usual Angular.js style filtering and sorting with a twist of Crossfilter for improved performance.",
+	"main": "dist/ng-crossfilter.js",
+	"license": "MIT",
+	"ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
     "test",
     "tests"
   ],
-  "devDependencies": {
-    "angular-mocks": "~1.2.16",
-    "moment": "~2.6.0"
-  },
-  "dependencies": {
-    "angular": "~1.2.1",
-    "crossfilter": "~1.3.5",
-    "underscore": "~1.7.0"
-  }
+	"devDependencies": {
+		"angular-mocks": "~1.3.4",
+		"moment": "~2.6.0"
+	},
+	"dependencies": {
+		"angular": "~1.3.4",
+		"crossfilter": "~1.3.11",
+		"lodash": ">=3.7.0"
+	}
 }
