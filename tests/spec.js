@@ -1,6 +1,7 @@
 describe('ngCrossfilter', function() {
+    'use strict';
 
-    var $service, $rootScope;
+    var Crossfilter, $service, $rootScope;
 
     var $collection = [
 
@@ -28,10 +29,11 @@ describe('ngCrossfilter', function() {
 
         module('ngCrossfilter');
 
-        inject(function($injector, Crossfilter) {
+        inject(function(_$rootScope_, _Crossfilter_) {
 
-            $service   = new Crossfilter($collection);
-            $rootScope = $injector.get('$rootScope');
+            Crossfilter = _Crossfilter_;
+            $service    = new Crossfilter($collection);
+            $rootScope  = _$rootScope_;
             spyOn($rootScope, '$broadcast');
 
         });
@@ -540,21 +542,25 @@ describe('ngCrossfilter', function() {
 
         describe('Bundled Filters', function() {
 
+            it('Should be available statically and per instance', function() {
+              expect(angular.equals(Crossfilter.filters, $service.filters)).toBe(true);
+            });
+
             it('Should be able to use the fuzzy filter;', function() {
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('city', 'M', $service.filters.fuzzy());
+                $service.filterBy('city', 'M', Crossfilter.filters.fuzzy());
                 expect($service.collection().length).toEqual(2);
                 $service.unfilterBy('city');
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('city', 'S', $service.filters.fuzzy());
+                $service.filterBy('city', 'S', Crossfilter.filters.fuzzy());
                 expect($service.collection().length).toEqual(1);
                 $service.unfilterBy('city');
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('city', 'S', $service.filters.fuzzy('i'));
+                $service.filterBy('city', 'S', Crossfilter.filters.fuzzy('i'));
                 expect($service.collection().length).toEqual(3);
 
             });
@@ -563,19 +569,19 @@ describe('ngCrossfilter', function() {
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('city', /^m/i, $service.filters.regexp());
+                $service.filterBy('city', /^m/i, Crossfilter.filters.regexp());
                 expect($service.collection().length).toEqual(2);
                 $service.unfilterBy('city');
 
-                $service.filterBy('city', /o$/, $service.filters.regexp());
+                $service.filterBy('city', /o$/, Crossfilter.filters.regexp());
                 expect($service.collection().length).toEqual(1);
                 $service.unfilterBy('city');
 
-                $service.filterBy('city', new RegExp('o$'), $service.filters.regexp());
+                $service.filterBy('city', new RegExp('o$'), Crossfilter.filters.regexp());
                 expect($service.collection().length).toEqual(1);
 
                 expect(function() {
-                    $service.filterBy('city', 'o$', $service.filters.regexp());
+                    $service.filterBy('city', 'o$', Crossfilter.filters.regexp());
                 }).toThrow("ngCrossfilter: Expression must be an instance of RegExp.");
 
             });
@@ -583,13 +589,13 @@ describe('ngCrossfilter', function() {
             it('Should be able to use the bitwise filter;', function() {
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('climate', 2, $service.filters.bitwise());
+                $service.filterBy('climate', 2, Crossfilter.filters.bitwise());
                 expect($service.collection().length).toEqual(2);
 
                 $service.unfilterBy('climate');
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('climate', 2, $service.filters.bitwise('!'));
+                $service.filterBy('climate', 2, Crossfilter.filters.bitwise('!'));
                 expect($service.collection().length).toEqual(4);
 
             });
@@ -597,32 +603,32 @@ describe('ngCrossfilter', function() {
             it('Should be able to use the dateTime range filter;', function() {
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('added', ['2014-01-01', '2014-07-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                $service.filterBy('added', ['2014-01-01', '2014-07-01'], Crossfilter.filters.dateTimeRange('YYYY-MM-DD'));
                 expect($service.collection().length).toEqual(3);
 
                 $service.unfilterBy('added');
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('added', [-Infinity, '2012-07-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                $service.filterBy('added', [-Infinity, '2012-07-01'], Crossfilter.filters.dateTimeRange('YYYY-MM-DD'));
                 expect($service.collection().length).toEqual(1);
 
                 $service.unfilterBy('added');
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('added', ['2013-01-01', Infinity], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                $service.filterBy('added', ['2013-01-01', Infinity], Crossfilter.filters.dateTimeRange('YYYY-MM-DD'));
                 expect($service.collection().length).toEqual(4);
 
                 $service.unfilterBy('added');
 
                 expect($service.collection().length).toEqual(6);
-                $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('YYYY-MM-DD'));
+                $service.filterBy('added', ['2012-01-01', '2012-12-01'], Crossfilter.filters.dateTimeRange('YYYY-MM-DD'));
                 expect($service.collection().length).toEqual(1);
 
                 $service.unfilterBy('added');
                 expect($service.collection().length).toEqual(6);
 
                 expect(function() {
-                    $service.filterBy('added', ['2012-01-01', '2012-12-01'], $service.filters.dateTimeRange('blah'));
+                    $service.filterBy('added', ['2012-01-01', '2012-12-01'], Crossfilter.filters.dateTimeRange('blah'));
                 }).toThrow("ngCrossfilter: Date/Time parsing appears to be using invalid format.");
 
             });
@@ -631,36 +637,36 @@ describe('ngCrossfilter', function() {
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], $service.filters.inArray());
+                $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], Crossfilter.filters.inArray());
                 expect($service.collection().length).toEqual(1);
                 $service.unfilterBy('twinCities');
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('twinCities', ['Beijing'], $service.filters.inArray());
+                $service.filterBy('twinCities', ['Beijing'], Crossfilter.filters.inArray());
                 expect($service.collection().length).toEqual(2);
                 $service.unfilterBy('twinCities');
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('twinCities', 'Beijing', $service.filters.inArray());
+                $service.filterBy('twinCities', 'Beijing', Crossfilter.filters.inArray());
                 expect($service.collection().length).toEqual(2);
                 $service.unfilterBy('twinCities');
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('every'));
+                $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], Crossfilter.filters.inArray('every'));
                 expect($service.collection().length).toEqual(0);
                 $service.unfilterBy('twinCities');
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], $service.filters.inArray('some'));
+                $service.filterBy('twinCities', ['Beijing', 'Los Angeles'], Crossfilter.filters.inArray('some'));
                 expect($service.collection().length).toEqual(3);
                 $service.unfilterBy('twinCities');
 
                 expect(function() {
-                    $service.filterBy('twinCities', 'Tokyo', $service.filters.inArray('pfft!'));
+                    $service.filterBy('twinCities', 'Tokyo', Crossfilter.filters.inArray('pfft!'));
                 }).toThrow("ngCrossfilter: You must pass either 'every' or 'some'.");
 
             });
@@ -669,7 +675,7 @@ describe('ngCrossfilter', function() {
 
                 expect($service.collection().length).toEqual(6);
 
-                $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], $service.filters.notInArray());
+                $service.filterBy('twinCities', ['Los Angeles', 'Wuhan'], Crossfilter.filters.notInArray());
                 expect($service.collection().length).toEqual(5);
                 $service.unfilterBy('twinCities');
 
