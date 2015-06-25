@@ -37,6 +37,240 @@
     }
 
     /**
+     * Whether underscore is available or not
+     *
+     * @type {Boolean}
+     */
+    var HAS_UNDERSCORE = (typeof _ !== 'undefined');
+
+    /**
+     * @method isArray
+     * @return {Boolean}
+     * @private
+     */
+    var isArray = function isArray(item) {
+
+        if (typeof Array.isArray === 'function') {
+            return Array.isArray(item);
+        }
+
+        if (typeof _ !== 'undefined') {
+            return _.isArray(item);
+        }
+
+        /* jshint -W122 */
+        return (typeof item === '[object Array]');
+
+    }
+
+    /**
+     * List of common filters bundled into ngCrossfilter.
+     *
+     * @type {Object}
+     */
+    var filters = {
+
+        /**
+         * @constant HAS_UNDERSCORE
+         * @type {Boolean}
+         * @deprecated
+         */
+        HAS_UNDERSCORE: HAS_UNDERSCORE,
+
+        /**
+         * @method fuzzy
+         * @param flags {String}
+         * @return {Function}
+         */
+        fuzzy: function fuzzyFilter(flags) {
+
+            /**
+             * @method fuzzy
+             * @param expected {String}
+             * @param actual {String}
+             * @return {Boolean}
+             */
+            return function fuzzy(expected, actual) {
+                var regExp = new RegExp(expected, flags);
+                return !!actual.match(regExp);
+            };
+
+        },
+
+        /**
+         * @method dateTimeRange
+         * @param format {String}
+         * @param comparatorFunction {Function}
+         * @return {Function}
+         */
+        dateTimeRange: function dateTimeRangeFilter(format, comparatorFunction) {
+
+            if (typeof $moment === 'undefined') {
+
+                // Ensure we have the Moment.js library installed.
+                _throwException("You need to install Moment.js to use dateTimeRange");
+
+            }
+
+            /**
+             * @method fuzzy
+             * @param expected {String}
+             * @param actual {String}
+             * @return {Boolean}
+             */
+            return function dateTimeRange(expected, actual) {
+
+                // Convert each date/time into a Unix timestamp.
+                var start   = (expected[0] === -Infinity) ? 0 : $moment(expected[0], format).unix(),
+                    end     = (expected[1] === Infinity)  ? Infinity : $moment(expected[1], format).unix(),
+                    current = $moment(actual, format).unix();
+
+                if (start < 0 || end < 0 || current < 0) {
+
+                    // Ensure we're not dealing with overtly incorrect dates/times.
+                    _throwException("Date/Time parsing appears to be using invalid format");
+
+                }
+
+                if (typeof comparatorFunction === 'function') {
+
+                    // Use the user specified comparator function if it has been defined.
+                    return comparatorFunction(current, start, end);
+
+                }
+
+                return (current >= start && current <= end);
+
+            }
+
+        },
+
+        /**
+         * @method regexp
+         * @return {Function}
+         */
+        regexp: function regexpFilter() {
+
+            /**
+             * @method regexp
+             * @param expected {String}
+             * @param actual {String}
+             * @return {Boolean}
+             */
+            return function regexp(expected, actual) {
+
+                if (!(expected instanceof RegExp)) {
+                    _throwException("Expression must be an instance of RegExp");
+                }
+
+                return !!actual.match(expected);
+
+            }
+
+        },
+
+        /**
+         * @method bitwise
+         * @param flag {String}
+         * @return {Function}
+         */
+        bitwise: function bitwiseFilter(flag) {
+
+            /**
+             * @method bitwise
+             * @param expected {Number}
+             * @param actual {Number}
+             * @return {Boolean}
+             */
+            return function bitwise(expected, actual) {
+                var result = (expected & actual);
+                return (flag === '!') ? !result : result;
+            }
+
+        },
+
+        /**
+         * @method inArray
+         * @param method {String}
+         * @return {Function}
+         */
+        inArray: function inArray(method) {
+            return this._inArray(method, false);
+        },
+
+        /**
+         * @method notInArray
+         * @param method {String}
+         * @return {Function}
+         */
+        notInArray: function notInArray(method) {
+            return this._inArray(method, true);
+        },
+
+        /**
+         * @method _inArray
+         * @param method {String}
+         * @param invertInArray {Boolean}
+         * @return {Function}
+         * @private
+         */
+        _inArray: function inArrayFilter(method, invertInArray) {
+
+            var hasUnderscore = HAS_UNDERSCORE;
+
+            /**
+             * @method inArray
+             * @param expected {String|Number|Array}
+             * @param actual {Array}
+             * @return {Boolean}
+             */
+            return function inArray(expected, actual) {
+
+                if (!isArray(actual)) {
+
+                    // Convert the expected into an array if it isn't already.
+                    actual = [actual];
+
+                }
+
+                if (!isArray(expected)) {
+
+                    // Convert the expected into an array if it isn't already.
+                    expected = [expected];
+
+                }
+
+                // Assign a default if none specified.
+                method = method || 'every';
+
+                if (method && ['every', 'some'].indexOf(method) === -1) {
+                    _throwException("You must pass either 'every' or 'some'");
+                }
+
+                if (!hasUnderscore && (typeof [].every !== 'function' || typeof [].some !== 'function')) {
+                    _throwException("Browser does not support `every` and/or `some` methods");
+                }
+
+                /**
+                 * @method everySome
+                 * @param property {String|Number|Boolean}
+                 * @return {Boolean}
+                 */
+                var everySome = function everySome(property) {
+                    var result = (actual.indexOf(property) !== -1);
+                    return (invertInArray) ? !result : result;
+                };
+
+                // Use Underscore if available, otherwise native.
+                return hasUnderscore ? _[method](expected, everySome) : expected[method](everySome);
+
+            }
+
+        }
+
+    };
+
+    /**
      * @module ngCrossfilter
      * @author Adam Timberlake
      * @link https://github.com/Wildhoney/ngCrossfilter
@@ -47,10 +281,10 @@
      * @module ngCrossfilter
      * @submodule CrossfilterService
      */
-    ngCrossfilter.service('Crossfilter', ['$rootScope', '$timeout', '$window',
+    ngCrossfilter.service('Crossfilter', ['$rootScope',
 
         /*jshint maxstatements: 60 */
-        function CrossfilterService($rootScope, $timeout, $window) {
+        function CrossfilterService($rootScope) {
 
             /**
              * @module ngCrossfilter
@@ -61,12 +295,6 @@
 
                 collection = collection || [];
 
-                // Determine if we can utilise Underscore.js for badly supported functionality,
-                // also create an alias for the `_isArray` method.
-                this.HAS_UNDERSCORE         = (typeof _ !== 'undefined');
-                this.filters.HAS_UNDERSCORE = this.HAS_UNDERSCORE;
-                this.filters._isArray       = this._isArray;
-
                 // Reset all of the arrays and objects.
                 this._resetAll();
 
@@ -74,6 +302,8 @@
                 this._initialise(collection, primaryKey, strategy, properties);
 
             };
+
+            Service.filters = filters;
 
             // Store a reference to the prototype.
             Service.prototype = [];
@@ -105,8 +335,9 @@
             /**
              * @constant HAS_UNDERSCORE
              * @type {Boolean}
+             * @deprecated
              */
-            Service.prototype.HAS_UNDERSCORE = false;
+            Service.prototype.HAS_UNDERSCORE = HAS_UNDERSCORE;
 
             /**
              * @property _crossfilter
@@ -194,212 +425,19 @@
             Service.prototype._isBroadcastEventEnabled = true;
 
             /**
-             * List of common filters bundled into ngCrossfilter.
-             *
              * @property filters
              * @type {Object}
+             * @deprecated
              */
-            Service.prototype.filters = {
+            Service.prototype.filters = filters;
 
-                /**
-                 * @constant HAS_UNDERSCORE
-                 * @type {Boolean}
-                 */
-                HAS_UNDERSCORE: false,
-
-                /**
-                 * @method fuzzy
-                 * @param flags {String}
-                 * @return {Function}
-                 */
-                fuzzy: function fuzzyFilter(flags) {
-
-                    /**
-                     * @method fuzzy
-                     * @param expected {String}
-                     * @param actual {String}
-                     * @return {Boolean}
-                     */
-                    return function fuzzy(expected, actual) {
-                        var regExp = new $window.RegExp(expected, flags);
-                        return !!actual.match(regExp);
-                    };
-
-                },
-
-                /**
-                 * @method dateTimeRange
-                 * @param format {String}
-                 * @param comparatorFunction {Function}
-                 * @return {Function}
-                 */
-                dateTimeRange: function dateTimeRangeFilter(format, comparatorFunction) {
-
-                    if (typeof $moment === 'undefined') {
-
-                        // Ensure we have the Moment.js library installed.
-                        _throwException("You need to install Moment.js to use dateTimeRange");
-
-                    }
-
-                    /**
-                     * @method fuzzy
-                     * @param expected {String}
-                     * @param actual {String}
-                     * @return {Boolean}
-                     */
-                    return function dateTimeRange(expected, actual) {
-
-                        // Convert each date/time into a Unix timestamp.
-                        var start   = (expected[0] === -Infinity) ? 0 : $moment(expected[0], format).unix(),
-                            end     = (expected[1] === Infinity)  ? Infinity : $moment(expected[1], format).unix(),
-                            current = $moment(actual, format).unix();
-
-                        if (start < 0 || end < 0 || current < 0) {
-
-                            // Ensure we're not dealing with overtly incorrect dates/times.
-                            _throwException("Date/Time parsing appears to be using invalid format");
-
-                        }
-
-                        if (typeof comparatorFunction === 'function') {
-
-                            // Use the user specified comparator function if it has been defined.
-                            return comparatorFunction(current, start, end);
-
-                        }
-
-                        return (current >= start && current <= end);
-
-                    }
-
-                },
-
-                /**
-                 * @method regexp
-                 * @return {Function}
-                 */
-                regexp: function regexpFilter() {
-
-                    /**
-                     * @method regexp
-                     * @param expected {String}
-                     * @param actual {String}
-                     * @return {Boolean}
-                     */
-                    return function regexp(expected, actual) {
-
-                        if (!(expected instanceof $window.RegExp)) {
-                            _throwException("Expression must be an instance of RegExp");
-                        }
-
-                        return !!actual.match(expected);
-
-                    }
-
-                },
-
-                /**
-                 * @method bitwise
-                 * @param flag {String}
-                 * @return {Function}
-                 */
-                bitwise: function bitwiseFilter(flag) {
-
-                    /**
-                     * @method bitwise
-                     * @param expected {Number}
-                     * @param actual {Number}
-                     * @return {Boolean}
-                     */
-                    return function bitwise(expected, actual) {
-                        var result = (expected & actual);
-                        return (flag === '!') ? !result : result;
-                    }
-
-                },
-
-                /**
-                 * @method inArray
-                 * @param method {String}
-                 * @return {Function}
-                 */
-                inArray: function inArray(method) {
-                    return this._inArray(method, false);
-                },
-
-                /**
-                 * @method notInArray
-                 * @param method {String}
-                 * @return {Function}
-                 */
-                notInArray: function notInArray(method) {
-                    return this._inArray(method, true);
-                },
-
-                /**
-                 * @method _inArray
-                 * @param method {String}
-                 * @param invertInArray {Boolean}
-                 * @return {Function}
-                 * @private
-                 */
-                _inArray: function inArrayFilter(method, invertInArray) {
-
-                    var hasUnderscore = this.HAS_UNDERSCORE,
-                        isArray       = this._isArray;
-
-                    /**
-                     * @method inArray
-                     * @param expected {String|Number|Array}
-                     * @param actual {Array}
-                     * @return {Boolean}
-                     */
-                    return function inArray(expected, actual) {
-
-                        if (!isArray(actual)) {
-
-                            // Convert the expected into an array if it isn't already.
-                            actual = [actual];
-
-                        }
-
-                        if (!isArray(expected)) {
-
-                            // Convert the expected into an array if it isn't already.
-                            expected = [expected];
-
-                        }
-
-                        // Assign a default if none specified.
-                        method = method || 'every';
-
-                        if (method && ['every', 'some'].indexOf(method) === -1) {
-                            _throwException("You must pass either 'every' or 'some'");
-                        }
-
-                        if (!hasUnderscore && (typeof [].every !== 'function' || typeof [].some !== 'function')) {
-                            _throwException("Browser does not support `every` and/or `some` methods");
-                        }
-
-                        /**
-                         * @method everySome
-                         * @param property {String|Number|Boolean}
-                         * @return {Boolean}
-                         */
-                        var everySome = function everySome(property) {
-                            var result = (actual.indexOf(property) !== -1);
-                            return (invertInArray) ? !result : result;
-                        };
-
-                        // Use Underscore if available, otherwise native.
-                        return hasUnderscore ? _[method](expected, everySome) : expected[method](everySome);
-
-                    }
-
-                }
-
-            };
+            /**
+             * @method _isArray
+             * @return {Boolean}
+             * @private
+             * @deprecated
+             */
+            Service.prototype._isArray = isArray;
 
             /**
              * @method _initialise
@@ -412,7 +450,7 @@
              */
             Service.prototype._initialise = function _initialise(collection, primaryKey, strategy, properties) {
 
-                if (!this._isArray(collection)) {
+                if (!isArray(collection)) {
 
                     // Determine if the collection is a valid array.
                     _throwException("Collection must be an array");
@@ -1109,26 +1147,6 @@
                 }.bind(this));
 
                 return keys;
-
-            };
-
-            /**
-             * @method _isArray
-             * @return {Boolean}
-             * @private
-             */
-            Service.prototype._isArray = function _isArray(item) {
-
-                if (typeof $window.Array.isArray === 'function') {
-                    return $window.Array.isArray(item);
-                }
-
-                if (typeof _ !== 'undefined') {
-                    return _.isArray(item);
-                }
-
-                /* jshint -W122 */
-                return (typeof item === '[object Array]');
 
             };
 
