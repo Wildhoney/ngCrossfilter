@@ -497,7 +497,32 @@ describe('ngCrossfilter', function() {
             expect(collection[3].value).toEqual(1);
             expect(collection[4].value).toEqual(2);
         });
+        
+        it('Should be able to group with a custom reducer;', function () {
+          expect($service.collection().length).toEqual(6);
+          var reducer = {
+            add: function reduceAdd(p, v) {
+              return p + v.population;
+            },
+            remove: function reduceRemove(p, v) {
+              return p - v.population;
+            },
+            initial: function reduceInitial() {
+              return 0;
+            }
+          };
+          var collection = $service.groupBy('country',reducer);
+          expect(collection[3].value).toEqual(5.3);
+          expect(collection[4].value).toEqual(10.8);
+        });
 
+        it('Should use defaults when group by reducers are undefined;', function() {
+            expect($service.collection().length).toEqual(6);
+            var collection = $service.groupBy('country', {});
+            expect(collection[3].value).toEqual(1);
+            expect(collection[4].value).toEqual(2);
+        });
+        
         it('Should be able to broadcast its collection and identifier upon updates;', function() {
             inject(function(Crossfilter) {
                 $service = new Crossfilter($collection);
