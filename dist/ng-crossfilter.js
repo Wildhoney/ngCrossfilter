@@ -789,16 +789,41 @@
             /**
              * @method groupBy
              * @param property {String}
+             * @param reduceFunctions {Object}
              * @return {Array}
              */
-            Service.prototype.groupBy = function groupBy(property) {
+            Service.prototype.groupBy = function groupBy(property,reduceFunctions) {
 
                 this._assertDimensionExists(property);
 
-                return this._dimensions[property].group(function group(property) {
+                if (typeof reduceFunctions === 'undefined') {
+                  return this._dimensions[property].group(function group(property) {
                     return property;
-                }).all();
-
+                  }).all();
+                }
+                
+                if( typeof reduceFunctions !== 'object' ){
+                  _throwException("Custom reducer must be an object");
+                }
+                
+                var add = reduceFunctions.add || function(p) {
+                  return p+1;
+                }
+                var remove = reduceFunctions.remove || function(p){
+                  return p-1;
+                }
+                var initial = reduceFunctions.initial || function(){
+                  return 0;
+                }
+                
+                if(typeof add !== 'function' || typeof remove !== 'function' || typeof initial !== 'function'){
+                  _throwException("Custom reducer's `add`, `remove`, and `initial` properties must be functions")
+                }
+                
+                return this._dimensions[property].group(function group(property) {
+                  return property;
+                }).reduce(add, remove, initial)
+                  .all();
             };
 
             /**
