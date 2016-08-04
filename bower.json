@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "angular": "~1.2.1",
-    "crossfilter": "~1.3.5",
+    "crossfilter2": "~1.3.14",
     "underscore": "~1.7.0"
   }
 }
