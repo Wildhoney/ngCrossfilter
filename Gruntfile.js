@@ -81,7 +81,7 @@ module.exports = function(grunt) {
                     helpers: [
                         'example/js/vendor/angular/angular.js',
                         'example/js/vendor/moment/moment.js',
-                        'example/js/vendor/crossfilter/crossfilter.js',
+                        'example/js/vendor/crossfilter2/crossfilter.js',
                         'example/js/vendor/angular-mocks/angular-mocks.js'
                     ]
                 }
