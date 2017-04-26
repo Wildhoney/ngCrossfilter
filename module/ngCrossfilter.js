@@ -638,6 +638,7 @@
 
                 }
 
+                this._finaliseDeleteRestore();
                 this.broadcastEvent();
 
             };

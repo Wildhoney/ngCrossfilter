@@ -319,6 +319,39 @@ describe('ngCrossfilter', function() {
             expect($service.collection().length).toEqual(6);
         });
 
+        it('Should not show deleted models when removing all filters;', function() {
+            var model =  { city: 'Hong Kong', country: 'HK', population: 7.1 };
+            
+            $service.filterBy('country', 'HK');
+            expect($service.collection().length).toEqual(1);
+            
+            $service.deleteModel(model);
+            expect($service.collection().length).toEqual(0);
+            
+            $service.unfilterAll();
+            expect($service.collection().length).toEqual(5);
+        });
+
+        it('Should not show old versions of updated models when removing all filters;', function() {
+            var crossfilter = new Crossfilter($collection, '$id');
+
+            crossfilter.addModel({ city: 'Nottingham' });
+            expect(crossfilter.collection().length).toEqual(7);
+
+            crossfilter.filterBy('city', 'Nottingham');
+            var model = crossfilter.collection()[0];
+            expect(crossfilter.collection().length).toEqual(1);
+            
+            crossfilter.updateModel(model, { city: 'Norwich' });
+            expect(crossfilter.collection().length).toEqual(0);
+            
+            crossfilter.filterBy('city', 'Norwich');
+            expect(crossfilter.collection().length).toEqual(1);
+
+            crossfilter.unfilterAll();
+            expect(crossfilter.collection().length).toEqual(7);
+        });
+
         it('Should be able to apply a range filter;', function() {
             $service.filterBy('population', [7, 12]);
             expect($service.collection().length).toEqual(3);
