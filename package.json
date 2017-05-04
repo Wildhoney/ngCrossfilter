@@ -1,11 +1,12 @@
 {
   "name": "ng-crossfilter",
   "buildName": "ngCrossfilter",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Usual Angular.js style filtering and sorting with a twist of Crossfilter for improved performance.",
   "main": "dist/ng-crossfilter.js",
   "scripts": {
     "test": "grunt test",
+    "build": "grunt build",
     "start": "node server/default.js"
   },
   "repository": {
